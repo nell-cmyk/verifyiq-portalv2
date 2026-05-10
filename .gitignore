@@ -1,0 +1,22 @@
+.DS_Store
+
+# Local Codex/GSD runtime install. Planning artifacts live in .planning/.
+.codex/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Local env/secrets
+.env
+.env.*
+!.env.example
+
+# Playwright artifacts and sensitive auth state
+playwright/.auth/
+playwright-report/
+test-results/
+
+# Generic outputs
+coverage/
+dist/

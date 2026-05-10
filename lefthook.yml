@@ -1,0 +1,13 @@
+pre-commit:
+  parallel: true
+  commands:
+    lint-staged:
+      run: npx lint-staged
+
+pre-push:
+  parallel: false
+  commands:
+    check:
+      run: npm run check
+    public-smoke:
+      run: npm run test:e2e
