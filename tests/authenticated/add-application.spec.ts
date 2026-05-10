@@ -9,37 +9,75 @@ import {
   createAutomationApplicantName,
   expectCreatedApplicationVisible,
   expectNewApplicationPage,
-  uploadSyntheticPrimaryDocument
+  primaryDocumentTypes,
+  uploadSyntheticPrimaryDocument,
+  type PrimaryDocumentType
 } from "../support/application-workflow.js";
 import { collectPageErrors } from "../support/page-errors.js";
 
-test("authenticated user can create an application with a primary document", async ({
+function documentTypeLabel(documentType: PrimaryDocumentType): string {
+  return documentType.toUpperCase().replace(/ /g, "_");
+}
+
+for (const documentType of primaryDocumentTypes) {
+  const testName =
+    documentType === "Bank Statement"
+      ? "authenticated user can create an application with a primary document"
+      : `authenticated user can create an application with primary document ${documentType}`;
+
+  test(testName, async ({ page }, testInfo) => {
+    const pageErrors = collectPageErrors(page);
+
+    try {
+      await page.goto("/applications");
+
+      await expectSignInHidden(page);
+      await expectAuthenticatedApplicationsPage(page);
+
+      await page.getByRole("button", { name: /^Add Application$/i }).click();
+
+      await expectNewApplicationPage(page);
+
+      const applicantName = createAutomationApplicantName(
+        documentTypeLabel(documentType)
+      );
+
+      const applicantInput = page.getByTestId("applicant-name-input");
+      await expect(applicantInput).toBeVisible();
+      await applicantInput.fill(applicantName);
+
+      await addPrimaryDocument(page, documentType);
+      await uploadSyntheticPrimaryDocument(page);
+
+      await page.getByRole("button", { name: /^Create Application$/i }).click();
+
+      await expectCreatedApplicationVisible(page, applicantName);
+
+      await pageErrors.expectNoErrors(testInfo);
+    } catch (error) {
+      await attachFormInventory(page, testInfo);
+      throw error;
+    }
+  });
+}
+
+test("authenticated user sees required applicant validation", async ({
   page
 }, testInfo) => {
   const pageErrors = collectPageErrors(page);
 
   try {
-    await page.goto("/applications");
-
-    await expectSignInHidden(page);
-    await expectAuthenticatedApplicationsPage(page);
-
-    await page.getByRole("button", { name: /^Add Application$/i }).click();
+    await page.goto("/applications/new");
 
     await expectNewApplicationPage(page);
 
-    const applicantName = createAutomationApplicantName("BANK_STATEMENT");
+    await page.getByTestId("submit-btn").click();
 
-    const applicantInput = page.getByTestId("applicant-name-input");
-    await expect(applicantInput).toBeVisible();
-    await applicantInput.fill(applicantName);
+    await expect(
+      page.getByText("Please enter the applicant name.", { exact: false })
+    ).toBeVisible();
 
-    await addPrimaryDocument(page, "Bank Statement");
-    await uploadSyntheticPrimaryDocument(page);
-
-    await page.getByRole("button", { name: /^Create Application$/i }).click();
-
-    await expectCreatedApplicationVisible(page, applicantName);
+    await expect(page).toHaveURL(/\/applications\/new(?:[?#].*)?$/);
 
     await pageErrors.expectNoErrors(testInfo);
   } catch (error) {
