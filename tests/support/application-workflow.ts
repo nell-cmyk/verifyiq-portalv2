@@ -159,8 +159,8 @@ export async function expectCreatedApplicationVisible(
           .catch(() => false);
         if (applicantVisible) return true;
 
-        const url = page.url();
-        if (!/\/applications\/new(?:[?#].*)?$/.test(url)) {
+        const { pathname } = new URL(page.url());
+        if (/^\/applications\/[^/?#]+$/.test(pathname)) {
           const headingVisible = await page
             .getByRole("heading", { name: /Application/i })
             .first()
