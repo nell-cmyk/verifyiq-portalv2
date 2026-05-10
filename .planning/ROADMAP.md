@@ -76,7 +76,7 @@ Plans:
 
 **Wave 1**
 
-- [ ] 03-01: Add Application workflow foundation.
+- [x] 03-01: Add Application workflow foundation.
 
 **Wave 2 _(blocked on Wave 1 completion)_**
 
@@ -100,5 +100,5 @@ Criteria**:
 | ---------------------------------- | -------------- | ----------- | ---------- |
 | 1. Automation Foundation           | 1/1            | Complete    | 2026-05-10 |
 | 2. Auth Workflow Hardening         | 2/2            | Complete    | 2026-05-10 |
-| 3. Core VerifyIQ Workflow Coverage | 0/2            | Ready       | -          |
+| 3. Core VerifyIQ Workflow Coverage | 1/2            | In Progress | -          |
 | 4. Regression Operations           | 0/TBD          | Not started | -          |
