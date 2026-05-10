@@ -9,6 +9,10 @@ repository. Human setup starts in [README.md](README.md).
   technically precise.
 - Do not use Caveman compression in committed documents, source comments, test
   names, PR descriptions, or user-facing text.
+- After finishing requested work, include one useful next command in the final
+  response. Prefer the next GSD command when a GSD workflow is active; otherwise
+  state the proper verification, git, or follow-up command. Do not repeat this
+  command in intermediary progress updates.
 - Keep secrets out of terminal output, docs, source, screenshots, and commits.
 
 ## Project Control
