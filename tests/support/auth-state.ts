@@ -1,6 +1,10 @@
-import { expect, type Browser } from "@playwright/test";
+import { type Browser } from "@playwright/test";
 import { access, copyFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
+import {
+  expectAuthenticatedApplicationsPage,
+  expectSignInHidden
+} from "./authenticated-app.js";
 
 export const authFile = "playwright/.auth/user.json";
 
@@ -54,13 +58,9 @@ export async function validateStoredAuthState(
   const authPage = await authContext.newPage();
 
   try {
-    await authPage.goto("/");
-
-    await expect(authPage).toHaveTitle(/VerifyIQ/i);
-    await expect(
-      authPage.getByRole("heading", { name: /sign in to verifyiq/i })
-    ).toBeHidden({ timeout: 15_000 });
-    await expect(authPage.locator('input[type="password"]')).toBeHidden();
+    await authPage.goto("/applications");
+    await expectSignInHidden(authPage);
+    await expectAuthenticatedApplicationsPage(authPage);
   } catch {
     throw new Error(
       [
