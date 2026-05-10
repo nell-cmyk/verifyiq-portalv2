@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Executing Phase 03
-last_updated: "2026-05-10T23:42:54.236Z"
-last_activity: 2026-05-11 -- Phase 03 plan 03-01 complete
+status: Phase 03 complete
+last_updated: "2026-05-10T23:49:52Z"
+last_activity: 2026-05-11 -- Phase 03 execution complete
 progress:
   total_phases: 4
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 5
-  completed_plans: 4
-  percent: 80
+  completed_plans: 5
+  percent: 75
 ---
 
 # Project State
@@ -27,13 +27,16 @@ focus:** Phase 3: Core VerifyIQ Workflow Coverage **Roadmap:**
 
 ## Current Position
 
-Phase: 03 (core-verifyiq-workflow-coverage) — EXECUTING Plan: 2 of 2 Last
-activity: 2026-05-11 -- Phase 03 plan 03-01 complete. The Add Application
-foundation now has a synthetic fixture, workflow helpers, and an authenticated
-happy-path test. Plan 03-02 remains to expand matrix coverage, validation
-coverage, and sandbox-data documentation.
+Phase: 03 (core-verifyiq-workflow-coverage) — COMPLETE Plan: 2 of 2 Last
+activity: 2026-05-11 -- Phase 03 execution complete. The Add Application spec
+now iterates the stable visible primary document type matrix (`Bank Statement`,
+`Articles Of Partnership`, `Payslip`, `Electricity Bill`) and adds the
+deterministic `authenticated user sees required applicant validation` test.
+README documents Phase 3 sandbox record creation, `AUTOMATION` naming, and
+best-effort UI cleanup. `npm run check`, `npm run test:e2e:auth`, and
+`npm run test:e2e:all` passed.
 
-Progress: [████████░░] 80%
+Progress: [████████░░] 75%
 
 ## Accumulated Context
 
@@ -61,7 +64,7 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-- Execute Phase 3 core VerifyIQ workflow coverage.
+- Discuss and plan Phase 4 regression operations.
 - Keep Phase 3 coverage anchored to committed Playwright tests; use browser
   helpers only for exploration and debugging.
 
@@ -84,5 +87,6 @@ then credential login) with fresh-context validation of every reused state.
 
 ## Session Continuity
 
-Last session: 2026-05-10T23:42:54.234Z Stopped at: Completed 03-01-PLAN.md
-Resume file: .planning/phases/03-core-verifyiq-workflow-coverage/03-02-PLAN.md
+Last session: 2026-05-10T23:49:52Z Stopped at: Phase 3 execution complete.
+Resume file:
+.planning/phases/03-core-verifyiq-workflow-coverage/03-02-SUMMARY.md

@@ -12,7 +12,7 @@ VerifyIQ workflows.
       and initial smoke tests.
 - [x] **Phase 2: Auth Workflow Hardening** - Validate login, session reuse, and
       failure modes against real sandbox credentials.
-- [ ] **Phase 3: Core VerifyIQ Workflow Coverage** - Add stable tests for
+- [x] **Phase 3: Core VerifyIQ Workflow Coverage** - Add stable tests for
       primary case/document verification paths.
 - [ ] **Phase 4: Regression Operations** - Improve reports, retries, triage, and
       maintenance routines.
@@ -80,7 +80,7 @@ Plans:
 
 **Wave 2 _(blocked on Wave 1 completion)_**
 
-- [ ] 03-02: Expand workflow matrix and document test data behavior.
+- [x] 03-02: Expand workflow matrix and document test data behavior.
 
 ### Phase 4: Regression Operations
 
@@ -100,5 +100,5 @@ Criteria**:
 | ---------------------------------- | -------------- | ----------- | ---------- |
 | 1. Automation Foundation           | 1/1            | Complete    | 2026-05-10 |
 | 2. Auth Workflow Hardening         | 2/2            | Complete    | 2026-05-10 |
-| 3. Core VerifyIQ Workflow Coverage | 1/2            | In Progress | -          |
+| 3. Core VerifyIQ Workflow Coverage | 2/2            | Complete    | 2026-05-11 |
 | 4. Regression Operations           | 0/TBD          | Not started | -          |

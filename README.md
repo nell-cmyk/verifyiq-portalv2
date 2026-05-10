@@ -76,6 +76,19 @@ filter combo boxes). Tests intentionally avoid account-specific text such as
 user name, email, or profile initials so coverage remains stable across
 accounts.
 
+### Phase 3 Sandbox Test Data
+
+Phase 3 workflow tests may create sandbox application records. The Add
+Application matrix submits one record per visible primary document type
+(`Bank Statement`, `Articles Of Partnership`, `Payslip`, `Electricity Bill`) and
+a deterministic validation test that does not submit. Generated records use
+applicant names beginning with `AUTOMATION ` plus a document-type label and
+timestamp so they are easy to identify in the sandbox UI. Cleanup is best-effort
+through the visible UI only; no hidden cleanup APIs are used and sandbox records
+may persist between runs. Synthetic upload fixtures under `tests/fixtures/`
+contain no real personal, financial, credential, cookie, token, or storage-state
+data.
+
 ## Commands
 
 - `npm run check` — lint, typecheck, and documentation alignment check.

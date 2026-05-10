@@ -22,13 +22,15 @@ storage-state path when reCAPTCHA blocks credential-only login.
 - Local manual storage-state recording for reCAPTCHA-gated login.
 - Authenticated smoke using env-provided or ignored Playwright storage state.
 - Authenticated `/applications` landing coverage with stable app landmarks.
+- Authenticated Add Application workflow coverage across the stable visible
+  primary document type matrix.
+- Deterministic Add Application validation coverage for missing applicant name.
 - Local hooks, CI workflow, and documentation alignment.
 - Claude Opus 4.7 first-pass implementation with Codex fallback, review, and
   verification.
 
 ### Active
 
-- [ ] Add first core VerifyIQ workflow coverage for Phase 3.
 - [ ] Keep documentation aligned after code and instruction changes.
 
 Phase 2 planning locks env-first auth-state precedence
@@ -90,7 +92,8 @@ storage state.
 | GSD lifecycle with Playwright executable truth  | Separates planning state from runnable verification                                                             | Complete |
 | Claude Opus 4.7 implementer with Codex fallback | Uses Opus 4.7 for planned implementation while preserving Codex verification and continuity under Claude limits | Complete |
 | Documentation alignment gate                    | Prevents instructions and repo behavior drifting apart                                                          | Complete |
+| Phase 3 Add Application workflow matrix         | Proves stable visible primary document submissions and validation behavior through committed Playwright tests   | Complete |
 
 ---
 
-_Last updated: 2026-05-10 after Phase 2 UAT, validation, and security gates._
+_Last updated: 2026-05-11 after Phase 3 Add Application workflow verification._

@@ -19,8 +19,9 @@ relying on ad hoc manual steps.
 - [x] **AUTO-04**: Authenticated smoke verifies storage state reaches the app.
       Phase 2 codifies `/applications` as the stable authenticated landing
       baseline.
-- [ ] **AUTO-05**: First authenticated workflow test covers a stable primary
-      work area when visible.
+- [x] **AUTO-05**: First authenticated workflow test covers a stable primary
+      work area when visible. Phase 3 adds Add Application coverage across the
+      stable visible primary document type matrix plus deterministic validation.
 
 ### Quality Gates
 
@@ -57,7 +58,7 @@ relying on ad hoc manual steps.
 | AUTO-02     | Phase 1 | Complete |
 | AUTO-03     | Phase 2 | Complete |
 | AUTO-04     | Phase 2 | Complete |
-| AUTO-05     | Phase 3 | Pending  |
+| AUTO-05     | Phase 3 | Complete |
 | QUAL-01     | Phase 1 | Complete |
 | QUAL-02     | Phase 1 | Complete |
 | QUAL-03     | Phase 1 | Complete |
@@ -75,6 +76,5 @@ relying on ad hoc manual steps.
 
 ---
 
-_Requirements defined: 2026-05-10_ _Last updated: 2026-05-10 after Phase 2
-execution verification completed AUTO-03 and AUTO-04; AUTO-05 remains deferred
-to Phase 3._
+_Requirements defined: 2026-05-10_ _Last updated: 2026-05-11 after Phase 3
+execution verification completed AUTO-05._
