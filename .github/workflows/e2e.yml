@@ -44,7 +44,7 @@ jobs:
       - name: Public smoke tests
         run: npm run test:e2e
 
-      - name: Authenticated tests
+      - name: Authenticated tests (storage state)
         if: ${{ env.VERIFYIQ_STORAGE_STATE_JSON != '' }}
         run: npm run test:e2e:auth
 

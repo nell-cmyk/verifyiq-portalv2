@@ -16,9 +16,10 @@
     "plan_bounce": false,
     "plan_bounce_script": null,
     "plan_bounce_passes": 2,
-    "cross_ai_execution": false,
-    "cross_ai_command": "",
-    "cross_ai_timeout": 300
+    "cross_ai_execution": true,
+    "cross_ai_command": "npm --silent run ai:implement",
+    "cross_ai_timeout": 1800,
+    "_auto_chain_active": false
   },
   "planning": {
     "commit_docs": true,

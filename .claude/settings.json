@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Grep",
+      "Glob",
+      "LS",
+      "Edit",
+      "MultiEdit",
+      "Write",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(npm run lint)",
+      "Bash(npm run typecheck)",
+      "Bash(npm run docs:check)",
+      "Bash(npm run test:e2e)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./playwright/.auth/**)",
+      "Read(./test-results/**)",
+      "Read(./playwright-report/**)",
+      "Bash(npm run auth:record)",
+      "Bash(npm run test:e2e:auth)",
+      "Bash(npm run test:e2e:all)",
+      "Bash(printenv:*)",
+      "Bash(env:*)"
+    ]
+  }
+}

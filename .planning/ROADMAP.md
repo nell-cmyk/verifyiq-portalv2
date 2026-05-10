@@ -8,9 +8,9 @@ VerifyIQ workflows.
 
 ## Phases
 
-- [ ] **Phase 1: Automation Foundation** - Scaffold Playwright, docs, hooks, CI,
+- [x] **Phase 1: Automation Foundation** - Scaffold Playwright, docs, hooks, CI,
       and initial smoke tests.
-- [ ] **Phase 2: Auth Workflow Hardening** - Validate login, session reuse, and
+- [x] **Phase 2: Auth Workflow Hardening** - Validate login, session reuse, and
       failure modes against real sandbox credentials.
 - [ ] **Phase 3: Core VerifyIQ Workflow Coverage** - Add stable tests for
       primary case/document verification paths.
@@ -39,7 +39,7 @@ QUAL-03, QUAL-04, QUAL-05, DOCS-01, DOCS-02, DOCS-03 **Success Criteria**:
 
 Plans:
 
-- [ ] 01-01: Implement automation foundation.
+- [x] 01-01: Implement automation foundation.
 
 ### Phase 2: Auth Workflow Hardening
 
@@ -53,7 +53,12 @@ Phase 1 **Requirements**: AUTO-03, AUTO-04 **Success Criteria**:
 4. Agent-side browser inspection may use `agent-browser`, but committed
    verification remains in Playwright tests and GSD artifacts.
 
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+
+- [x] 02-01: Harden auth-state setup and diagnostics.
+- [x] 02-02: Lock authenticated landing and CI behavior.
 
 ### Phase 3: Core VerifyIQ Workflow Coverage
 
@@ -81,9 +86,9 @@ Criteria**:
 
 ## Progress
 
-| Phase                              | Plans Complete | Status                    | Completed |
-| ---------------------------------- | -------------- | ------------------------- | --------- |
-| 1. Automation Foundation           | 1/1            | Human verification needed | -         |
-| 2. Auth Workflow Hardening         | 0/TBD          | Not started               | -         |
-| 3. Core VerifyIQ Workflow Coverage | 0/TBD          | Not started               | -         |
-| 4. Regression Operations           | 0/TBD          | Not started               | -         |
+| Phase                              | Plans Complete | Status      | Completed  |
+| ---------------------------------- | -------------- | ----------- | ---------- |
+| 1. Automation Foundation           | 1/1            | Complete    | 2026-05-10 |
+| 2. Auth Workflow Hardening         | 2/2            | Complete    | 2026-05-10 |
+| 3. Core VerifyIQ Workflow Coverage | 0/TBD          | Not started | -          |
+| 4. Regression Operations           | 0/TBD          | Not started | -          |

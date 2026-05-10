@@ -1,26 +1,19 @@
-import { expect, test } from "@playwright/test";
+import { test } from "@playwright/test";
+import {
+  expectAuthenticatedApplicationsPage,
+  expectSignInHidden
+} from "../support/authenticated-app.js";
+import { collectPageErrors } from "../support/page-errors.js";
 
-test("authenticated user can enter a primary work area", async ({ page }) => {
-  await page.goto("/");
+test("authenticated user can view the applications work area", async ({
+  page
+}, testInfo) => {
+  const pageErrors = collectPageErrors(page);
 
-  const primaryWorkArea = page
-    .getByRole("link", { name: /cases?|documents?|verifications?|dashboard/i })
-    .or(
-      page.getByRole("button", {
-        name: /cases?|documents?|verifications?|dashboard/i
-      })
-    )
-    .first();
+  await page.goto("/applications");
 
-  const isVisible = await primaryWorkArea
-    .isVisible({ timeout: 10_000 })
-    .catch(() => false);
+  await expectSignInHidden(page);
+  await expectAuthenticatedApplicationsPage(page);
 
-  test.skip(
-    !isVisible,
-    "No stable primary work-area navigation control is visible yet."
-  );
-
-  await primaryWorkArea.click();
-  await expect(page).toHaveURL(/case|document|verification|dashboard/i);
+  await pageErrors.expectNoErrors(testInfo);
 });

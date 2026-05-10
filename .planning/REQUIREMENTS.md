@@ -8,33 +8,36 @@ relying on ad hoc manual steps.
 
 ### Automation Baseline
 
-- [ ] **AUTO-01**: Repository has an npm-based TypeScript Playwright scaffold.
-- [ ] **AUTO-02**: Public smoke test verifies VerifyIQ root load, title, sign-in
+- [x] **AUTO-01**: Repository has an npm-based TypeScript Playwright scaffold.
+- [x] **AUTO-02**: Public smoke test verifies VerifyIQ root load, title, sign-in
       controls, and serious page/console errors.
-- [ ] **AUTO-03**: Auth setup can reuse existing ignored storage state, consume
+- [x] **AUTO-03**: Auth setup can reuse existing ignored storage state, consume
       storage state from env/file, or create local storage state through a
       headed recorder that prefills env credentials and waits for manual
-      reCAPTCHA/sign-in.
-- [ ] **AUTO-04**: Authenticated smoke verifies storage state reaches the app.
+      reCAPTCHA/sign-in. Phase 2 hardened env-first precedence and fresh-context
+      validation.
+- [x] **AUTO-04**: Authenticated smoke verifies storage state reaches the app.
+      Phase 2 codifies `/applications` as the stable authenticated landing
+      baseline.
 - [ ] **AUTO-05**: First authenticated workflow test covers a stable primary
       work area when visible.
 
 ### Quality Gates
 
-- [ ] **QUAL-01**: `npm run check` covers lint, typecheck, and docs alignment.
-- [ ] **QUAL-02**: Lefthook pre-commit runs lint-staged.
-- [ ] **QUAL-03**: Lefthook pre-push runs static checks and public smoke tests.
-- [ ] **QUAL-04**: GitHub Actions runs static checks, public smoke tests, and
+- [x] **QUAL-01**: `npm run check` covers lint, typecheck, and docs alignment.
+- [x] **QUAL-02**: Lefthook pre-commit runs lint-staged.
+- [x] **QUAL-03**: Lefthook pre-push runs static checks and public smoke tests.
+- [x] **QUAL-04**: GitHub Actions runs static checks, public smoke tests, and
       authenticated tests when storage-state secrets exist.
-- [ ] **QUAL-05**: Playwright reports and test results are uploaded from CI.
+- [x] **QUAL-05**: Playwright reports and test results are uploaded from CI.
 
 ### Documentation
 
-- [ ] **DOCS-01**: `AGENTS.md` documents agent rules, Caveman scope, GSD
+- [x] **DOCS-01**: `AGENTS.md` documents agent rules, Caveman scope, GSD
       workflow, commands, and secret handling.
-- [ ] **DOCS-02**: `README.md` documents human setup, env vars, commands, CI,
+- [x] **DOCS-02**: `README.md` documents human setup, env vars, commands, CI,
       and planning doc entrypoints.
-- [ ] **DOCS-03**: Planning docs cross-reference current repo behavior and stay
+- [x] **DOCS-03**: Planning docs cross-reference current repo behavior and stay
       updated after major code or instruction changes.
 
 ## Out of Scope
@@ -52,8 +55,8 @@ relying on ad hoc manual steps.
 | ----------- | ------- | -------- |
 | AUTO-01     | Phase 1 | Complete |
 | AUTO-02     | Phase 1 | Complete |
-| AUTO-03     | Phase 1 | Complete |
-| AUTO-04     | Phase 2 | Pending  |
+| AUTO-03     | Phase 2 | Complete |
+| AUTO-04     | Phase 2 | Complete |
 | AUTO-05     | Phase 3 | Pending  |
 | QUAL-01     | Phase 1 | Complete |
 | QUAL-02     | Phase 1 | Complete |
@@ -72,5 +75,6 @@ relying on ad hoc manual steps.
 
 ---
 
-_Requirements defined: 2026-05-10_ _Last updated: 2026-05-10 after auth recorder
-and agent-browser policy update._
+_Requirements defined: 2026-05-10_ _Last updated: 2026-05-10 after Phase 2
+execution verification completed AUTO-03 and AUTO-04; AUTO-05 remains deferred
+to Phase 3._

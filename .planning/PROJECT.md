@@ -17,16 +17,26 @@ storage-state path when reCAPTCHA blocks credential-only login.
 
 ### Validated
 
-None yet.
+- Deterministic Playwright automation baseline.
+- Public root loading and serious page/console error surfacing.
+- Local manual storage-state recording for reCAPTCHA-gated login.
+- Authenticated smoke using env-provided or ignored Playwright storage state.
+- Authenticated `/applications` landing coverage with stable app landmarks.
+- Local hooks, CI workflow, and documentation alignment.
+- Claude Opus 4.7 first-pass implementation with Codex fallback, review, and
+  verification.
 
 ### Active
 
-- [ ] Establish a deterministic Playwright automation baseline.
-- [ ] Verify public root loading and serious page/console error surfacing.
-- [ ] Generate or provide authenticated Playwright storage state without
-      committing secrets, including headed manual recording for reCAPTCHA.
-- [ ] Run checks in local hooks and GitHub Actions.
+- [ ] Add first core VerifyIQ workflow coverage for Phase 3.
 - [ ] Keep documentation aligned after code and instruction changes.
+
+Phase 2 planning locks env-first auth-state precedence
+(`VERIFYIQ_STORAGE_STATE_JSON`, then `VERIFYIQ_STORAGE_STATE_PATH`, then local
+`playwright/.auth/user.json`, then credential login) and requires fresh-context
+validation of every reused storage state before authenticated tests run.
+`VERIFYIQ_FORCE_LOGIN=1` bypasses only the local file, never env-provided
+storage state.
 
 ### Out of Scope
 
@@ -50,6 +60,9 @@ None yet.
 - `agent-browser` is documented as optional agent-side exploration/debugging
   tooling for snapshots, screenshots, console, network, and quick navigation. It
   is not a package dependency or CI runtime.
+- `docs/ai-development-workflow.md` documents the split where Codex plans and
+  verifies, Claude Opus 4.7 implements first, and Codex takes over only for
+  Claude capacity failures.
 - GSD artifacts live in `.planning/`; local Codex/GSD runtime files under
   `.codex/` are ignored.
 
@@ -67,16 +80,18 @@ None yet.
 
 ## Key Decisions
 
-| Decision                                       | Rationale                                                            | Outcome |
-| ---------------------------------------------- | -------------------------------------------------------------------- | ------- |
-| TypeScript + Playwright Test                   | Best fit for deterministic browser E2E, tracing, reports, and CI     | Pending |
-| Local/CI-first browsers                        | Avoid hosted browser dependency until local tests are insufficient   | Pending |
-| Storage-state auth fallback                    | reCAPTCHA blocks fully automated credential login                    | Pending |
-| Custom Playwright auth recorder                | Keeps auth state compatible with tests while allowing manual CAPTCHA | Pending |
-| `agent-browser` as optional helper             | Useful for inspection without becoming test/runtime dependency       | Pending |
-| GSD lifecycle with Playwright executable truth | Separates planning state from runnable verification                  | Pending |
-| Documentation alignment gate                   | Prevents instructions and repo behavior drifting apart               | Pending |
+| Decision                                        | Rationale                                                                                                       | Outcome  |
+| ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | -------- |
+| TypeScript + Playwright Test                    | Best fit for deterministic browser E2E, tracing, reports, and CI                                                | Complete |
+| Local/CI-first browsers                         | Avoid hosted browser dependency until local tests are insufficient                                              | Complete |
+| Storage-state auth fallback                     | reCAPTCHA blocks fully automated credential login                                                               | Complete |
+| Custom Playwright auth recorder                 | Keeps auth state compatible with tests while allowing manual CAPTCHA                                            | Complete |
+| `agent-browser` as optional helper              | Useful for inspection without becoming test/runtime dependency                                                  | Complete |
+| GSD lifecycle with Playwright executable truth  | Separates planning state from runnable verification                                                             | Complete |
+| Claude Opus 4.7 implementer with Codex fallback | Uses Opus 4.7 for planned implementation while preserving Codex verification and continuity under Claude limits | Complete |
+| Documentation alignment gate                    | Prevents instructions and repo behavior drifting apart                                                          | Complete |
 
 ---
 
-_Last updated: 2026-05-10 after auth recorder and agent-browser policy update._
+_Last updated: 2026-05-10 after Phase 2 execution completed authenticated
+landing coverage._

@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 const requiredDocs = [
   "AGENTS.md",
   "README.md",
+  "docs/ai-development-workflow.md",
   ".planning/PROJECT.md",
   ".planning/REQUIREMENTS.md",
   ".planning/ROADMAP.md",
@@ -35,6 +36,7 @@ for (const doc of requiredDocs) {
 
 requireIncludes("README.md", docs.get("README.md"), [
   "AGENTS.md",
+  "docs/ai-development-workflow.md",
   ".planning/PROJECT.md",
   ".planning/REQUIREMENTS.md",
   ".planning/ROADMAP.md",
@@ -43,6 +45,7 @@ requireIncludes("README.md", docs.get("README.md"), [
 
 requireIncludes("AGENTS.md", docs.get("AGENTS.md"), [
   "README.md",
+  "docs/ai-development-workflow.md",
   ".planning/PROJECT.md",
   ".planning/REQUIREMENTS.md",
   ".planning/ROADMAP.md",
@@ -53,5 +56,11 @@ requireIncludes(".planning/STATE.md", docs.get(".planning/STATE.md"), [
   ".planning/PROJECT.md",
   ".planning/ROADMAP.md"
 ]);
+
+requireIncludes(
+  "docs/ai-development-workflow.md",
+  docs.get("docs/ai-development-workflow.md"),
+  ["Claude Opus", "Codex", "npm run ai:implement", "$gsd-execute-phase"]
+);
 
 console.log("Documentation alignment check passed.");

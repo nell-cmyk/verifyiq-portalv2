@@ -1,4 +1,8 @@
-import { expect, test } from "@playwright/test";
+import { test } from "@playwright/test";
+import {
+  expectAuthenticatedApplicationsPage,
+  expectSignInHidden
+} from "../support/authenticated-app.js";
 import { collectPageErrors } from "../support/page-errors.js";
 
 test("authenticated storage state reaches the application", async ({
@@ -8,14 +12,8 @@ test("authenticated storage state reaches the application", async ({
 
   await page.goto("/");
 
-  await expect(page).toHaveTitle(/VerifyIQ/i);
-  await expect(
-    page.getByRole("heading", { name: /sign in to verifyiq/i })
-  ).toBeHidden({ timeout: 15_000 });
-  await expect(page.locator('input[type="password"]')).toBeHidden();
-  await expect(page.locator("body")).toContainText(
-    /verifyiq|case|document|dashboard|review/i
-  );
+  await expectSignInHidden(page);
+  await expectAuthenticatedApplicationsPage(page);
 
   await pageErrors.expectNoErrors(testInfo);
 });

@@ -1,41 +1,44 @@
 import { test as setup } from "@playwright/test";
-import { access, copyFile, mkdir, writeFile } from "node:fs/promises";
-import { dirname, resolve } from "node:path";
+import { mkdir } from "node:fs/promises";
+import { dirname } from "node:path";
+import {
+  authFile,
+  copyStorageStateFile,
+  fileExists,
+  validateStoredAuthState,
+  writeStorageStateJson
+} from "./support/auth-state.js";
 import { requireAuthEnv } from "./support/env.js";
 import { signIn } from "./support/login.js";
 
-const authFile = "playwright/.auth/user.json";
-
-async function fileExists(path: string): Promise<boolean> {
-  try {
-    await access(path);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 setup("authenticate", async ({ page }) => {
-  const forceLogin = process.env.VERIFYIQ_FORCE_LOGIN === "1";
   const storageStateJson = process.env.VERIFYIQ_STORAGE_STATE_JSON;
   const storageStatePath = process.env.VERIFYIQ_STORAGE_STATE_PATH;
+  const forceLogin = process.env.VERIFYIQ_FORCE_LOGIN === "1";
 
   await mkdir(dirname(authFile), { recursive: true });
 
-  if (!forceLogin && (await fileExists(authFile))) {
-    return;
+  const browser = page.context().browser();
+  if (!browser) {
+    throw new Error(
+      "Playwright browser is unavailable for VerifyIQ auth-state validation."
+    );
   }
 
   if (storageStateJson) {
-    JSON.parse(storageStateJson);
-    await writeFile(authFile, storageStateJson);
+    await writeStorageStateJson(storageStateJson);
+    await validateStoredAuthState(browser, "VERIFYIQ_STORAGE_STATE_JSON");
     return;
   }
 
   if (storageStatePath) {
-    if (resolve(storageStatePath) !== resolve(authFile)) {
-      await copyFile(storageStatePath, authFile);
-    }
+    await copyStorageStateFile(storageStatePath);
+    await validateStoredAuthState(browser, "VERIFYIQ_STORAGE_STATE_PATH");
+    return;
+  }
+
+  if (!forceLogin && (await fileExists(authFile))) {
+    await validateStoredAuthState(browser, "playwright/.auth/user.json");
     return;
   }
 
