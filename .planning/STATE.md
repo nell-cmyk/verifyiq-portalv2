@@ -2,10 +2,12 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Completed Phase 02
-stopped_at: Phase 2 implementation and verification complete.
-last_updated: "2026-05-10T09:46:41Z"
-last_activity: 2026-05-10 -- Phase 02 verified complete
+status: Ready to plan Phase 03
+stopped_at: Phase 2 UAT, validation, and security gates complete.
+last_updated: "2026-05-10T10:12:57Z"
+last_activity: >-
+  2026-05-10 -- Phase 02 finished with UAT, validation, and security gates
+  complete
 progress:
   total_phases: 4
   completed_phases: 2
@@ -28,12 +30,12 @@ focus:** Phase 3: Core VerifyIQ Workflow Coverage **Roadmap:**
 
 ## Current Position
 
-Phase: 02 (auth-workflow-hardening) — COMPLETE Plan: 2 of 2 — Verified Last
-activity: 2026-05-10 -- Phase 02 completed by Claude Opus 4.7 first pass and
-Codex review/verification. Authenticated landing helpers, hardened smoke specs,
-CI behavior, and Phase 2 docs alignment are in place. `/applications` is the
-stable authenticated landing route and no secret material was added to planning
-artifacts.
+Phase: 03 (core-verifyiq-workflow-coverage) — READY TO PLAN Plan: not started
+Last activity: 2026-05-10 -- Phase 02 completed by Claude Opus 4.7 first pass
+and Codex review/verification, then closed through UAT, validation, and security
+gates. Authenticated landing helpers, hardened smoke specs, CI behavior, and
+Phase 2 docs alignment are in place. `/applications` is the stable authenticated
+landing route and no secret material was added to planning artifacts.
 
 Progress: [█████░░░░░] 50%
 
@@ -63,9 +65,9 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-- Run the Phase 2 security review gate before advancing to Phase 3.
-- Discuss and plan Phase 3 core VerifyIQ workflow coverage after security review
-  passes.
+- Discuss and plan Phase 3 core VerifyIQ workflow coverage.
+- Keep Phase 3 coverage anchored to committed Playwright tests; use browser
+  helpers only for exploration and debugging.
 
 Phase 2 locked env-first auth-state precedence (`VERIFYIQ_STORAGE_STATE_JSON`,
 then `VERIFYIQ_STORAGE_STATE_PATH`, then local `playwright/.auth/user.json`,
@@ -74,8 +76,9 @@ then credential login) with fresh-context validation of every reused state.
 
 ### Blockers/Concerns
 
-- Authenticated coverage cannot be fully verified by password-only automation
-  because the sandbox login is gated by reCAPTCHA.
+- Authenticated coverage still depends on valid storage state because the
+  sandbox login is gated by reCAPTCHA. Use `npm run auth:record`,
+  `VERIFYIQ_STORAGE_STATE_JSON`, or `VERIFYIQ_STORAGE_STATE_PATH`.
 
 ## Deferred Items
 
@@ -85,6 +88,6 @@ then credential login) with fresh-context validation of every reused state.
 
 ## Session Continuity
 
-Last session: 2026-05-10T09:46:41Z Stopped at: Phase 2 implementation and
-verification complete. Resume file:
-.planning/phases/02-auth-workflow-hardening/02-02-SUMMARY.md
+Last session: 2026-05-10T10:12:57Z Stopped at: Phase 2 complete after UAT,
+validation, and security gates. Ready to discuss and plan Phase 3. Resume file:
+None
