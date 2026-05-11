@@ -3,10 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Unified Portal Automation Runner
 status: planning
-last_updated: "2026-05-11T10:52:48.819Z"
-last_activity: 2026-05-11
+last_updated: "2026-05-11T23:51:23.580Z"
 progress:
-  total_phases: 0
+  total_phases: 5
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -23,14 +22,14 @@ See: [.planning/PROJECT.md](PROJECT.md) (updated 2026-05-11)
 browser automation without committing secrets, while using an explicit manual
 storage-state path when reCAPTCHA blocks credential-only login.
 
-**Current focus:** Defining v1.1 Unified Portal Automation Runner requirements
+**Current focus:** Reviewing v1.1 Unified Portal Automation Runner roadmap
 **Roadmap:** [.planning/ROADMAP.md](ROADMAP.md) **Milestone archive:**
 [.planning/milestones/](milestones/)
 
 ## Current Position
 
-Phase: Not started (defining requirements) Plan: — Status: Defining requirements
-Last activity: 2026-05-11 — Milestone v1.1 started
+Phase: Phase 5 next (roadmap drafted) Plan: — Status: Roadmap drafted for
+approval Last activity: 2026-05-11 — Milestone v1.1 roadmap drafted
 
 ## Accumulated Context
 
@@ -49,9 +48,6 @@ Recent decisions affecting current work:
 - Keep `agent-browser` as optional agent-side inspection tooling, not a
   dependency or source of truth.
 
-- Defer hosted browser/AI-agent runtime dependencies until deterministic
-  Playwright coverage is insufficient.
-
 - Use Claude Opus 4.7 as first-pass implementer through `npm run ai:implement`;
   Codex remains reviewer/test runner and takes over when Claude hits capacity
   limits.
@@ -64,14 +60,18 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-- Define v1.1 requirements and roadmap with `$gsd-new-milestone`.
+- Approve the v1.1 roadmap created by `$gsd-new-milestone`.
 - Refresh local or CI auth state before relying on authenticated/full regression
   coverage.
 
 - Keep Phase 3 coverage anchored to committed Playwright tests; use browser
   helpers only for exploration and debugging.
+
 - Build toward one operator runner for selected or full portal automation,
   backed by committed Playwright tests.
+
+- Ensure mutating workflow coverage updates or deletes only records created by
+  the same automation run.
 
 Phase 2 locked env-first auth-state precedence (`VERIFYIQ_STORAGE_STATE_JSON`,
 then `VERIFYIQ_STORAGE_STATE_PATH`, then local `playwright/.auth/user.json`,
@@ -86,14 +86,12 @@ then credential login) with fresh-context validation of every reused state.
 
 ## Deferred Items
 
-| Category      | Item                             | Status                                             | Deferred At |
-| ------------- | -------------------------------- | -------------------------------------------------- | ----------- |
-| Browser infra | Browserbase/Stagehand dependency | Deferred until local/CI Playwright is insufficient | Phase 1     |
+None currently tracked for v1.1.
 
 ## Session Continuity
 
-Last session: 2026-05-11T08:14:46Z Resume file: None
+Last session: 2026-05-11T23:51:23.577Z
 
 ## Operator Next Steps
 
-- Finish v1.1 requirements and roadmap with `$gsd-new-milestone`.
+- Approve the v1.1 roadmap, then start Phase 5.
