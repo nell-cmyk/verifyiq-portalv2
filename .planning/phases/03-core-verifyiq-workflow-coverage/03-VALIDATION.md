@@ -1,10 +1,11 @@
 ---
 phase: 03
 slug: core-verifyiq-workflow-coverage
-status: draft
+status: verified
 nyquist_compliant: true
 wave_0_complete: true
 created: 2026-05-10
+verified: 2026-05-11
 ---
 
 # Phase 03 - Validation Strategy
@@ -34,13 +35,13 @@ Per-phase validation contract for feedback sampling during execution.
 
 ## Per-Task Verification Map
 
-| Task ID  | Plan | Wave | Requirement | Threat Ref | Secure Behavior                                                                                      | Test Type   | Automated Command                           | File Exists | Status  |
-| -------- | ---- | ---- | ----------- | ---------- | ---------------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------- | ----------- | ------- |
-| 03-01-01 | 01   | 1    | AUTO-05     | T-03-01    | Synthetic fixtures only; no credentials, auth state, personal data, or real financial data committed | static/e2e  | `npm run check` and `npm run test:e2e:auth` | W0 complete | pending |
-| 03-01-02 | 01   | 1    | AUTO-05     | T-03-02    | Add Application helpers attach diagnostics without printing secrets or storage state                 | e2e         | `npm run test:e2e:auth`                     | W0 complete | pending |
-| 03-01-03 | 01   | 1    | AUTO-05     | T-03-03    | UI submission uses generated `AUTOMATION` data and valid storage state only                          | e2e         | `npm run test:e2e:auth`                     | W0 complete | pending |
-| 03-02-01 | 02   | 2    | AUTO-05     | T-03-04    | Matrix coverage remains bounded to stable visible options and avoids hidden/account-specific paths   | e2e         | `npm run test:e2e:auth`                     | W0 complete | pending |
-| 03-02-02 | 02   | 2    | AUTO-05     | T-03-05    | Docs warn about durable sandbox records and best-effort cleanup without exposing secrets             | static/docs | `npm run check`                             | W0 complete | pending |
+| Task ID  | Plan | Wave | Requirement | Threat Ref | Secure Behavior                                                                                      | Test Type   | Automated Command                           | File Exists | Status |
+| -------- | ---- | ---- | ----------- | ---------- | ---------------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------- | ----------- | ------ |
+| 03-01-01 | 01   | 1    | AUTO-05     | T-03-01    | Synthetic fixtures only; no credentials, auth state, personal data, or real financial data committed | static/e2e  | `npm run check` and `npm run test:e2e:auth` | W0 complete | passed |
+| 03-01-02 | 01   | 1    | AUTO-05     | T-03-02    | Add Application helpers attach diagnostics without printing secrets or storage state                 | e2e         | `npm run test:e2e:auth`                     | W0 complete | passed |
+| 03-01-03 | 01   | 1    | AUTO-05     | T-03-03    | UI submission uses generated `AUTOMATION` data and valid storage state only                          | e2e         | `npm run test:e2e:auth`                     | W0 complete | passed |
+| 03-02-01 | 02   | 2    | AUTO-05     | T-03-04    | Matrix coverage remains bounded to stable visible options and avoids hidden/account-specific paths   | e2e         | `npm run test:e2e:auth`                     | W0 complete | passed |
+| 03-02-02 | 02   | 2    | AUTO-05     | T-03-05    | Docs warn about durable sandbox records and best-effort cleanup without exposing secrets             | static/docs | `npm run check`                             | W0 complete | passed |
 
 ## Wave 0 Requirements
 
@@ -71,4 +72,21 @@ All Phase 3 workflow behavior itself should have automated Playwright coverage.
 - [x] Feedback latency target documented.
 - [x] `nyquist_compliant: true` set in frontmatter.
 
-**Approval:** pending plan approval
+## Validation Audit 2026-05-11
+
+| Metric                  | Count |
+| ----------------------- | ----- |
+| Gaps found              | 0     |
+| Resolved                | 0     |
+| Escalated               | 0     |
+| Automated checks passed | 5     |
+
+Audit evidence:
+
+- `npm run check` passed during Phase 3 verification.
+- `npm run test:e2e:auth` passed during Phase 3 verification: 8 passed.
+- `npm run test:e2e:all` passed during Phase 3 verification: 9 passed.
+- `03-VERIFICATION.md` reports 8/8 must-haves verified and 0 human checks
+  required.
+
+**Approval:** verified 2026-05-11
