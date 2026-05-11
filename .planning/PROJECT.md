@@ -13,6 +13,22 @@ VerifyIQ sandbox workflows can be checked through reproducible browser
 automation without committing secrets, while using an explicit manual
 storage-state path when reCAPTCHA blocks credential-only login.
 
+## Current Milestone: v1.1 Unified Portal Automation Runner
+
+**Goal:** Provide one operator runner and structured Playwright entrypoint that
+exercise the currently visible VerifyIQ portal features and make failures
+actionable.
+
+**Target features:**
+
+- One CLI runner for selected or full portal automation.
+- Structured Playwright coverage for visible authenticated portal areas:
+  Applications, Activity, Audit Logs, Users, and Roles.
+- Existing Add Application automation included in the unified runner.
+- The current Add Application required-applicant validation failure hardened
+  with precise locator coverage.
+- Secret-safe summaries, artifacts, and documentation for runner operation.
+
 ## Requirements
 
 ### Validated
@@ -38,7 +54,10 @@ storage-state path when reCAPTCHA blocks credential-only login.
 
 ### Active
 
-- [ ] Define next milestone requirements with `$gsd-new-milestone`.
+- [ ] Define scoped v1.1 runner and portal-feature automation requirements.
+- [ ] Build a unified runner that can execute selected or full portal coverage.
+- [ ] Expand authenticated Playwright coverage across visible portal areas.
+- [ ] Harden the current Add Application required-applicant validation scenario.
 - [ ] Keep documentation aligned after code and instruction changes.
 
 Phase 2 planning locks env-first auth-state precedence
@@ -58,7 +77,8 @@ storage state.
 ## Context
 
 - Current shipped version: v1.0 MVP, shipped 2026-05-11.
-- Current status: awaiting next milestone requirements and roadmap.
+- Current milestone: v1.1 Unified Portal Automation Runner.
+- Current status: defining v1.1 requirements and roadmap.
 - Target app: `https://sandbox.verifyiq-mercury-dev.boost-frontend.app/`.
 - App currently presents a VerifyIQ sign-in screen with Email, Password, and
   Sign in controls.
@@ -81,12 +101,18 @@ storage state.
   `.codex/` are ignored.
 - v1.0 phase history, requirements, audit, and roadmap are archived under
   `.planning/milestones/`.
+- Local failure artifacts show the Add Application required-applicant validation
+  test failed because the locator matched both inline validation and toast
+  notification copies of `Please enter the applicant name.`.
 
 ## Next Milestone Goals
 
-- Reassess VerifyIQ automation coverage after v1.0 baseline usage.
-- Define fresh requirements before adding more authenticated workflows or
-  browser infrastructure.
+- Deliver one runner command for selected or full portal automation.
+- Keep Add Application coverage in the unified runner while broadening to
+  visible authenticated portal areas.
+- Fix and prevent the current strict-locator failure in the required-applicant
+  validation scenario.
+- Preserve secret-safe artifacts and triage behavior.
 - Keep Browserbase/Stagehand deferred unless local/CI Playwright becomes
   insufficient.
 
@@ -104,21 +130,41 @@ storage state.
 
 ## Key Decisions
 
-| Decision                                         | Rationale                                                                                                                                                                                        | Outcome  |
-| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- |
-| TypeScript + Playwright Test                     | Best fit for deterministic browser E2E, tracing, reports, and CI                                                                                                                                 | Complete |
-| Local/CI-first browsers                          | Avoid hosted browser dependency until local tests are insufficient                                                                                                                               | Complete |
-| Storage-state auth fallback                      | reCAPTCHA blocks fully automated credential login                                                                                                                                                | Complete |
-| Custom Playwright auth recorder                  | Keeps auth state compatible with tests while allowing manual CAPTCHA                                                                                                                             | Complete |
-| `agent-browser` as optional helper               | Useful for inspection without becoming test/runtime dependency                                                                                                                                   | Complete |
-| GSD lifecycle with Playwright executable truth   | Separates planning state from runnable verification                                                                                                                                              | Complete |
-| Claude Opus 4.7 implementer with Codex fallback  | Uses Opus 4.7 for planned implementation while preserving Codex verification and continuity under Claude limits                                                                                  | Complete |
-| Documentation alignment gate                     | Prevents instructions and repo behavior drifting apart                                                                                                                                           | Complete |
-| Phase 3 Add Application workflow matrix          | Proves stable visible primary document submissions and validation behavior through committed Playwright tests                                                                                    | Complete |
-| `claude-mem` as sole persistent memory handler   | Provides cross-agent, searchable local memory while avoiding overlapping Codex Memories capture                                                                                                  | Complete |
-| Phase 4 regression operations and triage summary | Lean operator triage summary, storage-state-first auth diagnostics, CI full-regression gating, and README maintenance runbook keep Playwright the source of truth while reducing time-to-failure | Complete |
-| Milestone archival for completed phases          | Moves completed phase execution history out of active roadmap context while preserving all artifacts under `.planning/milestones/`                                                               | Complete |
+| Decision                                         | Rationale                                                                                                                                                                                                          | Outcome  |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- |
+| TypeScript + Playwright Test                     | Best fit for deterministic browser E2E, tracing, reports, and CI                                                                                                                                                   | Complete |
+| Local/CI-first browsers                          | Avoid hosted browser dependency until local tests are insufficient                                                                                                                                                 | Complete |
+| Storage-state auth fallback                      | reCAPTCHA blocks fully automated credential login                                                                                                                                                                  | Complete |
+| Custom Playwright auth recorder                  | Keeps auth state compatible with tests while allowing manual CAPTCHA                                                                                                                                               | Complete |
+| `agent-browser` as optional helper               | Useful for inspection without becoming test/runtime dependency                                                                                                                                                     | Complete |
+| GSD lifecycle with Playwright executable truth   | Separates planning state from runnable verification                                                                                                                                                                | Complete |
+| Claude Opus 4.7 implementer with Codex fallback  | Uses Opus 4.7 for planned implementation while preserving Codex verification and continuity under Claude limits                                                                                                    | Complete |
+| Documentation alignment gate                     | Prevents instructions and repo behavior drifting apart                                                                                                                                                             | Complete |
+| Phase 3 Add Application workflow matrix          | Proves stable visible primary document submissions and validation behavior through committed Playwright tests                                                                                                      | Complete |
+| `claude-mem` as sole persistent memory handler   | Provides cross-agent, searchable local memory while avoiding overlapping Codex Memories capture                                                                                                                    | Complete |
+| Phase 4 regression operations and triage summary | Lean operator triage summary, storage-state-first auth diagnostics, CI full-regression gating, and README maintenance runbook keep Playwright the source of truth while reducing time-to-failure                   | Complete |
+| Milestone archival for completed phases          | Moves completed phase execution history out of active roadmap context while preserving all artifacts under `.planning/milestones/`                                                                                 | Complete |
+| v1.1 unified runner scope                        | The next milestone should provide both a CLI runner and structured Playwright entrypoint for currently visible portal features, starting from the existing Add Application automation and known validation failure | Pending  |
+
+## Evolution
+
+This document evolves at phase transitions and milestone boundaries.
+
+**After each phase transition** (via `$gsd-transition`):
+
+1. Requirements invalidated? Move to Out of Scope with reason.
+2. Requirements validated? Move to Validated with phase reference.
+3. New requirements emerged? Add to Active.
+4. Decisions to log? Add to Key Decisions.
+5. "What This Is" still accurate? Update if drifted.
+
+**After each milestone** (via `$gsd-complete-milestone`):
+
+1. Full review of all sections.
+2. Core Value check: still the right priority?
+3. Audit Out of Scope: reasons still valid?
+4. Update Context with current state.
 
 ---
 
-_Last updated: 2026-05-11 after v1.0 milestone completion._
+_Last updated: 2026-05-11 after starting v1.1 milestone._

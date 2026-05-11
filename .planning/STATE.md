@@ -1,16 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: MVP
-status: Awaiting next milestone
-last_updated: "2026-05-11T09:54:38.814Z"
-last_activity: 2026-05-11 - Milestone v1.0 completed and archived
+milestone: v1.1
+milestone_name: Unified Portal Automation Runner
+status: planning
+last_updated: "2026-05-11T10:52:48.819Z"
+last_activity: 2026-05-11
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 7
-  completed_plans: 7
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -23,21 +23,14 @@ See: [.planning/PROJECT.md](PROJECT.md) (updated 2026-05-11)
 browser automation without committing secrets, while using an explicit manual
 storage-state path when reCAPTCHA blocks credential-only login.
 
-**Current focus:** Planning next milestone **Roadmap:**
-[.planning/ROADMAP.md](ROADMAP.md) **Milestone archive:**
+**Current focus:** Defining v1.1 Unified Portal Automation Runner requirements
+**Roadmap:** [.planning/ROADMAP.md](ROADMAP.md) **Milestone archive:**
 [.planning/milestones/](milestones/)
 
 ## Current Position
 
-Phase: Milestone v1.0 complete Plan: None Status: Awaiting next milestone Last
-activity: 2026-05-11 - Milestone v1.0 completed and archived
-
-Archived:
-
-- [.planning/milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
-- [.planning/milestones/v1.0-REQUIREMENTS.md](milestones/v1.0-REQUIREMENTS.md)
-- [.planning/milestones/v1.0-MILESTONE-AUDIT.md](milestones/v1.0-MILESTONE-AUDIT.md)
-- [.planning/milestones/v1.0-phases/](milestones/v1.0-phases/)
+Phase: Not started (defining requirements) Plan: — Status: Defining requirements
+Last activity: 2026-05-11 — Milestone v1.1 started
 
 ## Accumulated Context
 
@@ -52,25 +45,33 @@ Recent decisions affecting current work:
 - Keep credentials and Playwright auth state out of git.
 - Use `npm run auth:record` for headed manual CAPTCHA login and ignored
   Playwright storage-state creation.
+
 - Keep `agent-browser` as optional agent-side inspection tooling, not a
   dependency or source of truth.
+
 - Defer hosted browser/AI-agent runtime dependencies until deterministic
   Playwright coverage is insufficient.
+
 - Use Claude Opus 4.7 as first-pass implementer through `npm run ai:implement`;
   Codex remains reviewer/test runner and takes over when Claude hits capacity
   limits.
+
 - Use `claude-mem` as the sole persistent local memory handler; Codex Memories
   is disabled for this repository.
+
 - Archive completed phase directories under milestone archives to keep active
   planning context small.
 
 ### Pending Todos
 
-- Define the next milestone requirements and roadmap with `$gsd-new-milestone`.
+- Define v1.1 requirements and roadmap with `$gsd-new-milestone`.
 - Refresh local or CI auth state before relying on authenticated/full regression
   coverage.
+
 - Keep Phase 3 coverage anchored to committed Playwright tests; use browser
   helpers only for exploration and debugging.
+- Build toward one operator runner for selected or full portal automation,
+  backed by committed Playwright tests.
 
 Phase 2 locked env-first auth-state precedence (`VERIFYIQ_STORAGE_STATE_JSON`,
 then `VERIFYIQ_STORAGE_STATE_PATH`, then local `playwright/.auth/user.json`,
@@ -95,4 +96,4 @@ Last session: 2026-05-11T08:14:46Z Resume file: None
 
 ## Operator Next Steps
 
-- Start the next milestone with `$gsd-new-milestone`.
+- Finish v1.1 requirements and roadmap with `$gsd-new-milestone`.
