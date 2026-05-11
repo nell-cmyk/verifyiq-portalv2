@@ -1,40 +1,43 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.0
-milestone_name: milestone
-status: Ready to execute
-last_updated: "2026-05-11T07:37:32.594Z"
+milestone_name: MVP
+status: Awaiting next milestone
+last_updated: "2026-05-11T09:54:38.814Z"
+last_activity: 2026-05-11 - Milestone v1.0 completed and archived
 progress:
   total_phases: 4
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 7
-  completed_plans: 5
-  percent: 71
+  completed_plans: 7
+  percent: 100
 ---
 
 # Project State
 
 ## Project Reference
 
-See: [.planning/PROJECT.md](PROJECT.md) (updated 2026-05-10)
+See: [.planning/PROJECT.md](PROJECT.md) (updated 2026-05-11)
 
 **Core value:** VerifyIQ sandbox workflows can be checked through reproducible
 browser automation without committing secrets, while using an explicit manual
-storage-state path when reCAPTCHA blocks credential-only login. **Current
-focus:** Phase 4: Regression Operations **Roadmap:**
-[.planning/ROADMAP.md](ROADMAP.md)
+storage-state path when reCAPTCHA blocks credential-only login.
+
+**Current focus:** Planning next milestone **Roadmap:**
+[.planning/ROADMAP.md](ROADMAP.md) **Milestone archive:**
+[.planning/milestones/](milestones/)
 
 ## Current Position
 
-Phase: 04 (regression-operations) — READY TO EXECUTE Plan: 04-01 next Last
-activity: 2026-05-11 -- Phase 04 planning complete. Research, validation, and
-pattern-map artifacts were created for regression operations. The executable
-plan set contains two waves: `04-01` adds secret-safe Playwright triage output
-and CI full-regression gating, then `04-02` documents the regression maintenance
-workflow and aligns standing docs. Plan verification covered QUAL-04, QUAL-05,
-DOCS-03, and all 16 Phase 4 decisions.
+Phase: Milestone v1.0 complete Plan: None Status: Awaiting next milestone Last
+activity: 2026-05-11 - Milestone v1.0 completed and archived
 
-Progress: [███████░░░] 71%
+Archived:
+
+- [.planning/milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
+- [.planning/milestones/v1.0-REQUIREMENTS.md](milestones/v1.0-REQUIREMENTS.md)
+- [.planning/milestones/v1.0-MILESTONE-AUDIT.md](milestones/v1.0-MILESTONE-AUDIT.md)
+- [.planning/milestones/v1.0-phases/](milestones/v1.0-phases/)
 
 ## Accumulated Context
 
@@ -49,23 +52,23 @@ Recent decisions affecting current work:
 - Keep credentials and Playwright auth state out of git.
 - Use `npm run auth:record` for headed manual CAPTCHA login and ignored
   Playwright storage-state creation.
-
 - Keep `agent-browser` as optional agent-side inspection tooling, not a
   dependency or source of truth.
-
 - Defer hosted browser/AI-agent runtime dependencies until deterministic
   Playwright coverage is insufficient.
-
 - Use Claude Opus 4.7 as first-pass implementer through `npm run ai:implement`;
   Codex remains reviewer/test runner and takes over when Claude hits capacity
   limits.
-
 - Use `claude-mem` as the sole persistent local memory handler; Codex Memories
   is disabled for this repository.
+- Archive completed phase directories under milestone archives to keep active
+  planning context small.
 
 ### Pending Todos
 
-- Execute Phase 4 regression operations.
+- Define the next milestone requirements and roadmap with `$gsd-new-milestone`.
+- Refresh local or CI auth state before relying on authenticated/full regression
+  coverage.
 - Keep Phase 3 coverage anchored to committed Playwright tests; use browser
   helpers only for exploration and debugging.
 
@@ -88,5 +91,8 @@ then credential login) with fresh-context validation of every reused state.
 
 ## Session Continuity
 
-Last session: 2026-05-11T07:37:32.594Z Resume file:
-.planning/phases/04-regression-operations/04-01-PLAN.md
+Last session: 2026-05-11T08:14:46Z Resume file: None
+
+## Operator Next Steps
+
+- Start the next milestone with `$gsd-new-milestone`.

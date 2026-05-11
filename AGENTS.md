@@ -20,10 +20,11 @@ repository. Human setup starts in [README.md](README.md).
 - GSD owns project lifecycle artifacts under `.planning/`.
 - Read these before significant work:
   - [.planning/PROJECT.md](.planning/PROJECT.md)
-  - [.planning/REQUIREMENTS.md](.planning/REQUIREMENTS.md)
   - [.planning/ROADMAP.md](.planning/ROADMAP.md)
   - [.planning/STATE.md](.planning/STATE.md)
+  - [.planning/MILESTONES.md](.planning/MILESTONES.md)
   - [docs/ai-development-workflow.md](docs/ai-development-workflow.md)
+  - `.planning/REQUIREMENTS.md` when an active milestone has recreated it.
 - For Phase 2 onward, use the AI development workflow: Codex plans, reviews, and
   verifies; Claude Opus 4.7 implements first through `npm run ai:implement`;
   Codex takes over only for Claude usage, quota, rate-limit, or overload
@@ -37,12 +38,27 @@ repository. Human setup starts in [README.md](README.md).
   navigation. Do not add it as a required dependency or use it as CI/runtime
   source of truth unless a future phase explicitly changes that decision.
 
+## Persistent Memory
+
+- `claude-mem` is the single persistent memory handler for this local
+  repository. Do not re-enable Codex Memories unless this migration is
+  intentionally rolled back.
+- Memory is advisory context only. `.planning/`, committed docs, and Playwright
+  tests remain the source of truth.
+- Keep `claude-mem` configured conservatively: low automatic context injection,
+  no terminal-output display, and no secret-bearing prompts or tool output.
+- Verify memory health with `npx claude-mem status`, `codex mcp list`, and
+  repo-scoped rows in `/Users/nellvalenzuela/.Codex-mem/claude-mem.db`.
+
 ## Required Commands
 
 - `npm run check` before completing non-trivial repo changes.
 - `npm run ai:implement` only as the GSD cross-AI implementation wrapper.
 - `npm run test:ai-workflow` after changing AI workflow wrapper behavior.
+- `npm run test:triage` after changing triage formatter behavior.
 - `npm run test:e2e` for public smoke coverage.
+- `npm run test:e2e:triage` after changing Playwright reporting or triage
+  summary behavior.
 - `npm run test:e2e:auth` when `VERIFYIQ_USERNAME` and `VERIFYIQ_PASSWORD` are
   available and CAPTCHA is bypassed, or when storage state is available.
 - `npm run test:e2e:all` for full Playwright coverage.
@@ -55,9 +71,10 @@ repository. Human setup starts in [README.md](README.md).
 After every major repo or instruction change, update affected docs in the same
 phase. At minimum, consider [README.md](README.md),
 [.planning/PROJECT.md](.planning/PROJECT.md),
-[.planning/REQUIREMENTS.md](.planning/REQUIREMENTS.md),
 [.planning/ROADMAP.md](.planning/ROADMAP.md), and
-[.planning/STATE.md](.planning/STATE.md).
+[.planning/STATE.md](.planning/STATE.md). Update active
+`.planning/REQUIREMENTS.md` when present; otherwise update the appropriate
+archived requirements under `.planning/milestones/`.
 
 Docs must be reachable from useful entrypoints. Do not create orphan docs.
 

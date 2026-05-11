@@ -5,9 +5,9 @@ const requiredDocs = [
   "README.md",
   "docs/ai-development-workflow.md",
   ".planning/PROJECT.md",
-  ".planning/REQUIREMENTS.md",
   ".planning/ROADMAP.md",
-  ".planning/STATE.md"
+  ".planning/STATE.md",
+  ".planning/MILESTONES.md"
 ];
 
 async function read(path) {
@@ -38,18 +38,18 @@ requireIncludes("README.md", docs.get("README.md"), [
   "AGENTS.md",
   "docs/ai-development-workflow.md",
   ".planning/PROJECT.md",
-  ".planning/REQUIREMENTS.md",
   ".planning/ROADMAP.md",
-  ".planning/STATE.md"
+  ".planning/STATE.md",
+  ".planning/MILESTONES.md"
 ]);
 
 requireIncludes("AGENTS.md", docs.get("AGENTS.md"), [
   "README.md",
   "docs/ai-development-workflow.md",
   ".planning/PROJECT.md",
-  ".planning/REQUIREMENTS.md",
   ".planning/ROADMAP.md",
-  ".planning/STATE.md"
+  ".planning/STATE.md",
+  ".planning/MILESTONES.md"
 ]);
 
 requireIncludes(".planning/STATE.md", docs.get(".planning/STATE.md"), [

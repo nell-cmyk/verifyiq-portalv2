@@ -18,7 +18,11 @@ export default defineConfig({
         ["html", { open: "never" }],
         ["json", { outputFile: "test-results/results.json" }]
       ]
-    : [["list"], ["html", { open: "never" }]],
+    : [
+        ["list"],
+        ["html", { open: "never" }],
+        ["json", { outputFile: "test-results/results.json" }]
+      ],
   timeout: 30_000,
   outputDir: "test-results/artifacts",
   use: {

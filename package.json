@@ -8,7 +8,7 @@
     "node": ">=24"
   },
   "scripts": {
-    "check": "npm run lint && npm run typecheck && npm run docs:check",
+    "check": "npm run lint && npm run typecheck && npm run test:triage && npm run docs:check",
     "ai:implement": "node scripts/ai-implement.mjs",
     "auth:record": "node scripts/record-auth.mjs",
     "docs:check": "node scripts/check-docs.mjs",
@@ -19,6 +19,8 @@
     "test:e2e": "playwright test --project=public-smoke",
     "test:e2e:auth": "playwright test --project=authenticated-chromium",
     "test:e2e:all": "playwright test",
+    "test:e2e:triage": "node scripts/summarize-playwright-results.mjs",
+    "test:triage": "node --test scripts/summarize-playwright-results.test.mjs",
     "test:ai-workflow": "node --test scripts/ai-implement.test.mjs",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:report": "playwright show-report",

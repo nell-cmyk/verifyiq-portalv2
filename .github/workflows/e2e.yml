@@ -44,9 +44,21 @@ jobs:
       - name: Public smoke tests
         run: npm run test:e2e
 
-      - name: Authenticated tests (storage state)
+      - name: Full Playwright regression (storage state)
         if: ${{ env.VERIFYIQ_STORAGE_STATE_JSON != '' }}
-        run: npm run test:e2e:auth
+        run: npm run test:e2e:all
+
+      - name: Full Playwright regression skipped
+        if: ${{ env.VERIFYIQ_STORAGE_STATE_JSON == '' }}
+        run: |
+          mkdir -p test-results
+          cat > test-results/auth-regression-skip.md <<'EOF'
+          Authenticated/full regression skipped because VERIFYIQ_STORAGE_STATE_JSON is not configured.
+          EOF
+
+      - name: Generate Playwright triage summary
+        if: always()
+        run: npm run test:e2e:triage
 
       - name: Upload Playwright report
         if: always()

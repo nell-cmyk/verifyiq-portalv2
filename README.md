@@ -91,7 +91,8 @@ data.
 
 ## Commands
 
-- `npm run check` — lint, typecheck, and documentation alignment check.
+- `npm run check` — lint, typecheck, triage formatter tests, and documentation
+  alignment check.
 - `npm run ai:implement` — Claude Opus 4.7 first-pass implementation wrapper
   with Codex fallback for GSD cross-AI execution.
 - `npm run test:e2e` — public smoke tests.
@@ -106,6 +107,74 @@ data.
 - `npm run test:e2e:headed` — headed Playwright run.
 - `npm run test:e2e:ui` — Playwright UI mode.
 - `npm run test:e2e:report` — open latest HTML report.
+- `npm run test:triage` — Node unit tests covering the triage formatter.
+- `npm run test:e2e:triage` — generate the Playwright triage summary from
+  `test-results/results.json`.
+
+## Regression Maintenance
+
+Phase 4 adds operator workflows for keeping the Playwright regression suite
+healthy without inflating cheap developer hooks. Phase 4 runbook content lives
+here; `docs/ai-development-workflow.md` stays focused on AI execution roles.
+
+### Triage Artifacts
+
+- `test-results/triage-summary.md` is the lean operator summary. It points back
+  to native artifacts and classifies auth/setup conditions, failed application
+  tests, retry/flaky results, and skipped tests.
+- Native Playwright HTML, JSON, screenshots, traces, videos, and `page-errors`
+  remain the authoritative debugging artifacts.
+- Run `npm run test:e2e:triage` to generate the summary from
+  `test-results/results.json`.
+
+### Auth And Setup Failures
+
+- Treat `Auth/Setup State` findings as storage-state problems first. The
+  Playwright setup project validates stored state in a fresh browser context, so
+  setup failures usually mean expired, malformed, or unauthenticated storage
+  state rather than a VerifyIQ app regression.
+- Refresh local auth with `npm run auth:record`. The recorder reads local env
+  values, waits for manual reCAPTCHA/sign-in, and saves ignored
+  `playwright/.auth/user.json`.
+- Refresh CI by updating `VERIFYIQ_STORAGE_STATE_JSON` or
+  `VERIFYIQ_STORAGE_STATE_PATH`. Diagnostics name the variable and recovery
+  command without printing values.
+- Do not print credentials, cookies, tokens, or serialized storage state in
+  terminals, docs, screenshots, attachments, or commits.
+
+### Command Tiers
+
+- Pre-commit runs `npx lint-staged`.
+- The pre-push hook remains scoped to `npm run check` and `npm run test:e2e` so
+  cheap hooks stay cheap and do not depend on authenticated storage state.
+- Before pushing when valid auth state is available, run `npm run test:e2e:all`
+  to exercise the full Playwright regression locally. This is an operator
+  expectation, not a hook gate.
+- CI runs full Playwright regression (`npm run test:e2e:all`) when
+  `VERIFYIQ_STORAGE_STATE_JSON` is configured.
+- CI writes an explicit authenticated/full-regression skip note under
+  `test-results/auth-regression-skip.md` when the storage-state secret is
+  absent, so forks and unauthenticated environments stay green.
+
+### Test And Fixture Updates
+
+- Use role, label, heading, button, and visible text locators before test ids.
+  Stable user-visible locators reflect how operators read the UI and survive
+  cosmetic markup changes.
+- Use test ids only when visible locators are ambiguous or unavailable.
+- Keep fixtures synthetic and free of real personal, financial, credential,
+  cookie, token, or storage-state data. Synthetic upload fixtures live under
+  `tests/fixtures/`.
+
+### Sandbox Data Maintenance
+
+- Generated records use `AUTOMATION` names plus a document-type label and
+  timestamp so they are easy to identify in the sandbox UI.
+- Cleanup must use visible UI controls only.
+- Do not add hidden cleanup API calls. Hidden cleanup couples tests to internal
+  endpoints and risks broad deletion.
+- If safe visible cleanup controls are unavailable, document accumulation and
+  keep generated names identifiable so operators can prune manually.
 
 ## Project Documents
 
@@ -113,9 +182,12 @@ data.
 - [docs/ai-development-workflow.md](docs/ai-development-workflow.md) — Claude
   Opus implementer and Codex reviewer/test-runner workflow.
 - [.planning/PROJECT.md](.planning/PROJECT.md) — project context and decisions.
-- [.planning/REQUIREMENTS.md](.planning/REQUIREMENTS.md) — checkable scope.
 - [.planning/ROADMAP.md](.planning/ROADMAP.md) — phase plan.
 - [.planning/STATE.md](.planning/STATE.md) — current project state.
+- [.planning/MILESTONES.md](.planning/MILESTONES.md) — shipped milestone index.
+- [.planning/milestones/v1.0-REQUIREMENTS.md](.planning/milestones/v1.0-REQUIREMENTS.md)
+  — archived v1.0 scope. A fresh `.planning/REQUIREMENTS.md` is created by
+  `$gsd-new-milestone` for the next active milestone.
 
 When repo behavior or standing instructions change, update affected documents in
 the same change. `npm run docs:check` verifies required document links.
@@ -123,20 +195,31 @@ the same change. `npm run docs:check` verifies required document links.
 ## CI
 
 GitHub Actions runs static checks (`npm run check`) and public smoke tests
-(`npm run test:e2e`) unconditionally on pushes and pull requests. Authenticated
-tests (`npm run test:e2e:auth`) run only when the `VERIFYIQ_STORAGE_STATE_JSON`
-repository secret is present, so forks and environments without a sandbox auth
-secret skip the authenticated step instead of failing it. When the secret is
-provided but the storage state is malformed, expired, or no longer reaches the
-authenticated app, the Playwright setup project fails the authenticated step
-with recovery guidance rather than letting later tests fail vaguely. Playwright
-reports and test artifacts upload on every run.
+(`npm run test:e2e`) unconditionally on pushes and pull requests. Full
+Playwright regression (`npm run test:e2e:all`) runs only when the
+`VERIFYIQ_STORAGE_STATE_JSON` repository secret is present, so forks and
+environments without sandbox auth state write an explicit
+`test-results/auth-regression-skip.md` note instead of failing. When the secret
+is provided but the storage state is malformed, expired, or no longer reaches
+the authenticated app, the Playwright setup project fails with recovery guidance
+rather than letting later tests fail vaguely. Playwright reports, test results,
+and the generated triage summary upload on every run.
 
 ## Tooling
 
 GSD tracks lifecycle and phase state in `.planning/`. Playwright is the
 automation runtime and source of truth. Playwright MCP, Codex Browser, and
 `agent-browser` are exploration/debugging helpers.
+
+`claude-mem` is the local persistent memory handler for agent continuity in this
+repository. Codex Memories is disabled here so only one memory system is active.
+Memory remains advisory; committed docs, `.planning/`, and Playwright tests are
+authoritative. Verify local memory wiring with:
+
+```bash
+npx claude-mem status
+codex mcp list
+```
 
 Phase implementation uses the documented
 [AI development workflow](docs/ai-development-workflow.md): Codex plans and

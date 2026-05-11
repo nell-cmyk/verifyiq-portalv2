@@ -11,6 +11,7 @@ the automatic fallback when Claude runs out of usable capacity.
 - Claude Opus 4.7 owns first-pass implementation for planned phase work.
 - Playwright remains the executable source of truth for browser automation.
 - GSD owns lifecycle state in `.planning/`.
+- `claude-mem` owns persistent cross-session memory for this local repository.
 
 Codex must not treat a Claude success message as proof. Codex verifies the
 working tree, reviews the diff, and runs the required commands before marking
@@ -35,6 +36,24 @@ codex --version
 Local VerifyIQ credentials and Playwright auth state must stay ignored. Claude
 Code is configured to deny reads of local environment files and Playwright auth
 state. Do not pass secrets in prompts or command output.
+
+## Persistent Memory
+
+This repository uses `claude-mem` as the sole persistent memory handler. Codex
+Memories is disabled in the repo config to prevent overlapping memory systems.
+`claude-mem` is local-only advisory context; it does not replace `.planning/`,
+docs, source files, or Playwright tests.
+
+Keep memory capture secret-safe:
+
+```bash
+npx claude-mem status
+codex mcp list
+```
+
+The expected local data root is `/Users/nellvalenzuela/.Codex-mem`. The worker
+must not capture `.env`, `playwright/.auth/`, cookies, tokens, serialized
+storage state, or secret-bearing terminal output.
 
 ## Phase Flow
 
