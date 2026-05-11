@@ -14,11 +14,11 @@ traces. The runner should translate friendly targets such as `all`,
 commands, preserve native output and exit codes, then reuse the existing triage
 formatter.
 
-"All portal features" should be scoped carefully. For v1.1, the defensible
-coverage is existing Add Application workflow automation plus stable
-authenticated navigation/landmark coverage for visible portal areas. Deeper
-mutating workflows for Users, Roles, Activity, or Audit Logs should wait until
-safe actions, expected outcomes, and visible cleanup boundaries are known.
+"All portal features" should be scoped with data safety rather than deferred.
+For v1.1, coverage includes existing Add Application workflow automation,
+authenticated portal-area coverage, and deep mutating workflows for Activity,
+Audit Logs, Users, and Roles where tests create automation-owned records first
+and update/delete only those records.
 
 The known failed scenario is a locator design issue, not an app regression: the
 validation message appears both inline and in a toast, so a broad `getByText`
@@ -51,6 +51,8 @@ the existing triage formatter.
 - Selected and full targets — operators need focused and full runs.
 - Existing Add Application included — current automation remains valuable.
 - Portal navigation coverage — Applications, Activity, Audit Logs, Users, Roles.
+- Safe mutating workflows — Activity, Audit Logs, Users, and Roles update/delete
+  only automation-created records.
 - Auth-state preflight — authenticated coverage must fail fast with recovery
   guidance.
 - Secret-safe triage — preserve current artifact policy.
@@ -61,15 +63,6 @@ the existing triage formatter.
 - Failure classification — known strict locator failure should be easy to
   diagnose.
 - Page inventory attachments — helpful when broadening coverage.
-
-**Defer (v2+):**
-
-- Hosted browser/Stagehand dependencies — still deferred until local/CI
-  Playwright is insufficient.
-- Deep mutation workflows outside Applications — add later when safety and
-  cleanup are clear.
-- Cross-browser authenticated matrix — add if Chromium coverage proves
-  insufficient.
 
 ### Architecture Approach
 
@@ -82,8 +75,8 @@ Playwright specs and support helpers.
 
 1. Runner script — maps user-friendly targets to Playwright commands.
 2. Playwright projects — public, setup, and authenticated execution boundaries.
-3. Portal specs — committed coverage for Add Application and visible portal
-   pages.
+3. Portal specs — committed coverage for Add Application, portal pages, and safe
+   mutating workflows.
 4. Support helpers — shared auth, navigation, page assertions, and diagnostics.
 5. Triage formatter — post-run summary.
 
@@ -93,12 +86,12 @@ Playwright specs and support helpers.
    regions, roles, labels, or stable test ids.
 2. **Runner hides auth-state failures** — preserve setup project behavior and
    triage output.
-3. **"All portal features" overclaims coverage** — distinguish visible smoke
-   from deep workflow automation.
+3. **Mutating pre-existing portal data** — create automation-owned records and
+   update/delete only those records.
 4. **Runner becomes a parallel test framework** — keep browser behavior in
    Playwright specs.
-5. **Sandbox data pollution** — avoid new mutating coverage without safe visible
-   cleanup.
+5. **Sandbox data pollution** — keep generated records identifiable and avoid
+   touching pre-existing records.
 
 ## Implications for Roadmap
 
@@ -112,14 +105,14 @@ scoped validation locator fix, triage integration. **Addresses:** Unified
 runner, Add Application failure, auth/setup preservation. **Avoids:** Runner as
 parallel framework; broad locator strictness failure.
 
-### Phase 6: Visible Portal Feature Coverage
+### Phase 6: Portal Feature Coverage
 
-**Rationale:** Once runner exists, broaden the suite to current visible
-authenticated portal areas without unsafe mutations. **Delivers:** Portal
-navigation/landmark Playwright coverage for Applications, Activity, Audit Logs,
-Users, and Roles; support helpers as needed. **Uses:** Existing authenticated
-project and page-error checks. **Implements:** Portal feature specs and runner
-feature-area targets.
+**Rationale:** Once runner exists, broaden the suite to authenticated portal
+areas and prove safe workflow behavior. **Delivers:** Portal navigation/landmark
+Playwright coverage and safe mutating workflows for Applications, Activity,
+Audit Logs, Users, and Roles; support helpers as needed. **Uses:** Existing
+authenticated project, page-error checks, and automation-owned record safety.
+**Implements:** Portal feature specs and runner feature-area targets.
 
 ### Phase 7: Runner Documentation and Regression Operations
 
@@ -140,8 +133,8 @@ docs and triage artifacts.
 
 Phases likely needing deeper research during planning:
 
-- **Phase 6:** May need live sandbox exploration to identify stable landmarks
-  for Activity, Audit Logs, Users, and Roles.
+- **Phase 6:** Needs live sandbox exploration to identify stable landmarks and
+  safe create/update/delete paths for Activity, Audit Logs, Users, and Roles.
 
 Phases with standard patterns:
 
@@ -163,10 +156,10 @@ Phases with standard patterns:
 
 ### Gaps to Address
 
-- Stable landmarks for Activity, Audit Logs, Users, and Roles need confirmation
-  during implementation with valid auth state.
-- "All portal features" must be requirement-scoped as visible page coverage
-  unless the user explicitly approves deeper, safe workflows.
+- Stable landmarks and safe mutating paths for Activity, Audit Logs, Users, and
+  Roles need confirmation during implementation with valid auth state.
+- Mutating workflows must only update/delete records created by the same
+  automation run.
 - Runner target names and flags need final requirement approval before
   implementation.
 

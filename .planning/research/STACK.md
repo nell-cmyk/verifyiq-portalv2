@@ -49,11 +49,10 @@ npx playwright install chromium
 
 ## What NOT to Use
 
-| Avoid                                      | Why                                                                                                | Use Instead                                                 |
-| ------------------------------------------ | -------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| Browserbase/Stagehand as runner dependency | v1.0 explicitly deferred hosted/AI browser dependencies until local/CI Playwright is insufficient. | Local/CI Playwright.                                        |
-| Shell-only runner logic                    | Harder to test and less portable across CI/local environments.                                     | Node CLI wrapper that spawns Playwright.                    |
-| Hidden cleanup/API calls                   | Could delete broad sandbox state and couples tests to private endpoints.                           | Visible UI actions only and identifiable `AUTOMATION` data. |
+| Avoid                    | Why                                                                      | Use Instead                                                 |
+| ------------------------ | ------------------------------------------------------------------------ | ----------------------------------------------------------- |
+| Shell-only runner logic  | Harder to test and less portable across CI/local environments.           | Node CLI wrapper that spawns Playwright.                    |
+| Hidden cleanup/API calls | Could delete broad sandbox state and couples tests to private endpoints. | Visible UI actions only and identifiable `AUTOMATION` data. |
 
 ## Stack Patterns by Variant
 

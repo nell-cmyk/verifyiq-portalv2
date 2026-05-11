@@ -7,32 +7,33 @@
 
 ### Table Stakes (Users Expect These)
 
-| Feature                                    | Why Expected                                                                                                         | Complexity | Notes                                                                           |
-| ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------- |
-| Single operator command                    | User asked for one runner for all portal automation.                                                                 | MEDIUM     | Should live in `package.json` and call a Node runner.                           |
-| Selected vs full execution                 | Operators need quick focused runs and full regression runs.                                                          | MEDIUM     | Map runner flags to Playwright project/file/tag filters.                        |
-| Existing Add Application coverage included | Current valuable coverage must not be bypassed.                                                                      | LOW        | Preserve document matrix and validation test.                                   |
-| Visible portal navigation smoke            | "All portal features" currently means visible authenticated areas: Applications, Activity, Audit Logs, Users, Roles. | MEDIUM     | Start with stable page landmarks, not destructive mutations.                    |
-| Auth-state preflight                       | Full portal runner depends on authenticated access.                                                                  | LOW        | Reuse setup project and current storage-state precedence.                       |
-| Failure triage summary                     | A single failed scenario should identify cause and recovery path.                                                    | MEDIUM     | Reuse `scripts/summarize-playwright-results.mjs`; add runner context if needed. |
-| Secret-safe artifacts                      | Public repo must never expose credentials, cookies, tokens, or storage state.                                        | MEDIUM     | Preserve existing secret-handling rules.                                        |
+| Feature                                    | Why Expected                                                                                                  | Complexity | Notes                                                                             |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------- |
+| Single operator command                    | User asked for one runner for all portal automation.                                                          | MEDIUM     | Should live in `package.json` and call a Node runner.                             |
+| Selected vs full execution                 | Operators need quick focused runs and full regression runs.                                                   | MEDIUM     | Map runner flags to Playwright project/file/tag filters.                          |
+| Existing Add Application coverage included | Current valuable coverage must not be bypassed.                                                               | LOW        | Preserve document matrix and validation test.                                     |
+| Portal feature coverage                    | "All portal features" covers Applications, Activity, Audit Logs, Users, and Roles through visible UI actions. | HIGH       | Include safe CRUD where available; update/delete only automation-created records. |
+| Auth-state preflight                       | Full portal runner depends on authenticated access.                                                           | LOW        | Reuse setup project and current storage-state precedence.                         |
+| Failure triage summary                     | A single failed scenario should identify cause and recovery path.                                             | MEDIUM     | Reuse `scripts/summarize-playwright-results.mjs`; add runner context if needed.   |
+| Secret-safe artifacts                      | Public repo must never expose credentials, cookies, tokens, or storage state.                                 | MEDIUM     | Preserve existing secret-handling rules.                                          |
 
 ### Differentiators (Competitive Advantage)
 
-| Feature                          | Value Proposition                                                     | Complexity | Notes                                                                        |
-| -------------------------------- | --------------------------------------------------------------------- | ---------- | ---------------------------------------------------------------------------- |
-| Feature-area runner aliases      | Faster operator workflow than memorizing Playwright filters.          | MEDIUM     | Examples: `applications`, `activity`, `audit-logs`, `users`, `roles`, `all`. |
-| Failure classification           | Turns strict locator/auth/setup failures into actionable summaries.   | MEDIUM     | Current strict-mode validation failure is a concrete first case.             |
-| Portal inventory attachment      | Helps broaden coverage safely without guessing selectors.             | MEDIUM     | Existing form inventory attachment pattern can generalize to page inventory. |
-| Documentation with command tiers | Reduces misuse of full authenticated runs when auth state is missing. | LOW        | Extend README command table/runbook.                                         |
+| Feature                          | Value Proposition                                                     | Complexity | Notes                                                                                             |
+| -------------------------------- | --------------------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------- |
+| Feature-area runner aliases      | Faster operator workflow than memorizing Playwright filters.          | MEDIUM     | Examples: `applications`, `activity`, `audit-logs`, `users`, `roles`, `all`.                      |
+| Failure classification           | Turns strict locator/auth/setup failures into actionable summaries.   | MEDIUM     | Current strict-mode validation failure is a concrete first case.                                  |
+| Portal inventory attachment      | Helps broaden coverage safely without guessing selectors.             | MEDIUM     | Existing form inventory attachment pattern can generalize to page inventory.                      |
+| Documentation with command tiers | Reduces misuse of full authenticated runs when auth state is missing. | LOW        | Extend README command table/runbook.                                                              |
+| Automation-owned CRUD safety     | Enables deeper workflows without touching existing sandbox records.   | HIGH       | Created records must use identifiable `AUTOMATION` names and be the only records updated/deleted. |
 
 ### Anti-Features (Commonly Requested, Often Problematic)
 
-| Feature                                             | Why Requested                              | Why Problematic                                                               | Alternative                                                                    |
-| --------------------------------------------------- | ------------------------------------------ | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| Fully autonomous credential login through reCAPTCHA | Appears to make the runner self-contained. | reCAPTCHA is explicitly manual/gated; bypass attempts are brittle and unsafe. | Storage-state recorder and setup validation.                                   |
-| "All features" as destructive CRUD everywhere       | Sounds comprehensive.                      | Can pollute or damage sandbox data and creates cleanup requirements.          | Start with navigation/landmark coverage and add safe workflows phase by phase. |
-| Runner replacing Playwright commands                | Simplifies the mental model.               | Hides the source of truth and makes debugging harder.                         | Runner wraps Playwright and prints underlying commands/artifacts.              |
+| Feature                                             | Why Requested                              | Why Problematic                                                               | Alternative                                                                          |
+| --------------------------------------------------- | ------------------------------------------ | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Fully autonomous credential login through reCAPTCHA | Appears to make the runner self-contained. | reCAPTCHA is explicitly manual/gated; bypass attempts are brittle and unsafe. | Storage-state recorder and setup validation.                                         |
+| "All features" as destructive CRUD everywhere       | Sounds comprehensive.                      | Can pollute or damage sandbox data and creates cleanup requirements.          | Use automation-owned records and update/delete only records created by the same run. |
+| Runner replacing Playwright commands                | Simplifies the mental model.               | Hides the source of truth and makes debugging harder.                         | Runner wraps Playwright and prints underlying commands/artifacts.                    |
 
 ## Feature Dependencies
 
@@ -45,6 +46,7 @@ Unified runner
 Portal feature coverage
     requires -> Auth-state preflight
     requires -> Stable visible landmarks per portal area
+    requires -> Automation-owned record safety for mutating actions
     includes -> Add Application matrix and validation coverage
 
 Failure hardening
@@ -71,6 +73,8 @@ Failure hardening
 - [ ] Add Application validation failure fixed with a scoped locator.
 - [ ] Authenticated smoke for visible portal navigation: Applications, Activity,
       Audit Logs, Users, Roles.
+- [ ] Deep safe workflows for Activity, Audit Logs, Users, and Roles using
+      automation-owned records for update/delete actions.
 - [ ] Runner invokes or documents triage generation after Playwright JSON
       output.
 - [ ] README and planning docs describe runner usage, prerequisites, and
@@ -78,18 +82,8 @@ Failure hardening
 
 ### Add After Validation (v1.x)
 
-- [ ] Deeper safe workflows for each portal area once stable controls are
-      understood.
 - [ ] Optional tag taxonomy if file/project filters become too coarse.
 - [ ] Better cleanup support if visible cleanup controls exist.
-
-### Future Consideration (v2+)
-
-- [ ] Hosted browser execution if local/CI Playwright becomes insufficient.
-- [ ] AI-assisted browser exploration as an opt-in discovery layer, still not
-      the source of truth.
-- [ ] Cross-browser authenticated coverage if Chromium-only coverage misses
-      browser-specific regressions.
 
 ## Feature Prioritization Matrix
 
@@ -99,8 +93,7 @@ Failure hardening
 | Add Application failure hardening        | HIGH       | LOW                 | P1       |
 | Visible portal navigation coverage       | HIGH       | MEDIUM              | P1       |
 | Runner triage integration                | HIGH       | MEDIUM              | P1       |
-| Deep CRUD workflows outside Applications | MEDIUM     | HIGH                | P2       |
-| Hosted browser integrations              | LOW        | HIGH                | P3       |
+| Deep CRUD workflows outside Applications | HIGH       | HIGH                | P1       |
 
 ## Competitor Feature Analysis
 

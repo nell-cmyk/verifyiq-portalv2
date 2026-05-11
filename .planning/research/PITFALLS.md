@@ -43,22 +43,22 @@ output only says "portal failed."
 
 ---
 
-### Pitfall 3: "All Portal Features" Overclaims Coverage
+### Pitfall 3: Mutating Pre-Existing Portal Data
 
-**What goes wrong:** Navigation/landmark smoke is presented as full workflow
-automation for Activity, Audit Logs, Users, and Roles.
+**What goes wrong:** CRUD automation updates or deletes records that were not
+created by the same automation run.
 
-**Why it happens:** Visible portal areas are easy to navigate, but safe workflow
-mutations may require more product understanding and cleanup controls.
+**Why it happens:** Deep portal workflows need realistic data, and broad
+selectors can accidentally target the first existing row.
 
-**How to avoid:** Define v1.1 requirements as visible portal-area coverage plus
-existing Add Application workflows. Track deeper workflows as future
-requirements unless proven safe.
+**How to avoid:** Create identifiable `AUTOMATION` records first, store the
+generated name or id in test scope, and update/delete only matching
+automation-created records.
 
-**Warning signs:** Requirements say "fully automate Users/Roles" without naming
-safe actions, expected assertions, and cleanup boundaries.
+**Warning signs:** Tests click edit/delete from a generic first row or use an
+existing user, role, activity, or log record.
 
-**Phase to address:** Requirements and roadmap creation.
+**Phase to address:** Mutating workflow phase.
 
 ---
 
@@ -88,8 +88,8 @@ that accumulate or disrupt future runs.
 **Why it happens:** Adding workflows beyond Add Application can cross into
 mutation-heavy features without cleanup.
 
-**How to avoid:** Use read/landmark coverage first for new portal areas. Only
-add mutations with visible cleanup and identifiable test data.
+**How to avoid:** Use identifiable test data and update/delete only records
+created by the same automation run.
 
 **Warning signs:** Tests create users/roles/applications without `AUTOMATION`
 naming or documented cleanup.
@@ -142,7 +142,8 @@ naming or documented cleanup.
 - [ ] **Unified runner:** Often missing selected target support — verify at
       least full and feature-area targets.
 - [ ] **Portal coverage:** Often only checks `/applications` — verify Activity,
-      Audit Logs, Users, and Roles routes/landmarks.
+      Audit Logs, Users, and Roles routes, landmarks, and approved safe
+      workflows.
 - [ ] **Failure hardening:** Often fixes one assertion only — verify no broad
       duplicate-text locator remains for the known failure.
 - [ ] **Triage:** Often generates JSON but not summary — verify
@@ -152,22 +153,22 @@ naming or documented cleanup.
 
 ## Recovery Strategies
 
-| Pitfall               | Recovery Cost | Recovery Steps                                                                                            |
-| --------------------- | ------------- | --------------------------------------------------------------------------------------------------------- |
-| Broad locator failure | LOW           | Scope assertion to form region/test id and rerun the failing spec.                                        |
-| Auth-state failure    | LOW/MEDIUM    | Run `npm run auth:record` or refresh CI storage-state secret, then rerun setup/auth tests.                |
-| Runner overreach      | MEDIUM        | Move browser assertions back into specs, leave runner as process orchestration.                           |
-| Data pollution        | MEDIUM/HIGH   | Document created data, add visible cleanup if safe, avoid further mutating coverage until cleanup exists. |
+| Pitfall               | Recovery Cost | Recovery Steps                                                                                           |
+| --------------------- | ------------- | -------------------------------------------------------------------------------------------------------- |
+| Broad locator failure | LOW           | Scope assertion to form region/test id and rerun the failing spec.                                       |
+| Auth-state failure    | LOW/MEDIUM    | Run `npm run auth:record` or refresh CI storage-state secret, then rerun setup/auth tests.               |
+| Runner overreach      | MEDIUM        | Move browser assertions back into specs, leave runner as process orchestration.                          |
+| Data pollution        | MEDIUM/HIGH   | Document created data, update/delete only automation-owned records, and avoid touching existing records. |
 
 ## Pitfall-to-Phase Mapping
 
-| Pitfall                                   | Prevention Phase           | Verification                                                     |
-| ----------------------------------------- | -------------------------- | ---------------------------------------------------------------- |
-| Broad locators match duplicate UI text    | First implementation phase | Known validation test passes with scoped assertion.              |
-| Runner hides auth-state failures          | Runner foundation phase    | Expired auth still produces setup/triage guidance.               |
-| "All portal features" overclaims coverage | Requirements/roadmap phase | Requirements distinguish visible smoke from deeper workflows.    |
-| Runner becomes a parallel framework       | Runner foundation phase    | Runner spawns Playwright and has unit tests for command mapping. |
-| Sandbox data pollution                    | Portal expansion phase     | New non-Application areas avoid unsafe mutations.                |
+| Pitfall                                | Prevention Phase           | Verification                                                                                  |
+| -------------------------------------- | -------------------------- | --------------------------------------------------------------------------------------------- |
+| Broad locators match duplicate UI text | First implementation phase | Known validation test passes with scoped assertion.                                           |
+| Runner hides auth-state failures       | Runner foundation phase    | Expired auth still produces setup/triage guidance.                                            |
+| Mutating pre-existing portal data      | Mutating workflow phase    | Tests create automation-owned records before update/delete and never target existing records. |
+| Runner becomes a parallel framework    | Runner foundation phase    | Runner spawns Playwright and has unit tests for command mapping.                              |
+| Sandbox data pollution                 | Portal expansion phase     | New non-Application areas mutate only automation-owned records.                               |
 
 ## Sources
 

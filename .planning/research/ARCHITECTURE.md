@@ -36,13 +36,13 @@
 
 ### Component Responsibilities
 
-| Component         | Responsibility                                                                   | Typical Implementation                                               |
-| ----------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| Runner script     | Provide one operator entrypoint and translate simple targets to Playwright args. | `scripts/run-portal-automation.mjs` spawning `npx playwright test`.  |
-| Playwright config | Define projects, reporters, timeouts, auth setup, and artifacts.                 | Extend current `playwright.config.ts` only when needed.              |
-| Portal specs      | Verify stable visible behavior by feature area.                                  | Files under `tests/authenticated/` with role/label/heading locators. |
-| Support helpers   | Encapsulate repeated navigation, page assertions, and diagnostic attachments.    | Existing `tests/support/*.ts`, extended conservatively.              |
-| Triage formatter  | Summarize failures after Playwright JSON output.                                 | Reuse `scripts/summarize-playwright-results.mjs`.                    |
+| Component         | Responsibility                                                                   | Typical Implementation                                                                                 |
+| ----------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Runner script     | Provide one operator entrypoint and translate simple targets to Playwright args. | `scripts/run-portal-automation.mjs` spawning `npx playwright test`.                                    |
+| Playwright config | Define projects, reporters, timeouts, auth setup, and artifacts.                 | Extend current `playwright.config.ts` only when needed.                                                |
+| Portal specs      | Verify stable visible behavior and safe workflow behavior by feature area.       | Files under `tests/authenticated/` with role/label/heading locators and automation-owned data helpers. |
+| Support helpers   | Encapsulate repeated navigation, page assertions, and diagnostic attachments.    | Existing `tests/support/*.ts`, extended conservatively.                                                |
+| Triage formatter  | Summarize failures after Playwright JSON output.                                 | Reuse `scripts/summarize-playwright-results.mjs`.                                                      |
 
 ## Recommended Project Structure
 
@@ -57,7 +57,8 @@ tests/
 │   └── root.spec.ts
 ├── authenticated/
 │   ├── workflow-smoke.spec.ts
-│   ├── portal-navigation.spec.ts   # New visible portal-area coverage
+│   ├── portal-navigation.spec.ts   # Portal-area availability coverage
+│   ├── portal-workflows.spec.ts    # Safe mutating portal workflow coverage
 │   └── add-application.spec.ts
 └── support/
     ├── authenticated-app.ts
@@ -156,11 +157,11 @@ native artifacts retained on failure
 
 ## Scaling Considerations
 
-| Scale                   | Architecture Adjustments                                                                                           |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| Current v1.1            | Thin runner and focused authenticated specs are enough.                                                            |
-| More portal workflows   | Add feature-area targets and page helpers; introduce tags if file-level filtering is too coarse.                   |
-| Large regression matrix | Consider sharding, more explicit projects, or hosted browsers only after local/CI Playwright becomes insufficient. |
+| Scale                   | Architecture Adjustments                                                                         |
+| ----------------------- | ------------------------------------------------------------------------------------------------ |
+| Current v1.1            | Thin runner and focused authenticated specs are enough.                                          |
+| More portal workflows   | Add feature-area targets and page helpers; introduce tags if file-level filtering is too coarse. |
+| Large regression matrix | Consider sharding or more explicit projects if local/CI runs become too broad.                   |
 
 ### Scaling Priorities
 
@@ -184,12 +185,12 @@ inline errors, and nav. **Why it's wrong:** Strict mode violations or false
 positives. **Do this instead:** Scope locators to form regions, roles, labels,
 or stable test ids.
 
-### Anti-Pattern 3: Treating Navigation Smoke as Full Feature Coverage
+### Anti-Pattern 3: Mutating Existing Portal Data
 
-**What people do:** Claim "all portal features" from page-load checks only.
-**Why it's wrong:** It verifies availability, not workflows. **Do this
-instead:** Name v1.1 visible portal-area coverage honestly and add deeper
-workflows in later phases.
+**What people do:** Update or delete records that existed before the test run.
+**Why it's wrong:** It can damage sandbox state and make failures hard to
+recover. **Do this instead:** Create identifiable automation-owned records, then
+update or delete only those records.
 
 ## Integration Points
 
