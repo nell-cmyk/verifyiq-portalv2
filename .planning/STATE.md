@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Ready to discuss Phase 04
-last_updated: "2026-05-11T07:16:44.783Z"
+status: Ready to execute
+last_updated: "2026-05-11T07:37:32.594Z"
 progress:
   total_phases: 4
   completed_phases: 3
-  total_plans: 5
+  total_plans: 7
   completed_plans: 5
-  percent: 75
+  percent: 71
 ---
 
 # Project State
@@ -26,16 +26,15 @@ focus:** Phase 4: Regression Operations **Roadmap:**
 
 ## Current Position
 
-Phase: 04 (regression-operations) — READY TO DISCUSS Plan: not started Last
-activity: 2026-05-11 -- Phase 03 execution complete. The Add Application spec
-now iterates the stable visible primary document type matrix (`Bank Statement`,
-`Articles Of Partnership`, `Payslip`, `Electricity Bill`) and adds the
-deterministic `authenticated user sees required applicant validation` test.
-README documents Phase 3 sandbox record creation, `AUTOMATION` naming, and
-best-effort UI cleanup. `npm run check`, `npm run test:e2e:auth`, and
-`npm run test:e2e:all` passed.
+Phase: 04 (regression-operations) — READY TO EXECUTE Plan: 04-01 next Last
+activity: 2026-05-11 -- Phase 04 planning complete. Research, validation, and
+pattern-map artifacts were created for regression operations. The executable
+plan set contains two waves: `04-01` adds secret-safe Playwright triage output
+and CI full-regression gating, then `04-02` documents the regression maintenance
+workflow and aligns standing docs. Plan verification covered QUAL-04, QUAL-05,
+DOCS-03, and all 16 Phase 4 decisions.
 
-Progress: [████████░░] 75%
+Progress: [███████░░░] 71%
 
 ## Accumulated Context
 
@@ -66,7 +65,7 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-- Discuss and plan Phase 4 regression operations.
+- Execute Phase 4 regression operations.
 - Keep Phase 3 coverage anchored to committed Playwright tests; use browser
   helpers only for exploration and debugging.
 
@@ -89,5 +88,5 @@ then credential login) with fresh-context validation of every reused state.
 
 ## Session Continuity
 
-Last session: 2026-05-11T07:16:44.781Z Resume file:
-.planning/phases/04-regression-operations/04-CONTEXT.md
+Last session: 2026-05-11T07:37:32.594Z Resume file:
+.planning/phases/04-regression-operations/04-01-PLAN.md

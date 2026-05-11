@@ -92,13 +92,23 @@ Criteria**:
 2. Docs describe maintenance and test update workflow.
 3. Regression checks are scoped to avoid excessive local hook cost.
 
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+
+**Wave 1**
+
+- [ ] 04-01: Add secret-safe Playwright triage output.
+
+**Wave 2 _(blocked on Wave 1 completion)_**
+
+- [ ] 04-02: Document regression maintenance workflow.
 
 ## Progress
 
-| Phase                              | Plans Complete | Status      | Completed  |
-| ---------------------------------- | -------------- | ----------- | ---------- |
-| 1. Automation Foundation           | 1/1            | Complete    | 2026-05-10 |
-| 2. Auth Workflow Hardening         | 2/2            | Complete    | 2026-05-10 |
-| 3. Core VerifyIQ Workflow Coverage | 2/2            | Complete    | 2026-05-11 |
-| 4. Regression Operations           | 0/TBD          | Not started | -          |
+| Phase                              | Plans Complete | Status   | Completed  |
+| ---------------------------------- | -------------- | -------- | ---------- |
+| 1. Automation Foundation           | 1/1            | Complete | 2026-05-10 |
+| 2. Auth Workflow Hardening         | 2/2            | Complete | 2026-05-10 |
+| 3. Core VerifyIQ Workflow Coverage | 2/2            | Complete | 2026-05-11 |
+| 4. Regression Operations           | 0/2            | Planned  | -          |
