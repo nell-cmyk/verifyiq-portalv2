@@ -3,9 +3,7 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: Ready to discuss Phase 04
-last_updated: "2026-05-10T23:54:25.387Z"
-last_activity:
-  2026-05-11 -- Phase 03 execution complete; Phase 04 ready for discussion
+last_updated: "2026-05-11T07:16:44.783Z"
 progress:
   total_phases: 4
   completed_phases: 3
@@ -63,6 +61,9 @@ Recent decisions affecting current work:
   Codex remains reviewer/test runner and takes over when Claude hits capacity
   limits.
 
+- Use `claude-mem` as the sole persistent local memory handler; Codex Memories
+  is disabled for this repository.
+
 ### Pending Todos
 
 - Discuss and plan Phase 4 regression operations.
@@ -88,6 +89,5 @@ then credential login) with fresh-context validation of every reused state.
 
 ## Session Continuity
 
-Last session: 2026-05-10T23:54:25.387Z Stopped at: Phase 3 execution complete.
-Resume file:
-.planning/phases/03-core-verifyiq-workflow-coverage/03-VERIFICATION.md
+Last session: 2026-05-11T07:16:44.781Z Resume file:
+.planning/phases/04-regression-operations/04-CONTEXT.md
