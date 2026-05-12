@@ -53,15 +53,16 @@ patterns-established:
     workflow."
   - "Pattern: assertSameRunMutationTarget returns the single exact same-run
     candidate or throws one stable reason token for closed-failure diagnostics."
-  - "Pattern: aggregateAutomationFailures preserves both original failures and
-    cleanup residue through AggregateError when both exist."
+    - "Pattern: aggregateAutomationFailures preserves the original failure and
+    generic cleanup-residue errors without echoing caller-supplied cleanup
+    text."
 
 requirements-completed:
   - MUT-01
   - MUT-02
   - MUT-03
 
-duration: ~12 min
+duration: ~43 min
 completed: 2026-05-12
 ---
 
@@ -73,12 +74,12 @@ and prove the behavior without touching the live portal.**
 
 ## Performance
 
-- **Duration:** ~12 min implementation and verification.
+- **Duration:** ~43 min implementation, review fixes, and verification.
 - **Started:** 2026-05-12T08:59:10Z.
-- **Completed:** 2026-05-12T09:11:57Z.
+- **Completed:** 2026-05-12T09:41:33Z.
 - **Tasks:** 6 planned tasks; task 07-01-00 preflight passed before
   implementation.
-- **Files modified:** 2 created source/test files plus this summary.
+- **Files modified:** 2 created source/test files plus summary/review artifacts.
 
 ## Accomplishments
 
@@ -104,6 +105,12 @@ and prove the behavior without touching the live portal.**
    (`test(07-01): cover automation record safety helpers`).
 4. **Task 07-01-05: Verification and secret-safe scope** - no source commit;
    verification evidence recorded below.
+5. **Code review fix: Sanitize cleanup diagnostics and validate cleanup
+   records** - `1a2cc13` (`fix(07-01): sanitize cleanup diagnostics`).
+6. **Code review fix: Remove caller text from aggregate cleanup messages** -
+   `08ffe78` (`fix(07-01): remove caller text from cleanup aggregates`).
+7. **Code review report** - `43cdf52`
+   (`docs(07): add clean code review report`).
 
 **Plan metadata:** committed separately with this summary.
 
@@ -128,6 +135,9 @@ and prove the behavior without touching the live portal.**
   imports, keeping UI scraping feature-specific.
 - **Diagnostics stay narrow:** `formatAutomationRunDiagnostics` returns only run
   id, area, attempted action, registered visible records, and cleanup notes.
+- **Cleanup messages are bounded:** cleanup notes use a fixed reason enum and
+  aggregate cleanup messages report only cleanup counts plus generic residue
+  errors, never caller-provided cleanup text.
 
 ## Deviations from Plan
 
@@ -144,16 +154,46 @@ and prove the behavior without touching the live portal.**
 - **Verification:** `npm run check` and `npm run test:e2e` passed after the fix.
 - **Committed in:** `50766bd`
 
+**2. [Code Review - Diagnostics] Cleanup diagnostics preserved raw caller text**
+
+- **Found during:** Phase 07 code review.
+- **Issue:** Cleanup notes and aggregate cleanup messages could preserve raw
+  caller-supplied error text, which is not secret-safe for future Playwright
+  cleanup failures.
+- **Fix:** Replaced cleanup-note messages with bounded cleanup reasons and made
+  aggregate cleanup messages generic.
+- **Files modified:** `tests/support/automation-records.ts`,
+  `tests/public/automation-records.spec.ts`
+- **Verification:** Focused helper coverage, `npm run check`,
+  `npm run test:e2e`, and code re-review passed.
+- **Committed in:** `1a2cc13`, `08ffe78`
+
+**3. [Code Review - Same-Run Invariant] Cleanup notes accepted unregistered
+records**
+
+- **Found during:** Phase 07 code review.
+- **Issue:** `recordAutomationCleanup` could append cleanup notes for fabricated
+  or stale records, weakening same-run diagnostics outside the mutation guard.
+- **Fix:** Added same-run registration, run-id, and prefix validation before
+  cleanup notes are appended, with regression coverage for unregistered and
+  stale records.
+- **Files modified:** `tests/support/automation-records.ts`,
+  `tests/public/automation-records.spec.ts`
+- **Verification:** Focused helper coverage, `npm run check`,
+  `npm run test:e2e`, and code re-review passed.
+- **Committed in:** `1a2cc13`
+
 ---
 
-**Total deviations:** 1 Codex review fix. **Impact on plan:** Scope stayed
-inside the planned helper module and improved future Phase 8 reuse.
+**Total deviations:** 3 review-driven fixes. **Impact on plan:** Scope stayed
+inside the planned helper module/spec and strengthened the Phase 8 safety
+contract.
 
 ## Issues Encountered
 
-None. Claude completed the first-pass implementation through the configured
-`npm run ai:implement` wrapper; Codex reviewed, patched one type-scope issue,
-committed the work, and ran verification.
+Code review found two valid cleanup-diagnostic issues. Codex fixed them, re-ran
+focused and full verification, and re-ran code review until the report was
+clean.
 
 ## Authentication Gates
 
@@ -172,11 +212,13 @@ Commands run by Codex orchestrator:
 4. `git diff -- scripts/run-portal-automation.mjs scripts/run-portal-automation.test.mjs` -
    empty.
 5. `rg -n 'password|token|cookie|storageState|\.env|innerHTML|outerHTML|document\.body' tests/support/automation-records.ts tests/public/automation-records.spec.ts` -
-   only matched negative assertions in the public spec.
-6. `npm run test:e2e` - passed, 18/18 public-smoke tests.
+   only matched negative assertions and intentional leak-regression strings in
+   the public spec.
+6. `npm run test:e2e` - passed, 21/21 public-smoke tests after review fixes.
 7. `npm run check` - passed (`lint`, `typecheck`, `test:triage`,
    `test:portal:unit`, `docs:check`).
 8. `npm run test:e2e:auth` - passed, 12/12 authenticated tests.
+9. Phase 07 code review - passed clean after two cleanup-diagnostics fixes.
 
 ## Next Phase Readiness
 
