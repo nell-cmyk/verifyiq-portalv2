@@ -8,7 +8,7 @@
     "node": ">=24"
   },
   "scripts": {
-    "check": "npm run lint && npm run typecheck && npm run test:triage && npm run docs:check",
+    "check": "npm run lint && npm run typecheck && npm run test:triage && npm run test:portal:unit && npm run docs:check",
     "ai:implement": "node scripts/ai-implement.mjs",
     "auth:record": "node scripts/record-auth.mjs",
     "docs:check": "node scripts/check-docs.mjs",
@@ -16,6 +16,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "test:portal": "node scripts/run-portal-automation.mjs",
+    "test:portal:unit": "node --test scripts/run-portal-automation.test.mjs",
     "test:e2e": "playwright test --project=public-smoke",
     "test:e2e:auth": "playwright test --project=authenticated-chromium",
     "test:e2e:all": "playwright test",
