@@ -23,33 +23,33 @@ async function runWithApplicationDiagnostics(
   action: () => Promise<void>
 ): Promise<void> {
   const pageErrors = collectPageErrors(page);
-  let workflowError: unknown;
+  const errors: unknown[] = [];
 
   try {
     await action();
   } catch (error) {
-    workflowError = error;
-    await attachFormInventory(page, testInfo);
+    errors.push(error);
+    try {
+      await attachFormInventory(page, testInfo);
+    } catch (inventoryError) {
+      errors.push(inventoryError);
+    }
   }
 
-  let pageError: unknown;
   try {
     await pageErrors.expectNoErrors(testInfo);
   } catch (error) {
-    pageError = error;
+    errors.push(error);
   }
 
-  if (workflowError && pageError) {
+  if (errors.length > 1) {
     throw new AggregateError(
-      [workflowError, pageError],
-      "Add Application test failed and collected page errors."
+      errors,
+      "Add Application test failed with multiple diagnostics."
     );
   }
-  if (workflowError) {
-    throw workflowError;
-  }
-  if (pageError) {
-    throw pageError;
+  if (errors.length === 1) {
+    throw errors[0];
   }
 }
 
