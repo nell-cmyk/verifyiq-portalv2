@@ -95,6 +95,11 @@ data.
   alignment check.
 - `npm run ai:implement` — Claude Opus 4.7 first-pass implementation wrapper
   with Codex fallback for GSD cross-AI execution.
+- `npm run test:portal` — unified portal automation runner. Defaults to the
+  `all` target. Use `npm run test:portal -- <target>` to choose one of the valid
+  targets: `all`, `public`, `auth`, `applications`, `activity`, `audit-logs`,
+  `users`, `roles`. Native Playwright flags go after a second separator, for
+  example `npm run test:portal -- activity -- --headed`.
 - `npm run test:e2e` — public smoke tests.
 - `npm run test:ai-workflow` — unit tests for AI implementation wrapper fallback
   behavior.
