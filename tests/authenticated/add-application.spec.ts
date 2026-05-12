@@ -73,9 +73,9 @@ test("authenticated user sees required applicant validation", async ({
 
     await page.getByTestId("submit-btn").click();
 
-    await expect(
-      page.getByText("Please enter the applicant name.", { exact: false })
-    ).toBeVisible();
+    await expect(page.getByTestId("validation-error")).toContainText(
+      "Please enter the applicant name."
+    );
 
     await expect(page).toHaveURL(/\/applications\/new(?:[?#].*)?$/);
 
