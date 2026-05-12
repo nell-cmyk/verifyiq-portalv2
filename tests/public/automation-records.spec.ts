@@ -305,18 +305,23 @@ test("aggregateAutomationFailures keeps cleanup error details out of top-level m
     undefined,
     [
       new Error(
-        "raw cleanup password token cookie storageState .env innerHTML outerHTML document.body"
+        "raw cleanup password=hunter2 secret=prod token=abc cookie=sid storageState=.env innerHTML outerHTML document.body"
       )
     ],
-    "users password token cookie storageState .env innerHTML outerHTML document.body mutation"
+    "users password=hunter2 secret=prod token=abc cookie=sid storageState=.env innerHTML outerHTML document.body mutation"
   );
 
   expect(aggregated).toBeInstanceOf(Error);
   const message = (aggregated as Error).message;
-  expect(message).toMatch(/automation_cleanup_failed/);
+  expect(message).toBe("automation_cleanup_failed: 1 cleanup failure");
   expect(message).not.toMatch(/password/i);
+  expect(message).not.toMatch(/hunter2/i);
+  expect(message).not.toMatch(/secret/i);
+  expect(message).not.toMatch(/prod/i);
   expect(message).not.toMatch(/token/i);
+  expect(message).not.toMatch(/\babc\b/i);
   expect(message).not.toMatch(/cookie/i);
+  expect(message).not.toMatch(/\bsid\b/i);
   expect(message).not.toMatch(/storageState/i);
   expect(message).not.toMatch(/\.env/);
   expect(message).not.toMatch(/innerHTML/i);

@@ -245,9 +245,10 @@ export function aggregateAutomationFailures(
   cleanupErrors: ReadonlyArray<unknown>,
   message: string
 ): unknown {
+  void message;
   const hasOriginal = originalError !== undefined;
   const cleanupCount = cleanupErrors.length;
-  const diagnosticMessage = safeDiagnosticMessage(message);
+  const aggregateMessage = cleanupFailureMessage(cleanupCount);
   const cleanupResidueErrors = cleanupErrors.map(
     (_, index) =>
       new Error(`automation_cleanup_failed: cleanup_error_${index + 1}`)
@@ -258,14 +259,11 @@ export function aggregateAutomationFailures(
   }
 
   if (!hasOriginal && cleanupCount === 1) {
-    return new Error(`automation_cleanup_failed: ${diagnosticMessage}`);
+    return new Error(aggregateMessage);
   }
 
   if (!hasOriginal && cleanupCount > 1) {
-    return new AggregateError(
-      cleanupResidueErrors,
-      `automation_cleanup_failed: ${diagnosticMessage}`
-    );
+    return new AggregateError(cleanupResidueErrors, aggregateMessage);
   }
 
   if (hasOriginal && cleanupCount === 0) {
@@ -274,8 +272,14 @@ export function aggregateAutomationFailures(
 
   return new AggregateError(
     [originalError, ...cleanupResidueErrors],
-    `automation_cleanup_failed: ${diagnosticMessage}`
+    aggregateMessage
   );
+}
+
+function cleanupFailureMessage(cleanupCount: number): string {
+  return `automation_cleanup_failed: ${cleanupCount} cleanup failure${
+    cleanupCount === 1 ? "" : "s"
+  }`;
 }
 
 function assertRegisteredSameRunRecord(
@@ -300,15 +304,6 @@ function assertRegisteredSameRunRecord(
       `recordAutomationCleanup refused "${record.visibleName}" for ${action}: visible_name_missing_run_prefix.`
     );
   }
-}
-
-function safeDiagnosticMessage(message: string): string {
-  return message
-    .replace(
-      /password|token|cookie|storageState|\.env|innerHTML|outerHTML|document\.body/gi,
-      "[redacted]"
-    )
-    .slice(0, 160);
 }
 
 export function formatAutomationRunDiagnostics(
