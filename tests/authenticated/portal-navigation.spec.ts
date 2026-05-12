@@ -11,13 +11,30 @@ for (const area of portalAreas) {
     page
   }, testInfo) => {
     const pageErrors = collectPageErrors(page);
+    const errors: unknown[] = [];
 
     try {
       await page.goto("/applications");
       await expectSignInHidden(page);
       await expectPortalAreaReachable(page, area);
-    } finally {
+    } catch (error) {
+      errors.push(error);
+    }
+
+    try {
       await pageErrors.expectNoErrors(testInfo);
+    } catch (error) {
+      errors.push(error);
+    }
+
+    if (errors.length > 1) {
+      throw new AggregateError(
+        errors,
+        `${area.label} portal navigation failed with multiple diagnostics.`
+      );
+    }
+    if (errors.length === 1) {
+      throw errors[0];
     }
   });
 }
