@@ -120,7 +120,7 @@ updates or deletes against pre-existing portal records.
 
 Plans:
 
-- [ ] 07-01: Build automation-owned record safety helpers.
+- [x] 07-01: Build automation-owned record safety helpers.
 
 ### Phase 8: Deep Portal Workflow Coverage
 
