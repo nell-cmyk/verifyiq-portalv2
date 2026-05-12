@@ -14,7 +14,7 @@ requirement maps to one roadmap phase.
 
 - [x] **RUN-01**: User can run one documented npm command that starts unified
       portal automation through Playwright Test.
-- [ ] **RUN-02**: User can choose runner targets for `all`, `public`, `auth`,
+- [x] **RUN-02**: User can choose runner targets for `all`, `public`, `auth`,
       `applications`, `activity`, `audit-logs`, `users`, and `roles`.
 - [x] **RUN-03**: Runner preserves Playwright stdout, stderr, artifacts, and
       exit code so failures remain reproducible with native Playwright commands.
@@ -32,17 +32,17 @@ requirement maps to one roadmap phase.
 
 ### Portal Coverage
 
-- [ ] **PORT-01**: Authenticated user can verify Applications page availability
+- [x] **PORT-01**: Authenticated user can verify Applications page availability
       and stable operator-visible landmarks through the unified runner.
-- [ ] **PORT-02**: Authenticated user can verify Activity page availability and
+- [x] **PORT-02**: Authenticated user can verify Activity page availability and
       stable operator-visible landmarks through the unified runner.
-- [ ] **PORT-03**: Authenticated user can verify Audit Logs page availability
+- [x] **PORT-03**: Authenticated user can verify Audit Logs page availability
       and stable operator-visible landmarks through the unified runner.
-- [ ] **PORT-04**: Authenticated user can verify Users page availability and
+- [x] **PORT-04**: Authenticated user can verify Users page availability and
       stable operator-visible landmarks through the unified runner.
-- [ ] **PORT-05**: Authenticated user can verify Roles page availability and
+- [x] **PORT-05**: Authenticated user can verify Roles page availability and
       stable operator-visible landmarks through the unified runner.
-- [ ] **PORT-06**: Portal feature coverage surfaces serious page or console
+- [x] **PORT-06**: Portal feature coverage surfaces serious page or console
       errors using the existing page-error collection pattern.
 
 ### Safe Mutating Workflows
@@ -104,17 +104,17 @@ Which phases cover which requirements. Updated during roadmap creation.
 | Requirement | Phase | Status   |
 | ----------- | ----- | -------- |
 | RUN-01      | 5     | Complete |
-| RUN-02      | 6     | Pending  |
+| RUN-02      | 6     | Complete |
 | RUN-03      | 5     | Complete |
 | RUN-04      | 5     | Complete |
 | FAIL-01     | 5     | Complete |
 | FAIL-02     | 5     | Complete |
-| PORT-01     | 6     | Pending  |
-| PORT-02     | 6     | Pending  |
-| PORT-03     | 6     | Pending  |
-| PORT-04     | 6     | Pending  |
-| PORT-05     | 6     | Pending  |
-| PORT-06     | 6     | Pending  |
+| PORT-01     | 6     | Complete |
+| PORT-02     | 6     | Complete |
+| PORT-03     | 6     | Complete |
+| PORT-04     | 6     | Complete |
+| PORT-05     | 6     | Complete |
+| PORT-06     | 6     | Complete |
 | MUT-01      | 7     | Pending  |
 | MUT-02      | 7     | Pending  |
 | MUT-03      | 7     | Pending  |
@@ -136,5 +136,5 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 
-_Requirements defined: 2026-05-11_ _Last updated: 2026-05-12 after Phase 5
+_Requirements defined: 2026-05-11_ _Last updated: 2026-05-12 after Phase 6
 completion._

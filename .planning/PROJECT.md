@@ -61,11 +61,15 @@ while making failures actionable.
   assertion now targets the inline `validation-error` surface instead of
   page-level duplicate text. Live authenticated verification remains gated by
   fresh storage state.
+- Phase 6 portal navigation coverage - v1.1: `npm run test:portal` targets now
+  select exact Playwright `@portal:*` tags, existing Add Application coverage is
+  included under `@portal:applications`, and authenticated page availability
+  coverage passes for Applications, Activity, Audit Logs, Users, and Roles.
 
 ### Active
 
-- [ ] Define scoped v1.1 runner and portal-feature automation requirements.
-- [ ] Build a unified runner that can execute selected or full portal coverage.
+- [x] Define scoped v1.1 runner and portal-feature automation requirements.
+- [x] Build a unified runner that can execute selected or full portal coverage.
 - [ ] Expand authenticated Playwright coverage across portal areas, including
       safe mutating workflows.
 - [ ] Keep documentation aligned after code and instruction changes.
@@ -86,7 +90,7 @@ storage state.
 
 - Current shipped version: v1.0 MVP, shipped 2026-05-11.
 - Current milestone: v1.1 Unified Portal Automation Runner.
-- Current status: Phase 5 complete; Phase 6 is ready for discussion and
+- Current status: Phase 6 complete; Phase 7 is ready for discussion and
   planning.
 - Target app: `https://sandbox.verifyiq-mercury-dev.boost-frontend.app/`.
 - App currently presents a VerifyIQ sign-in screen with Email, Password, and
@@ -155,6 +159,7 @@ storage state.
 | Milestone archival for completed phases          | Moves completed phase execution history out of active roadmap context while preserving all artifacts under `.planning/milestones/`                                                                                                                                            | Complete |
 | v1.1 unified runner scope                        | The next milestone should provide both a CLI runner and structured Playwright entrypoint for portal features, starting from existing Add Application automation, the known validation failure, and safe mutating workflows that only update/delete automation-created records | Pending  |
 | Phase 5 runner foundation                        | The runner should stay a thin Playwright CLI wrapper that validates target names, prints the command and artifact paths, runs triage, and preserves Playwright exit behavior.                                                                                                 | Complete |
+| Phase 6 portal target wiring                     | Portal targets should use Playwright `--grep @portal:*` tags, with live-route discovery and stable page shell assertions in committed authenticated Playwright tests.                                                                                                         | Complete |
 
 ## Evolution
 
@@ -177,4 +182,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-_Last updated: 2026-05-12 after Phase 5 completion._
+_Last updated: 2026-05-12 after Phase 6 completion._

@@ -23,9 +23,9 @@ delete only records created by the same automation run.
 - [x] **Phase 5: Runner Foundation and Failure Hardening** - Add the unified
       runner foundation, preserve Playwright/triage behavior, and fix the known
       Add Application validation locator failure. Completed 2026-05-12.
-- [ ] **Phase 6: Portal Navigation Coverage and Target Wiring** - Add runner
+- [x] **Phase 6: Portal Navigation Coverage and Target Wiring** - Add runner
       targets and stable authenticated page coverage for Applications, Activity,
-      Audit Logs, Users, and Roles.
+      Audit Logs, Users, and Roles. Completed 2026-05-12.
 - [ ] **Phase 7: Automation-Owned Mutation Safety Harness** - Build the shared
       safety pattern that creates identifiable automation-owned records before
       update/delete operations.
