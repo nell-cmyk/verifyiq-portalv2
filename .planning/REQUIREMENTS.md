@@ -12,21 +12,21 @@ requirement maps to one roadmap phase.
 
 ### Runner
 
-- [ ] **RUN-01**: User can run one documented npm command that starts unified
+- [x] **RUN-01**: User can run one documented npm command that starts unified
       portal automation through Playwright Test.
 - [ ] **RUN-02**: User can choose runner targets for `all`, `public`, `auth`,
       `applications`, `activity`, `audit-logs`, `users`, and `roles`.
-- [ ] **RUN-03**: Runner preserves Playwright stdout, stderr, artifacts, and
+- [x] **RUN-03**: Runner preserves Playwright stdout, stderr, artifacts, and
       exit code so failures remain reproducible with native Playwright commands.
-- [ ] **RUN-04**: Runner delegates browser execution to committed Playwright
+- [x] **RUN-04**: Runner delegates browser execution to committed Playwright
       tests rather than implementing browser automation inside the runner
       script.
 
 ### Failure Hardening
 
-- [ ] **FAIL-01**: User can run the Add Application required-applicant
+- [x] **FAIL-01**: User can run the Add Application required-applicant
       validation test without the strict-mode duplicate-text locator failure.
-- [ ] **FAIL-02**: Add Application validation assertions target the intended
+- [x] **FAIL-02**: Add Application validation assertions target the intended
       inline form validation surface when the same message also appears in a
       toast notification.
 
@@ -70,12 +70,12 @@ requirement maps to one roadmap phase.
 
 ### Triage and Artifacts
 
-- [ ] **TRIAGE-01**: User can generate a secret-safe triage summary after a
+- [x] **TRIAGE-01**: User can generate a secret-safe triage summary after a
       runner execution from Playwright JSON results.
-- [ ] **TRIAGE-02**: Runner output or generated triage points users to native
+- [x] **TRIAGE-02**: Runner output or generated triage points users to native
       Playwright HTML, JSON, screenshot, trace, and video artifacts when they
       exist.
-- [ ] **TRIAGE-03**: Auth/setup failures remain classified with storage-state
+- [x] **TRIAGE-03**: Auth/setup failures remain classified with storage-state
       recovery guidance before being treated as VerifyIQ application
       regressions.
 
@@ -101,32 +101,32 @@ Explicitly excluded. Documented to prevent scope creep.
 
 Which phases cover which requirements. Updated during roadmap creation.
 
-| Requirement | Phase | Status  |
-| ----------- | ----- | ------- |
-| RUN-01      | 5     | Pending |
-| RUN-02      | 6     | Pending |
-| RUN-03      | 5     | Pending |
-| RUN-04      | 5     | Pending |
-| FAIL-01     | 5     | Pending |
-| FAIL-02     | 5     | Pending |
-| PORT-01     | 6     | Pending |
-| PORT-02     | 6     | Pending |
-| PORT-03     | 6     | Pending |
-| PORT-04     | 6     | Pending |
-| PORT-05     | 6     | Pending |
-| PORT-06     | 6     | Pending |
-| MUT-01      | 7     | Pending |
-| MUT-02      | 7     | Pending |
-| MUT-03      | 7     | Pending |
-| MUT-04      | 8     | Pending |
-| MUT-05      | 8     | Pending |
-| MUT-06      | 8     | Pending |
-| MUT-07      | 8     | Pending |
-| TRIAGE-01   | 5     | Pending |
-| TRIAGE-02   | 5     | Pending |
-| TRIAGE-03   | 5     | Pending |
-| DOCS-04     | 9     | Pending |
-| DOCS-05     | 9     | Pending |
+| Requirement | Phase | Status   |
+| ----------- | ----- | -------- |
+| RUN-01      | 5     | Complete |
+| RUN-02      | 6     | Pending  |
+| RUN-03      | 5     | Complete |
+| RUN-04      | 5     | Complete |
+| FAIL-01     | 5     | Complete |
+| FAIL-02     | 5     | Complete |
+| PORT-01     | 6     | Pending  |
+| PORT-02     | 6     | Pending  |
+| PORT-03     | 6     | Pending  |
+| PORT-04     | 6     | Pending  |
+| PORT-05     | 6     | Pending  |
+| PORT-06     | 6     | Pending  |
+| MUT-01      | 7     | Pending  |
+| MUT-02      | 7     | Pending  |
+| MUT-03      | 7     | Pending  |
+| MUT-04      | 8     | Pending  |
+| MUT-05      | 8     | Pending  |
+| MUT-06      | 8     | Pending  |
+| MUT-07      | 8     | Pending  |
+| TRIAGE-01   | 5     | Complete |
+| TRIAGE-02   | 5     | Complete |
+| TRIAGE-03   | 5     | Complete |
+| DOCS-04     | 9     | Pending  |
+| DOCS-05     | 9     | Pending  |
 
 **Coverage:**
 
@@ -136,5 +136,5 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 
-_Requirements defined: 2026-05-11_ _Last updated: 2026-05-11 after v1.1 roadmap
-traceability mapping._
+_Requirements defined: 2026-05-11_ _Last updated: 2026-05-12 after Phase 5
+completion._

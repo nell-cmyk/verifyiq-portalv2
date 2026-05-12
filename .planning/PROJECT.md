@@ -53,6 +53,14 @@ while making failures actionable.
   (`test-results/triage-summary.md`), CI full-regression gating on storage-state
   secrets, and a README maintenance runbook covering auth refresh, triage
   interpretation, command tiers, selector guidance, and sandbox cleanup rules.
+- Phase 5 runner foundation - v1.1: `npm run test:portal` delegates to
+  Playwright Test, validates portal runner targets before launch, runs the
+  existing triage summary after valid executions, prints native artifact paths,
+  and preserves Playwright exit codes.
+- Add Application required-applicant validation hardening - v1.1 Phase 5: the
+  assertion now targets the inline `validation-error` surface instead of
+  page-level duplicate text. Live authenticated verification remains gated by
+  fresh storage state.
 
 ### Active
 
@@ -60,7 +68,6 @@ while making failures actionable.
 - [ ] Build a unified runner that can execute selected or full portal coverage.
 - [ ] Expand authenticated Playwright coverage across portal areas, including
       safe mutating workflows.
-- [ ] Harden the current Add Application required-applicant validation scenario.
 - [ ] Keep documentation aligned after code and instruction changes.
 
 Phase 2 planning locks env-first auth-state precedence
@@ -79,7 +86,8 @@ storage state.
 
 - Current shipped version: v1.0 MVP, shipped 2026-05-11.
 - Current milestone: v1.1 Unified Portal Automation Runner.
-- Current status: Phase 5 planned and ready to execute.
+- Current status: Phase 5 complete; Phase 6 is ready for discussion and
+  planning.
 - Target app: `https://sandbox.verifyiq-mercury-dev.boost-frontend.app/`.
 - App currently presents a VerifyIQ sign-in screen with Email, Password, and
   Sign in controls.
@@ -146,6 +154,7 @@ storage state.
 | Phase 4 regression operations and triage summary | Lean operator triage summary, storage-state-first auth diagnostics, CI full-regression gating, and README maintenance runbook keep Playwright the source of truth while reducing time-to-failure                                                                              | Complete |
 | Milestone archival for completed phases          | Moves completed phase execution history out of active roadmap context while preserving all artifacts under `.planning/milestones/`                                                                                                                                            | Complete |
 | v1.1 unified runner scope                        | The next milestone should provide both a CLI runner and structured Playwright entrypoint for portal features, starting from existing Add Application automation, the known validation failure, and safe mutating workflows that only update/delete automation-created records | Pending  |
+| Phase 5 runner foundation                        | The runner should stay a thin Playwright CLI wrapper that validates target names, prints the command and artifact paths, runs triage, and preserves Playwright exit behavior.                                                                                                 | Complete |
 
 ## Evolution
 
@@ -168,4 +177,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-_Last updated: 2026-05-11 after starting v1.1 milestone._
+_Last updated: 2026-05-12 after Phase 5 completion._
