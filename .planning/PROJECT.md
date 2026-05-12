@@ -79,7 +79,7 @@ storage state.
 
 - Current shipped version: v1.0 MVP, shipped 2026-05-11.
 - Current milestone: v1.1 Unified Portal Automation Runner.
-- Current status: defining v1.1 requirements and roadmap.
+- Current status: Phase 5 planned and ready to execute.
 - Target app: `https://sandbox.verifyiq-mercury-dev.boost-frontend.app/`.
 - App currently presents a VerifyIQ sign-in screen with Email, Password, and
   Sign in controls.

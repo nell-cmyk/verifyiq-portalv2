@@ -103,38 +103,38 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status  |
 | ----------- | ----- | ------- |
-| RUN-01      | —     | Pending |
-| RUN-02      | —     | Pending |
-| RUN-03      | —     | Pending |
-| RUN-04      | —     | Pending |
-| FAIL-01     | —     | Pending |
-| FAIL-02     | —     | Pending |
-| PORT-01     | —     | Pending |
-| PORT-02     | —     | Pending |
-| PORT-03     | —     | Pending |
-| PORT-04     | —     | Pending |
-| PORT-05     | —     | Pending |
-| PORT-06     | —     | Pending |
-| MUT-01      | —     | Pending |
-| MUT-02      | —     | Pending |
-| MUT-03      | —     | Pending |
-| MUT-04      | —     | Pending |
-| MUT-05      | —     | Pending |
-| MUT-06      | —     | Pending |
-| MUT-07      | —     | Pending |
-| TRIAGE-01   | —     | Pending |
-| TRIAGE-02   | —     | Pending |
-| TRIAGE-03   | —     | Pending |
-| DOCS-04     | —     | Pending |
-| DOCS-05     | —     | Pending |
+| RUN-01      | 5     | Pending |
+| RUN-02      | 6     | Pending |
+| RUN-03      | 5     | Pending |
+| RUN-04      | 5     | Pending |
+| FAIL-01     | 5     | Pending |
+| FAIL-02     | 5     | Pending |
+| PORT-01     | 6     | Pending |
+| PORT-02     | 6     | Pending |
+| PORT-03     | 6     | Pending |
+| PORT-04     | 6     | Pending |
+| PORT-05     | 6     | Pending |
+| PORT-06     | 6     | Pending |
+| MUT-01      | 7     | Pending |
+| MUT-02      | 7     | Pending |
+| MUT-03      | 7     | Pending |
+| MUT-04      | 8     | Pending |
+| MUT-05      | 8     | Pending |
+| MUT-06      | 8     | Pending |
+| MUT-07      | 8     | Pending |
+| TRIAGE-01   | 5     | Pending |
+| TRIAGE-02   | 5     | Pending |
+| TRIAGE-03   | 5     | Pending |
+| DOCS-04     | 9     | Pending |
+| DOCS-05     | 9     | Pending |
 
 **Coverage:**
 
 - v1.1 requirements: 24 total
-- Mapped to phases: 0
-- Unmapped: 24
+- Mapped to phases: 24
+- Unmapped: 0
 
 ---
 
-_Requirements defined: 2026-05-11_ _Last updated: 2026-05-11 after v1.1
-requirements definition._
+_Requirements defined: 2026-05-11_ _Last updated: 2026-05-11 after v1.1 roadmap
+traceability mapping._
