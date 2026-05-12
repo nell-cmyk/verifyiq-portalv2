@@ -47,12 +47,12 @@ requirement maps to one roadmap phase.
 
 ### Safe Mutating Workflows
 
-- [ ] **MUT-01**: Mutating workflow tests create only automation-owned records
+- [x] **MUT-01**: Mutating workflow tests create only automation-owned records
       with identifiable `AUTOMATION` naming before attempting update or delete
       actions.
-- [ ] **MUT-02**: Mutating workflow tests update only records created by the
+- [x] **MUT-02**: Mutating workflow tests update only records created by the
       same automation run and never update pre-existing portal data.
-- [ ] **MUT-03**: Mutating workflow tests delete or clean up only records
+- [x] **MUT-03**: Mutating workflow tests delete or clean up only records
       created by the same automation run and never delete pre-existing portal
       data.
 - [ ] **MUT-04**: Authenticated user can run deep Activity workflow coverage
@@ -115,9 +115,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PORT-04     | 6     | Complete |
 | PORT-05     | 6     | Complete |
 | PORT-06     | 6     | Complete |
-| MUT-01      | 7     | Pending  |
-| MUT-02      | 7     | Pending  |
-| MUT-03      | 7     | Pending  |
+| MUT-01      | 7     | Complete |
+| MUT-02      | 7     | Complete |
+| MUT-03      | 7     | Complete |
 | MUT-04      | 8     | Pending  |
 | MUT-05      | 8     | Pending  |
 | MUT-06      | 8     | Pending  |

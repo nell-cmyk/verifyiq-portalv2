@@ -26,9 +26,9 @@ delete only records created by the same automation run.
 - [x] **Phase 6: Portal Navigation Coverage and Target Wiring** - Add runner
       targets and stable authenticated page coverage for Applications, Activity,
       Audit Logs, Users, and Roles. Completed 2026-05-12.
-- [ ] **Phase 7: Automation-Owned Mutation Safety Harness** - Build the shared
+- [x] **Phase 7: Automation-Owned Mutation Safety Harness** - Build the shared
       safety pattern that creates identifiable automation-owned records before
-      update/delete operations.
+      update/delete operations. Completed 2026-05-12.
 - [ ] **Phase 8: Deep Portal Workflow Coverage** - Add deep workflow coverage
       for Activity, Audit Logs, Users, and Roles using only visible UI actions
       and automation-owned records.
@@ -185,7 +185,7 @@ Plans:
 | ----------------------------------------------- | -------------- | -------- | ---------- |
 | 5. Runner Foundation and Failure Hardening      | 2/2            | Complete | 2026-05-12 |
 | 6. Portal Navigation Coverage and Target Wiring | 0/2            | Pending  | —          |
-| 7. Automation-Owned Mutation Safety Harness     | 0/1            | Pending  | —          |
+| 7. Automation-Owned Mutation Safety Harness     | 1/1            | Complete | 2026-05-12 |
 | 8. Deep Portal Workflow Coverage                | 0/2            | Pending  | —          |
 | 9. Runner Documentation and Regression Ops      | 0/1            | Pending  | —          |
 

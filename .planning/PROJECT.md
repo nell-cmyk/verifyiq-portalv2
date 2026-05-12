@@ -65,6 +65,10 @@ while making failures actionable.
   select exact Playwright `@portal:*` tags, existing Add Application coverage is
   included under `@portal:applications`, and authenticated page availability
   coverage passes for Applications, Activity, Audit Logs, Users, and Roles.
+- Phase 7 automation-owned mutation safety harness - v1.1: reusable Playwright
+  helpers create `AUTOMATION <area> <run-id> <record-label>` names, require
+  same-run registration and exact visible candidate matches before update/delete
+  selection, and track same-run cleanup residue with secret-safe diagnostics.
 
 ### Active
 
@@ -90,7 +94,7 @@ storage state.
 
 - Current shipped version: v1.0 MVP, shipped 2026-05-11.
 - Current milestone: v1.1 Unified Portal Automation Runner.
-- Current status: Phase 6 complete; Phase 7 is ready for discussion and
+- Current status: Phase 7 complete; Phase 8 is ready for discussion and
   planning.
 - Target app: `https://sandbox.verifyiq-mercury-dev.boost-frontend.app/`.
 - App currently presents a VerifyIQ sign-in screen with Email, Password, and
@@ -160,6 +164,7 @@ storage state.
 | v1.1 unified runner scope                        | The next milestone should provide both a CLI runner and structured Playwright entrypoint for portal features, starting from existing Add Application automation, the known validation failure, and safe mutating workflows that only update/delete automation-created records | Pending  |
 | Phase 5 runner foundation                        | The runner should stay a thin Playwright CLI wrapper that validates target names, prints the command and artifact paths, runs triage, and preserves Playwright exit behavior.                                                                                                 | Complete |
 | Phase 6 portal target wiring                     | Portal targets should use Playwright `--grep @portal:*` tags, with live-route discovery and stable page shell assertions in committed authenticated Playwright tests.                                                                                                         | Complete |
+| Phase 7 automation-owned mutation safety harness | Future mutating workflow tests must create, update, delete, and clean up only records registered in the same automation run; diagnostics must identify visible cleanup residue without echoing raw caller error text or secret-bearing data.                                  | Complete |
 
 ## Evolution
 
@@ -182,4 +187,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-_Last updated: 2026-05-12 after Phase 6 completion._
+_Last updated: 2026-05-12 after Phase 7 completion._
