@@ -66,7 +66,7 @@ TRIAGE-02, TRIAGE-03
 
 Plans:
 
-- [ ] 05-01: Build Playwright-backed runner foundation.
+- [x] 05-01: Build Playwright-backed runner foundation.
 - [ ] 05-02: Harden Add Application validation and runner triage behavior.
 
 ### Phase 6: Portal Navigation Coverage and Target Wiring
