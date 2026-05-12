@@ -100,6 +100,11 @@ applications target keeps its established workflow matrix.**
    (`test(06-01): tag Add Application tests for applications target`)
 4. **Task 06-01-03: Add minimal README runner target reference** — `e77f8f1`
    (`docs(06-01): document portal runner target syntax`)
+5. **Post-review fix: Preserve page-error diagnostics on Applications failures**
+   — `7a6c69f`
+   (`fix(06-01): preserve page-error diagnostics on applications failures`)
+6. **Post-review fix: Aggregate workflow, inventory, and page-error failures** —
+   `cc06e2e` (`fix(06-01): aggregate application diagnostics safely`)
 
 **Plan metadata:** committed separately with this SUMMARY.
 
@@ -133,7 +138,28 @@ applications target keeps its established workflow matrix.**
 
 ## Deviations from Plan
 
-None - plan executed exactly as written.
+### Auto-fixed Issues
+
+**1. [Code Review - Diagnostics] Add Application page errors could be skipped on
+early workflow failure**
+
+- **Found during:** Phase 06 code review.
+- **Issue:** The newly tagged `@portal:applications` tests could fail before
+  `pageErrors.expectNoErrors(testInfo)`, leaving collected browser errors
+  unattached.
+- **Fix:** Wrapped Add Application test bodies in a diagnostic helper that
+  preserves workflow failures, attaches form inventory when possible, checks
+  page errors on both success and failure paths, and throws an `AggregateError`
+  when multiple diagnostics exist.
+- **Files modified:** `tests/authenticated/add-application.spec.ts`
+- **Verification:** `npm run check` passed after the fix.
+- **Committed in:** `7a6c69f`, `cc06e2e`
+
+---
+
+**Total deviations:** 1 auto-fixed code-review issue. **Impact on plan:** Scope
+stayed within the tagged Applications tests and strengthened existing
+diagnostics without changing the Add Application workflow steps or locators.
 
 ## Issues Encountered
 
@@ -174,6 +200,7 @@ Commands run by Codex orchestrator:
 3. `npm run docs:check` — passed.
 4. `npm run check` — passed (`lint`, `typecheck`, `test:triage`,
    `test:portal:unit`, `docs:check`).
+5. Phase 06 code review — passed clean after post-review diagnostic fixes.
 
 ## Self-Check
 
