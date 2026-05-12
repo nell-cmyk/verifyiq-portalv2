@@ -12,9 +12,12 @@ for (const area of portalAreas) {
   }, testInfo) => {
     const pageErrors = collectPageErrors(page);
 
-    await page.goto("/applications");
-    await expectSignInHidden(page);
-    await expectPortalAreaReachable(page, area);
-    await pageErrors.expectNoErrors(testInfo);
+    try {
+      await page.goto("/applications");
+      await expectSignInHidden(page);
+      await expectPortalAreaReachable(page, area);
+    } finally {
+      await pageErrors.expectNoErrors(testInfo);
+    }
   });
 }

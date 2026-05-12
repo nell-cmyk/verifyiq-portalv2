@@ -91,7 +91,15 @@ export async function resolvePortalHref(
     );
   }
 
-  const resolved = new URL(href, page.url());
+  const current = new URL(page.url());
+  const resolved = new URL(href, current);
+
+  if (resolved.origin !== current.origin) {
+    throw new Error(
+      `Required portal navigation link "${area.label}" for target "${area.target}" resolved outside the portal origin.`
+    );
+  }
+
   return `${resolved.pathname}${resolved.search}${resolved.hash}`;
 }
 
@@ -117,17 +125,20 @@ function escapePathForRegex(path: string): string {
   return path.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-function buildShellUrlPattern(hrefPath: string): RegExp {
+function buildShellUrlPattern(origin: string, hrefPath: string): RegExp {
   const pathname = hrefPath.split(/[?#]/)[0] ?? hrefPath;
-  return new RegExp(`${escapePathForRegex(pathname)}(?:[?#].*)?$`);
+  return new RegExp(
+    `^${escapePathForRegex(`${origin}${pathname}`)}(?:[?#].*)?$`
+  );
 }
 
 export async function expectPortalAreaReachable(
   page: Page,
   area: PortalArea
 ): Promise<void> {
+  const origin = new URL(page.url()).origin;
   const hrefPath = await resolvePortalHref(page, area);
-  const shellPattern = buildShellUrlPattern(hrefPath);
+  const shellPattern = buildShellUrlPattern(origin, hrefPath);
 
   const link = await getRequiredPortalNavLink(page, area);
   await link.click();
