@@ -3,6 +3,7 @@ import { test } from "node:test";
 
 import {
   ARTIFACT_PATHS,
+  PORTAL_TAGS,
   TRIAGE_FAILURE_WARNING,
   VALID_TARGETS,
   buildPlaywrightArgs,
@@ -81,12 +82,61 @@ test("buildPlaywrightArgs maps auth to the authenticated-chromium project", () =
   assert.deepEqual(args, ["test", "--project=authenticated-chromium"]);
 });
 
-test("buildPlaywrightArgs targets the Add Application spec for applications", () => {
+test("PORTAL_TAGS exposes the @portal:* tag for every portal target", () => {
+  assert.equal(PORTAL_TAGS.applications, "@portal:applications");
+  assert.equal(PORTAL_TAGS.activity, "@portal:activity");
+  assert.equal(PORTAL_TAGS["audit-logs"], "@portal:audit-logs");
+  assert.equal(PORTAL_TAGS.users, "@portal:users");
+  assert.equal(PORTAL_TAGS.roles, "@portal:roles");
+});
+
+test("buildPlaywrightArgs maps applications to the @portal:applications grep tag", () => {
   const args = buildPlaywrightArgs("applications");
   assert.deepEqual(args, [
     "test",
     "--project=authenticated-chromium",
-    "tests/authenticated/add-application.spec.ts"
+    "--grep",
+    "@portal:applications"
+  ]);
+});
+
+test("buildPlaywrightArgs maps activity to the @portal:activity grep tag", () => {
+  const args = buildPlaywrightArgs("activity");
+  assert.deepEqual(args, [
+    "test",
+    "--project=authenticated-chromium",
+    "--grep",
+    "@portal:activity"
+  ]);
+});
+
+test("buildPlaywrightArgs maps audit-logs to the @portal:audit-logs grep tag", () => {
+  const args = buildPlaywrightArgs("audit-logs");
+  assert.deepEqual(args, [
+    "test",
+    "--project=authenticated-chromium",
+    "--grep",
+    "@portal:audit-logs"
+  ]);
+});
+
+test("buildPlaywrightArgs maps users to the @portal:users grep tag", () => {
+  const args = buildPlaywrightArgs("users");
+  assert.deepEqual(args, [
+    "test",
+    "--project=authenticated-chromium",
+    "--grep",
+    "@portal:users"
+  ]);
+});
+
+test("buildPlaywrightArgs maps roles to the @portal:roles grep tag", () => {
+  const args = buildPlaywrightArgs("roles");
+  assert.deepEqual(args, [
+    "test",
+    "--project=authenticated-chromium",
+    "--grep",
+    "@portal:roles"
   ]);
 });
 
@@ -95,16 +145,21 @@ test("buildPlaywrightArgs appends passthrough flags after the target mapping", (
   assert.deepEqual(args, [
     "test",
     "--project=authenticated-chromium",
-    "tests/authenticated/add-application.spec.ts",
+    "--grep",
+    "@portal:applications",
     "--headed"
   ]);
 });
 
-test("buildPlaywrightArgs maps deep targets to authenticated coverage for now", () => {
-  for (const target of ["activity", "audit-logs", "users", "roles"]) {
-    const args = buildPlaywrightArgs(target);
-    assert.deepEqual(args, ["test", "--project=authenticated-chromium"]);
-  }
+test("buildPlaywrightArgs appends passthrough flags to deep portal targets", () => {
+  const args = buildPlaywrightArgs("activity", ["--headed"]);
+  assert.deepEqual(args, [
+    "test",
+    "--project=authenticated-chromium",
+    "--grep",
+    "@portal:activity",
+    "--headed"
+  ]);
 });
 
 test("buildPlaywrightArgs maps all to a bare playwright test invocation", () => {

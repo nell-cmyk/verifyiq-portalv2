@@ -27,17 +27,35 @@ export const TRIAGE_FAILURE_WARNING =
 
 const AUTHENTICATED_PROJECT = "--project=authenticated-chromium";
 const PUBLIC_PROJECT = "--project=public-smoke";
-const APPLICATIONS_SPEC = "tests/authenticated/add-application.spec.ts";
+const GREP_FLAG = "--grep";
+
+export const PORTAL_TAGS = {
+  applications: "@portal:applications",
+  activity: "@portal:activity",
+  "audit-logs": "@portal:audit-logs",
+  users: "@portal:users",
+  roles: "@portal:roles"
+};
 
 const TARGET_ARGS = {
   all: ["test"],
   public: ["test", PUBLIC_PROJECT],
   auth: ["test", AUTHENTICATED_PROJECT],
-  applications: ["test", AUTHENTICATED_PROJECT, APPLICATIONS_SPEC],
-  activity: ["test", AUTHENTICATED_PROJECT],
-  "audit-logs": ["test", AUTHENTICATED_PROJECT],
-  users: ["test", AUTHENTICATED_PROJECT],
-  roles: ["test", AUTHENTICATED_PROJECT]
+  applications: [
+    "test",
+    AUTHENTICATED_PROJECT,
+    GREP_FLAG,
+    PORTAL_TAGS.applications
+  ],
+  activity: ["test", AUTHENTICATED_PROJECT, GREP_FLAG, PORTAL_TAGS.activity],
+  "audit-logs": [
+    "test",
+    AUTHENTICATED_PROJECT,
+    GREP_FLAG,
+    PORTAL_TAGS["audit-logs"]
+  ],
+  users: ["test", AUTHENTICATED_PROJECT, GREP_FLAG, PORTAL_TAGS.users],
+  roles: ["test", AUTHENTICATED_PROJECT, GREP_FLAG, PORTAL_TAGS.roles]
 };
 
 export function formatValidTargets() {
