@@ -93,7 +93,7 @@ area.
 
 Plans:
 
-- [ ] 06-01: Add portal target wiring and shared navigation assertions.
+- [x] 06-01: Add portal target wiring and shared navigation assertions.
 - [ ] 06-02: Add authenticated portal page coverage.
 
 ### Phase 7: Automation-Owned Mutation Safety Harness
