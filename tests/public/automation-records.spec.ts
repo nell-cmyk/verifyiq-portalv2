@@ -194,7 +194,7 @@ test("recordAutomationCleanup and getAutomationCleanupFailures preserve a failed
   recordAutomationCleanup(context, record, {
     action: "cleanup",
     status: "failed",
-    message: "Delete button missing",
+    reason: "control_missing",
     routeOrSection: "/users"
   });
 
@@ -203,7 +203,47 @@ test("recordAutomationCleanup and getAutomationCleanupFailures preserve a failed
   expect(failures[0]?.visibleName).toBe(visibleName);
   expect(failures[0]?.action).toBe("cleanup");
   expect(failures[0]?.routeOrSection).toBe("/users");
-  expect(failures[0]?.message).toBe("Delete button missing");
+  expect(failures[0]?.reason).toBe("control_missing");
+});
+
+test("recordAutomationCleanup rejects unregistered records before appending notes", () => {
+  const context = makeUsersContext();
+  const visibleName = createAutomationRecordName(context, "reviewer");
+  const unregisteredRecord = {
+    label: "reviewer",
+    visibleName,
+    area: "users",
+    runId: fixedRunId
+  } as const;
+
+  expect(() =>
+    recordAutomationCleanup(context, unregisteredRecord, {
+      action: "cleanup",
+      status: "failed",
+      reason: "unknown"
+    })
+  ).toThrow(/record_not_registered/);
+  expect(context.cleanupNotes).toHaveLength(0);
+});
+
+test("recordAutomationCleanup rejects stale records before appending notes", () => {
+  const context = makeUsersContext();
+  const visibleName = createAutomationRecordName(context, "reviewer");
+  const record = registerAutomationRecord(context, {
+    label: "reviewer",
+    visibleName
+  });
+  const driftedRecord = { ...record, runId: "20260101-010101-0000" };
+  context.records[0] = driftedRecord;
+
+  expect(() =>
+    recordAutomationCleanup(context, driftedRecord, {
+      action: "cleanup",
+      status: "failed",
+      reason: "unknown"
+    })
+  ).toThrow(/stale_run_id/);
+  expect(context.cleanupNotes).toHaveLength(0);
 });
 
 test("formatAutomationRunDiagnostics keeps visible identifiers only and omits secret-bearing keys", () => {
@@ -218,7 +258,7 @@ test("formatAutomationRunDiagnostics keeps visible identifiers only and omits se
   recordAutomationCleanup(context, record, {
     action: "cleanup",
     status: "failed",
-    message: "Visible cleanup residue note",
+    reason: "timeout",
     routeOrSection: "/users"
   });
 
@@ -254,7 +294,34 @@ test("aggregateAutomationFailures returns an AggregateError when an original fai
   const aggregateError = aggregated as AggregateError;
   expect(aggregateError.message).toMatch(/automation_cleanup_failed/);
   expect(aggregateError.errors).toContain(original);
-  expect(aggregateError.errors).toContain(cleanup);
+  expect(aggregateError.errors).not.toContain(cleanup);
+  expect(aggregateError.errors[1]?.message).toBe(
+    "automation_cleanup_failed: cleanup_error_1"
+  );
+});
+
+test("aggregateAutomationFailures keeps cleanup error details out of top-level messages", () => {
+  const aggregated = aggregateAutomationFailures(
+    undefined,
+    [
+      new Error(
+        "raw cleanup password token cookie storageState .env innerHTML outerHTML document.body"
+      )
+    ],
+    "users password token cookie storageState .env innerHTML outerHTML document.body mutation"
+  );
+
+  expect(aggregated).toBeInstanceOf(Error);
+  const message = (aggregated as Error).message;
+  expect(message).toMatch(/automation_cleanup_failed/);
+  expect(message).not.toMatch(/password/i);
+  expect(message).not.toMatch(/token/i);
+  expect(message).not.toMatch(/cookie/i);
+  expect(message).not.toMatch(/storageState/i);
+  expect(message).not.toMatch(/\.env/);
+  expect(message).not.toMatch(/innerHTML/i);
+  expect(message).not.toMatch(/outerHTML/i);
+  expect(message).not.toMatch(/document\.body/i);
 });
 
 test("aggregateAutomationFailures preserves the original error alone when no cleanup failures exist", () => {

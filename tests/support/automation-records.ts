@@ -12,6 +12,12 @@ export type AutomationAction = "update" | "delete" | "cleanup";
 
 export type AutomationCleanupStatus = "succeeded" | "failed" | "skipped";
 
+export type AutomationCleanupReason =
+  | "candidate_missing"
+  | "control_missing"
+  | "timeout"
+  | "unknown";
+
 export interface AutomationRecord {
   readonly label: string;
   readonly visibleName: string;
@@ -24,7 +30,7 @@ export interface AutomationCleanupNote {
   readonly visibleName: string;
   readonly action: AutomationAction;
   readonly status: AutomationCleanupStatus;
-  readonly message?: string;
+  readonly reason?: AutomationCleanupReason;
   readonly routeOrSection?: string;
 }
 
@@ -48,7 +54,7 @@ export interface AutomationRecordInput {
 export interface AutomationCleanupResult {
   readonly action: AutomationAction;
   readonly status: AutomationCleanupStatus;
-  readonly message?: string;
+  readonly reason?: AutomationCleanupReason;
   readonly routeOrSection?: string;
 }
 
@@ -214,11 +220,14 @@ export function recordAutomationCleanup(
   record: AutomationRecord,
   result: AutomationCleanupResult
 ): AutomationCleanupNote {
+  assertRegisteredSameRunRecord(context, record, result.action);
+
   const note: AutomationCleanupNote = {
     visibleName: record.visibleName,
     action: result.action,
     status: result.status,
-    message: result.message,
+    reason:
+      result.status === "failed" ? (result.reason ?? "unknown") : undefined,
     routeOrSection: result.routeOrSection ?? record.routeOrSection
   };
   context.cleanupNotes.push(note);
@@ -238,21 +247,24 @@ export function aggregateAutomationFailures(
 ): unknown {
   const hasOriginal = originalError !== undefined;
   const cleanupCount = cleanupErrors.length;
+  const diagnosticMessage = safeDiagnosticMessage(message);
+  const cleanupResidueErrors = cleanupErrors.map(
+    (_, index) =>
+      new Error(`automation_cleanup_failed: cleanup_error_${index + 1}`)
+  );
 
   if (!hasOriginal && cleanupCount === 0) {
     return undefined;
   }
 
   if (!hasOriginal && cleanupCount === 1) {
-    return new Error(
-      `automation_cleanup_failed: ${message}: ${describeError(cleanupErrors[0])}`
-    );
+    return new Error(`automation_cleanup_failed: ${diagnosticMessage}`);
   }
 
   if (!hasOriginal && cleanupCount > 1) {
     return new AggregateError(
-      [...cleanupErrors],
-      `automation_cleanup_failed: ${message}`
+      cleanupResidueErrors,
+      `automation_cleanup_failed: ${diagnosticMessage}`
     );
   }
 
@@ -261,23 +273,42 @@ export function aggregateAutomationFailures(
   }
 
   return new AggregateError(
-    [originalError, ...cleanupErrors],
-    `automation_cleanup_failed: ${message}`
+    [originalError, ...cleanupResidueErrors],
+    `automation_cleanup_failed: ${diagnosticMessage}`
   );
 }
 
-function describeError(value: unknown): string {
-  if (value instanceof Error) {
-    return value.message;
+function assertRegisteredSameRunRecord(
+  context: AutomationRunContext,
+  record: AutomationRecord,
+  action: AutomationAction
+): void {
+  if (record.area !== context.area || !context.records.includes(record)) {
+    throw new Error(
+      `recordAutomationCleanup refused "${record.visibleName}" for ${action}: record_not_registered.`
+    );
   }
-  if (typeof value === "string") {
-    return value;
+
+  if (record.runId !== context.runId) {
+    throw new Error(
+      `recordAutomationCleanup refused "${record.visibleName}" for ${action}: stale_run_id.`
+    );
   }
-  try {
-    return JSON.stringify(value);
-  } catch {
-    return String(value);
+
+  if (!record.visibleName.startsWith(runPrefix(context))) {
+    throw new Error(
+      `recordAutomationCleanup refused "${record.visibleName}" for ${action}: visible_name_missing_run_prefix.`
+    );
   }
+}
+
+function safeDiagnosticMessage(message: string): string {
+  return message
+    .replace(
+      /password|token|cookie|storageState|\.env|innerHTML|outerHTML|document\.body/gi,
+      "[redacted]"
+    )
+    .slice(0, 160);
 }
 
 export function formatAutomationRunDiagnostics(
@@ -299,7 +330,7 @@ export function formatAutomationRunDiagnostics(
       visibleName: note.visibleName,
       action: note.action,
       status: note.status,
-      message: note.message,
+      reason: note.reason,
       routeOrSection: note.routeOrSection
     }))
   };
