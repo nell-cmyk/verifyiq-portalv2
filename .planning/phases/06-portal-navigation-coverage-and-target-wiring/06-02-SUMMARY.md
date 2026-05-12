@@ -97,7 +97,7 @@ nav affordance, and a stable `main`/`[role='main']` shell with
   portal area named `${area.label} portal area is reachable ${area.tag}`,
   following the established skeleton: `collectPageErrors` before navigation,
   `page.goto("/applications")`, `expectSignInHidden`,
-  `expectPortalAreaReachable`, `pageErrors.expectNoErrors(testInfo)`.
+  `expectPortalAreaReachable`, then aggregate action and page-error diagnostics.
 - Removed `tests/authenticated/workflow-smoke.spec.ts`. Its Applications-only
   page smoke is fully represented by the Applications iteration of the new
   portal-navigation spec, so keeping it would duplicate coverage under the
@@ -118,6 +118,8 @@ nav affordance, and a stable `main`/`[role='main']` shell with
    (`fix(06-02): harden portal navigation assertions`)
 5. **Post-review fix: Aggregate portal navigation diagnostics** — `d02e9a0`
    (`fix(06-02): aggregate portal navigation diagnostics`)
+6. **Live UAT fix: Align portal headings with the live app** — `f749506`
+   (`fix(06-02): align portal headings with live app`)
 
 **Plan metadata:** orchestrator-committed alongside this summary.
 
@@ -157,6 +159,10 @@ nav affordance, and a stable `main`/`[role='main']` shell with
 - **Same-origin nav validation is enforced.** `resolvePortalHref` still returns
   the required path string, but now rejects required nav links that resolve
   outside the current portal origin before click or direct-route assertions run.
+- **Live headings can differ from nav labels.** Fresh authenticated UAT showed
+  Activity renders `Activity Log` and Audit Logs renders
+  `Processing Audit Log Export`, so `portalAreas` now asserts those stable page
+  headings while keeping the visible nav labels and runner target names intact.
 - **Spec uses `for (const area of portalAreas)` at module scope, not
   `test.describe`.** This matches the existing `add-application.spec.ts`
   iteration shape so all authenticated specs share one style.
@@ -193,11 +199,26 @@ replace primary failures**
 - **Verification:** `npm run check` passed after the fix.
 - **Committed in:** `d02e9a0`
 
+**3. [Live UAT - Heading Contract] Activity and Audit Logs headings differed
+from planned nav-label headings**
+
+- **Found during:** Auth-gated UAT after `npm run auth:record`.
+- **Issue:** Activity reached `/activity` but rendered heading `Activity Log`;
+  Audit Logs reached `/audit-logs` but rendered heading
+  `Processing Audit Log Export`.
+- **Fix:** Updated `portalAreas` heading regexes to match the observed stable
+  live page headings while preserving nav labels, target names, and live href
+  discovery.
+- **Files modified:** `tests/support/portal-navigation.ts`
+- **Verification:** Focused portal navigation spec passed 6/6, each
+  authenticated runner target passed, and `npm run check` passed after the fix.
+- **Committed in:** `f749506`
+
 ---
 
-**Total deviations:** 2 auto-fixed code-review issues. **Impact on plan:** Both
-fixes strengthen the planned navigation and PORT-06 diagnostics without adding
-dependencies, mutation flows, or static route maps.
+**Total deviations:** 3 auto-fixed issues (2 code-review, 1 live UAT). **Impact
+on plan:** Fixes strengthen the planned navigation and PORT-06 diagnostics
+without adding dependencies, mutation flows, or static route maps.
 
 ## Issues Encountered
 
@@ -214,18 +235,10 @@ and every `npm run test:portal -- <target>` command for `applications`,
 `activity`, `audit-logs`, `users`, `roles`, and `auth`) requires valid storage
 state because the VerifyIQ sandbox login is reCAPTCHA-gated.
 
-The orchestrator found that local storage state is expired:
-`playwright/.auth/user.json` did not reach the authenticated app. This is the
-documented Phase 6 auth-state blocker, not a portal regression. No `.env`,
-`playwright/.auth/`, cookie, token, or serialized storage-state content was read
-or printed. The recovery options remain:
-
-- `npm run auth:record` to record a fresh ignored local
-  `playwright/.auth/user.json` through the headed CAPTCHA flow.
-- Refresh the `VERIFYIQ_STORAGE_STATE_JSON` repository secret with a current
-  storage-state JSON value.
-- Refresh `VERIFYIQ_STORAGE_STATE_PATH` to point at an updated storage-state
-  file.
+The initial orchestrator run found expired local storage state. After refreshing
+auth with `npm run auth:record`, all auth-gated portal navigation and runner
+target commands passed. No `.env`, `playwright/.auth/`, cookie, token, or
+serialized storage-state content was read or printed.
 
 ## User Setup Required
 
@@ -241,24 +254,20 @@ Commands run by Codex orchestrator:
 2. `npm run check` — passed (`lint`, `typecheck`, `test:triage`,
    `test:portal:unit`, `docs:check`).
 3. `npx playwright test --project=authenticated-chromium tests/authenticated/portal-navigation.spec.ts`
-   — auth-blocked. Setup failed because stored state from
-   `playwright/.auth/user.json` did not reach the authenticated app; 5 portal
-   tests did not run.
-4. `npm run test:portal -- applications` — auth-blocked with the same expired
-   stored state. Runner printed `Running Playwright command:` with
-   `--grep @portal:applications` and printed the `Artifacts:` block.
-5. `npm run test:portal -- activity` — auth-blocked with the same expired stored
-   state. Runner printed `--grep @portal:activity` and the `Artifacts:` block.
-6. `npm run test:portal -- audit-logs` — auth-blocked with the same expired
-   stored state. Runner printed `--grep @portal:audit-logs` and the `Artifacts:`
-   block.
-7. `npm run test:portal -- users` — auth-blocked with the same expired stored
-   state. Runner printed `--grep @portal:users` and the `Artifacts:` block.
-8. `npm run test:portal -- roles` — auth-blocked with the same expired stored
-   state. Runner printed `--grep @portal:roles` and the `Artifacts:` block.
-9. `npm run test:portal -- auth` — auth-blocked with the same expired stored
-   state. Runner printed the authenticated project command and the `Artifacts:`
-   block.
+   — passed, 6 tests.
+4. `npm run test:portal -- applications` — passed, 7 tests, printed
+   `Running Playwright command:` with `--grep @portal:applications` and printed
+   the `Artifacts:` block.
+5. `npm run test:portal -- activity` — passed, 2 tests, printed
+   `--grep @portal:activity` and the `Artifacts:` block.
+6. `npm run test:portal -- audit-logs` — passed, 2 tests, printed
+   `--grep @portal:audit-logs` and the `Artifacts:` block.
+7. `npm run test:portal -- users` — passed, 2 tests, printed
+   `--grep @portal:users` and the `Artifacts:` block.
+8. `npm run test:portal -- roles` — passed, 2 tests, printed
+   `--grep @portal:roles` and the `Artifacts:` block.
+9. `npm run test:portal -- auth` — passed, 12 tests, printed the authenticated
+   project command and the `Artifacts:` block.
 10. Phase 06 code review — passed clean after post-review fixes.
 
 ## Self-Check
@@ -283,18 +292,18 @@ File-level acceptance checks performed in this runtime (shell unavailable):
   tags appear in the file.
 - PASS — Every portal-navigation test starts with `collectPageErrors(page)`,
   navigates to `/applications`, calls `expectSignInHidden(page)`, calls
-  `expectPortalAreaReachable(page, area)`, and ends with
-  `pageErrors.expectNoErrors(testInfo)`.
+  `expectPortalAreaReachable(page, area)`, and checks page errors without
+  masking primary navigation failures.
 - PASS — The new spec contains no `create`, `update`, `delete`, `invite`,
   `save`, or `cleanup` workflow actions.
 - PASS — `tests/authenticated/workflow-smoke.spec.ts` is removed so no duplicate
   standalone Applications-only smoke remains under `tests/authenticated/`.
 - PASS — `npm run test:portal:unit` and `npm run check` passed in the parent
   Codex orchestrator.
-- AUTH-BLOCKED — authenticated portal navigation and target runs reached the
-  setup project and failed only because `playwright/.auth/user.json` is expired.
+- PASS — authenticated portal navigation and target runs passed after refreshing
+  local storage state.
 
-## Self-Check: PASSED with auth-state blocker recorded
+## Self-Check: PASSED
 
 ## Next Phase Readiness
 

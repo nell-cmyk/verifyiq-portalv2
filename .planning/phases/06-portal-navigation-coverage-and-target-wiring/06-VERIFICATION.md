@@ -1,28 +1,18 @@
 ---
 phase: 06-portal-navigation-coverage-and-target-wiring
-verified: 2026-05-12T03:25:25Z
-status: human_needed
+verified: 2026-05-12T03:37:38Z
+status: passed
 score: 12/12 must-haves verified
 overrides_applied: 0
-human_verification:
-  - test: "Auth-gated portal execution with fresh storage state"
-    expected:
-      "The portal navigation spec and authenticated runner targets execute
-      against the VerifyIQ portal, or fail only on real portal/navigation
-      defects with secret-safe artifacts."
-    why_human:
-      "Current local stored auth state is expired and the sandbox login is
-      reCAPTCHA-gated. Refresh with npm run auth:record,
-      VERIFYIQ_STORAGE_STATE_JSON, or VERIFYIQ_STORAGE_STATE_PATH before live
-      execution."
+human_verification: []
 ---
 
 # Phase 6: Portal Navigation Coverage and Target Wiring Verification Report
 
 **Phase Goal:** The runner supports all required target names and authenticated
 portal page coverage verifies stable operator-visible landmarks for each visible
-portal area. **Verified:** 2026-05-12T03:25:25Z **Status:** human_needed
-**Re-verification:** No - initial verification
+portal area. **Verified:** 2026-05-12T03:37:38Z **Status:** passed
+**Re-verification:** Yes - auth-gated UAT completed after storage-state refresh.
 
 ## Goal Achievement
 
@@ -45,8 +35,10 @@ portal area. **Verified:** 2026-05-12T03:25:25Z **Status:** human_needed
 
 **Score:** 12/12 code must-haves verified.
 
-Live authenticated execution remains human-needed because the current stored
-auth state is expired. This is an auth-state blocker, not a code gap.
+Live authenticated execution passed after refreshing local storage state. During
+live UAT, Activity and Audit Logs exposed stable headings that differ from their
+navigation labels; the helper contract was corrected to assert `Activity Log`
+and `Processing Audit Log Export`.
 
 ### Required Artifacts
 
@@ -82,25 +74,26 @@ auth state is expired. This is an auth-state blocker, not a code gap.
 
 ### Behavioral Spot-Checks
 
-| Behavior                                       | Command                                                                                                                                                         | Result                                                                                        | Status       |
-| ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ------------ | ------ | ---- | ------------------------------------------------------------------------------------------ | ----------- | ---- |
-| Runner unit behavior                           | `npm run test:portal:unit`                                                                                                                                      | 29 tests passed.                                                                              | PASS         |
-| Generated portal/add-application tag selection | `npx playwright test --list --project=authenticated-chromium --grep '@portal:applications\|@portal:activity\|@portal:audit-logs\|@portal:users\|@portal:roles'` | Listed setup plus 10 tagged authenticated tests across Add Application and portal navigation. | PASS         |
-| Exact runner target mappings                   | `node --input-type=module -e '...'`                                                                                                                             | Printed exact arrays for all eight targets, including portal `--grep` tags.                   | PASS         |
-| Non-mutating portal navigation scope           | `rg -n "create                                                                                                                                                  | update                                                                                        | delete       | invite | save | cleanup" tests/authenticated/portal-navigation.spec.ts tests/support/portal-navigation.ts` | No matches. | PASS |
-| Live auth-gated portal run                     | Orchestrator-authenticated Playwright and runner target commands                                                                                                | Blocked by expired `playwright/.auth/user.json`; recovery documented.                         | HUMAN NEEDED |
+| Behavior                                       | Command                                                                                                                                                         | Result                                                                                        | Status |
+| ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ------ |
+| Runner unit behavior                           | `npm run test:portal:unit`                                                                                                                                      | 29 tests passed.                                                                              | PASS   |
+| Generated portal/add-application tag selection | `npx playwright test --list --project=authenticated-chromium --grep '@portal:applications\|@portal:activity\|@portal:audit-logs\|@portal:users\|@portal:roles'` | Listed setup plus 10 tagged authenticated tests across Add Application and portal navigation. | PASS   |
+| Exact runner target mappings                   | `node --input-type=module -e '...'`                                                                                                                             | Printed exact arrays for all eight targets, including portal `--grep` tags.                   | PASS   |
+| Non-mutating portal navigation scope           | `rg -n "create\|update\|delete\|invite\|save\|cleanup" tests/authenticated/portal-navigation.spec.ts tests/support/portal-navigation.ts`                        | No matches.                                                                                   | PASS   |
+| Focused live portal navigation                 | `npx playwright test --project=authenticated-chromium tests/authenticated/portal-navigation.spec.ts`                                                            | 6 tests passed.                                                                               | PASS   |
+| Authenticated runner target coverage           | `npm run test:portal -- applications/activity/audit-logs/users/roles/auth`                                                                                      | Applications: 7 passed; activity/audit-logs/users/roles: 2 passed each; auth: 12 passed.      | PASS   |
 
 ### Requirements Coverage
 
-| Requirement | Source Plan | Description                                                                                                                 | Status                 | Evidence                                                                                                                                          |
-| ----------- | ----------- | --------------------------------------------------------------------------------------------------------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| RUN-02      | 06-01       | User can choose runner targets for `all`, `public`, `auth`, `applications`, `activity`, `audit-logs`, `users`, and `roles`. | SATISFIED              | Exact allowlist and mapping tests pass; module spot-check printed all target args.                                                                |
-| PORT-01     | 06-02       | Authenticated user can verify Applications page availability and landmarks through the unified runner.                      | NEEDS HUMAN LIVE CHECK | Code path exists through `@portal:applications`, Add Application tests, and Applications portal navigation test. Live run needs fresh auth state. |
-| PORT-02     | 06-02       | Authenticated user can verify Activity page availability and landmarks through the unified runner.                          | NEEDS HUMAN LIVE CHECK | Code path exists through `@portal:activity` and the Activity portal navigation test. Live run needs fresh auth state.                             |
-| PORT-03     | 06-02       | Authenticated user can verify Audit Logs page availability and landmarks through the unified runner.                        | NEEDS HUMAN LIVE CHECK | Code path exists through `@portal:audit-logs` and the Audit Logs portal navigation test. Live run needs fresh auth state.                         |
-| PORT-04     | 06-02       | Authenticated user can verify Users page availability and landmarks through the unified runner.                             | NEEDS HUMAN LIVE CHECK | Code path exists through `@portal:users` and the Users portal navigation test. Live run needs fresh auth state.                                   |
-| PORT-05     | 06-02       | Authenticated user can verify Roles page availability and landmarks through the unified runner.                             | NEEDS HUMAN LIVE CHECK | Code path exists through `@portal:roles` and the Roles portal navigation test. Live run needs fresh auth state.                                   |
-| PORT-06     | 06-02       | Portal feature coverage surfaces serious page or console errors using the existing page-error collection pattern.           | SATISFIED              | `collectPageErrors` is wired in portal navigation and Add Application diagnostics; page-error helper attaches and fails on serious errors.        |
+| Requirement | Source Plan | Description                                                                                                                 | Status    | Evidence                                                                                                                                   |
+| ----------- | ----------- | --------------------------------------------------------------------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| RUN-02      | 06-01       | User can choose runner targets for `all`, `public`, `auth`, `applications`, `activity`, `audit-logs`, `users`, and `roles`. | SATISFIED | Exact allowlist and mapping tests pass; module spot-check printed all target args.                                                         |
+| PORT-01     | 06-02       | Authenticated user can verify Applications page availability and landmarks through the unified runner.                      | SATISFIED | `npm run test:portal -- applications` passed with 7 tests.                                                                                 |
+| PORT-02     | 06-02       | Authenticated user can verify Activity page availability and landmarks through the unified runner.                          | SATISFIED | `npm run test:portal -- activity` passed with 2 tests and asserted the live `Activity Log` heading.                                        |
+| PORT-03     | 06-02       | Authenticated user can verify Audit Logs page availability and landmarks through the unified runner.                        | SATISFIED | `npm run test:portal -- audit-logs` passed with 2 tests and asserted the live `Processing Audit Log Export` heading.                       |
+| PORT-04     | 06-02       | Authenticated user can verify Users page availability and landmarks through the unified runner.                             | SATISFIED | `npm run test:portal -- users` passed with 2 tests.                                                                                        |
+| PORT-05     | 06-02       | Authenticated user can verify Roles page availability and landmarks through the unified runner.                             | SATISFIED | `npm run test:portal -- roles` passed with 2 tests.                                                                                        |
+| PORT-06     | 06-02       | Portal feature coverage surfaces serious page or console errors using the existing page-error collection pattern.           | SATISFIED | `collectPageErrors` is wired in portal navigation and Add Application diagnostics; page-error helper attaches and fails on serious errors. |
 
 No orphaned Phase 6 requirements found. `.planning/REQUIREMENTS.md` maps exactly
 RUN-02 and PORT-01 through PORT-06 to Phase 6.
@@ -114,7 +107,7 @@ RUN-02 and PORT-01 through PORT-06 to Phase 6.
 No placeholder, TODO, empty-render, hardcoded-empty, or mutation-action blockers
 were found in the Phase 6 source scope.
 
-### Human Verification Required
+### Human Verification Completed
 
 ### 1. Auth-Gated Portal Execution With Fresh Storage State
 
@@ -135,16 +128,13 @@ npm run test:portal -- auth
 coverage, preserve native Playwright artifacts, and fail only for real
 portal/navigation defects with secret-safe diagnostics.
 
-**Why human:** The current local stored auth state is expired, and the sandbox
-sign-in is reCAPTCHA-gated. Automated verification must not read or print
-`.env`, `playwright/.auth`, cookies, tokens, or serialized storage state.
+**Result:** Passed after refreshing local storage state with
+`npm run auth:record`. No `.env`, `playwright/.auth`, cookie, token, or
+serialized storage-state content was read or printed.
 
 ### Gaps Summary
 
-No code gaps found. The only blocker is auth-state freshness for live
-authenticated execution. Recovery is to refresh storage state with
-`npm run auth:record`, `VERIFYIQ_STORAGE_STATE_JSON`, or
-`VERIFYIQ_STORAGE_STATE_PATH`, then rerun the auth-gated commands above.
+No code gaps remain. Auth-gated UAT passed.
 
 ---
 

@@ -1,16 +1,16 @@
 ---
-status: partial
+status: resolved
 phase: 06-portal-navigation-coverage-and-target-wiring
 source: [06-VERIFICATION.md]
 started: 2026-05-12T03:28:50Z
-updated: 2026-05-12T03:28:50Z
+updated: 2026-05-12T03:37:38Z
 ---
 
 # Phase 06 Human UAT
 
 ## Current Test
 
-Awaiting fresh authenticated VerifyIQ storage state.
+Completed with fresh authenticated VerifyIQ storage state.
 
 ## Tests
 
@@ -35,12 +35,13 @@ npm run test:portal -- auth
 recovery: Refresh local auth with `npm run auth:record`, or provide fresh
 `VERIFYIQ_STORAGE_STATE_JSON` / `VERIFYIQ_STORAGE_STATE_PATH`.
 
-result: blocked - local `playwright/.auth/user.json` is expired.
+result: passed - all listed authenticated commands exited 0 after refreshing
+local storage state.
 
 ## Summary
 
-total: 1 passed: 0 issues: 0 pending: 0 skipped: 0 blocked: 1
+total: 1 passed: 1 issues: 0 pending: 0 skipped: 0 blocked: 0
 
 ## Gaps
 
-None. This is an environment auth-state blocker, not a code gap.
+None.

@@ -1,6 +1,6 @@
 ---
 phase: 06-portal-navigation-coverage-and-target-wiring
-reviewed: 2026-05-12T03:18:37Z
+reviewed: 2026-05-12T03:44:17Z
 depth: standard
 files_reviewed: 6
 files_reviewed_list:
@@ -20,33 +20,36 @@ status: clean
 
 # Phase 06: Code Review Report
 
-**Reviewed:** 2026-05-12T03:18:37Z **Depth:** standard **Files Reviewed:** 6
+**Reviewed:** 2026-05-12T03:44:17Z **Depth:** standard **Files Reviewed:** 6
 **Status:** clean
 
 ## Summary
 
-Reviewed the Phase 06 runner target wiring, authenticated portal navigation
-coverage, Add Application diagnostics, portal navigation helper, unit tests, and
-README command documentation.
+Reviewed the final Phase 06 source scope after the live-UAT heading alignment
+for `Activity Log` and `Processing Audit Log Export`.
 
-The portal navigation diagnostic aggregation fix is present in
-`tests/authenticated/portal-navigation.spec.ts`; navigation/action failures and
-page-error diagnostics are collected before a single error or `AggregateError`
-is thrown. Add Application diagnostics use the same aggregation pattern and
-protect the form-inventory attachment path from masking the primary failure.
+The reviewed source covers the portal runner target allowlist, Playwright
+`@portal:*` target mappings, runner unit coverage, Add Application diagnostic
+aggregation, authenticated portal navigation coverage, shared portal navigation
+helpers, and README command documentation.
 
-Runner target selection maps the required targets to explicit Playwright
-project/tag selections. Unit coverage verifies the v1.1 target allowlist, portal
-tags, per-target Playwright args, passthrough handling, artifact output wording,
-and exit-code preservation. List-mode Playwright checks confirmed each portal
-tag selects the setup dependency plus the intended authenticated spec(s).
+No blocker or warning findings were identified. The runner remains a thin
+Playwright wrapper, portal-specific targets map to authenticated project grep
+tags, page-error diagnostics are aggregated without masking primary failures,
+and the live-UAT heading patterns are present in the shared portal area table.
 
-No remaining bugs, security issues, behavioral regressions, or missing-test gaps
-were found in the reviewed source scope. `npm run check` passed.
+Verification performed during review:
+
+- `npm run test:portal:unit` passed.
+- `npm run typecheck` passed.
+- `npm run docs:check` passed.
+- `npm run check` passed.
+- `npx playwright test --list --project=authenticated-chromium --grep "@portal:applications|@portal:activity|@portal:audit-logs|@portal:users|@portal:roles"`
+  listed the setup dependency plus all tagged authenticated portal tests.
 
 All reviewed files meet quality standards. No issues found.
 
 ---
 
-_Reviewed: 2026-05-12T03:18:37Z_ _Reviewer: the agent (gsd-code-reviewer)_
+_Reviewed: 2026-05-12T03:44:17Z_ _Reviewer: the agent (gsd-code-reviewer)_
 _Depth: standard_
