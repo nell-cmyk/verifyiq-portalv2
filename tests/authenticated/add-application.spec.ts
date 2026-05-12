@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page, type TestInfo } from "@playwright/test";
 import {
   expectAuthenticatedApplicationsPage,
   expectSignInHidden
@@ -17,6 +17,42 @@ import { collectPageErrors } from "../support/page-errors.js";
 
 const applicationsTargetTag = "@portal:applications";
 
+async function runWithApplicationDiagnostics(
+  page: Page,
+  testInfo: TestInfo,
+  action: () => Promise<void>
+): Promise<void> {
+  const pageErrors = collectPageErrors(page);
+  let workflowError: unknown;
+
+  try {
+    await action();
+  } catch (error) {
+    workflowError = error;
+    await attachFormInventory(page, testInfo);
+  }
+
+  let pageError: unknown;
+  try {
+    await pageErrors.expectNoErrors(testInfo);
+  } catch (error) {
+    pageError = error;
+  }
+
+  if (workflowError && pageError) {
+    throw new AggregateError(
+      [workflowError, pageError],
+      "Add Application test failed and collected page errors."
+    );
+  }
+  if (workflowError) {
+    throw workflowError;
+  }
+  if (pageError) {
+    throw pageError;
+  }
+}
+
 function documentTypeLabel(documentType: PrimaryDocumentType): string {
   return documentType.toUpperCase().replace(/ /g, "_");
 }
@@ -28,9 +64,7 @@ for (const documentType of primaryDocumentTypes) {
       : `authenticated user can create an application with primary document ${documentType}`;
 
   test(`${testName} ${applicationsTargetTag}`, async ({ page }, testInfo) => {
-    const pageErrors = collectPageErrors(page);
-
-    try {
+    await runWithApplicationDiagnostics(page, testInfo, async () => {
       await page.goto("/applications");
 
       await expectSignInHidden(page);
@@ -54,21 +88,14 @@ for (const documentType of primaryDocumentTypes) {
       await page.getByRole("button", { name: /^Create Application$/i }).click();
 
       await expectCreatedApplicationVisible(page, applicantName);
-
-      await pageErrors.expectNoErrors(testInfo);
-    } catch (error) {
-      await attachFormInventory(page, testInfo);
-      throw error;
-    }
+    });
   });
 }
 
 test(`authenticated user sees required applicant validation ${applicationsTargetTag}`, async ({
   page
 }, testInfo) => {
-  const pageErrors = collectPageErrors(page);
-
-  try {
+  await runWithApplicationDiagnostics(page, testInfo, async () => {
     await page.goto("/applications/new");
 
     await expectNewApplicationPage(page);
@@ -80,10 +107,5 @@ test(`authenticated user sees required applicant validation ${applicationsTarget
     );
 
     await expect(page).toHaveURL(/\/applications\/new(?:[?#].*)?$/);
-
-    await pageErrors.expectNoErrors(testInfo);
-  } catch (error) {
-    await attachFormInventory(page, testInfo);
-    throw error;
-  }
+  });
 });
