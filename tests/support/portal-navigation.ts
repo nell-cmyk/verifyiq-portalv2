@@ -32,13 +32,13 @@ export const portalAreas: readonly PortalArea[] = [
     target: "activity",
     tag: "@portal:activity",
     label: "Activity",
-    headingPattern: /^Activity$/i
+    headingPattern: /^Activity Log$/i
   },
   {
     target: "audit-logs",
     tag: "@portal:audit-logs",
     label: "Audit Logs",
-    headingPattern: /^Audit Logs$/i
+    headingPattern: /^Processing Audit Log Export$/i
   },
   {
     target: "users",
