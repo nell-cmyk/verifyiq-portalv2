@@ -5,6 +5,7 @@ export default tseslint.config(
   {
     ignores: [
       ".codex/**",
+      ".claude/worktrees/**",
       ".git/**",
       "node_modules/**",
       "playwright-report/**",

@@ -2,6 +2,7 @@
 
 # Local Codex/GSD runtime install. Planning artifacts live in .planning/.
 .codex/
+.claude/worktrees/
 
 # Node
 node_modules/
