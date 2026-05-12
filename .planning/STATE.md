@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Unified Portal Automation Runner
 status: executing
-last_updated: "2026-05-12T02:41:32.383Z"
+last_updated: "2026-05-12T03:28:50.000Z"
 progress:
   total_phases: 5
   completed_phases: 1
@@ -22,17 +22,17 @@ See: [.planning/PROJECT.md](PROJECT.md) (updated 2026-05-11)
 browser automation without committing secrets, while using an explicit manual
 storage-state path when reCAPTCHA blocks credential-only login.
 
-**Current focus:** Phase 06 — portal-navigation-coverage-and-target-wiring
-Wiring [.planning/ROADMAP.md](ROADMAP.md) **Milestone archive:**
+**Current focus:** Phase 06 auth-gated UAT — Portal Navigation Coverage and
+Target Wiring [.planning/ROADMAP.md](ROADMAP.md) **Milestone archive:**
 [.planning/milestones/](milestones/)
 
 ## Current Position
 
-Phase: 06 (portal-navigation-coverage-and-target-wiring) — EXECUTING
+Phase: 06 (portal-navigation-coverage-and-target-wiring) — HUMAN VERIFICATION
 
-Plan: 1 of 2
+Plan: 2 of 2 complete
 
-Status: Executing Phase 06
+Status: Awaiting fresh VerifyIQ storage state for authenticated portal UAT
 
 ## Accumulated Context
 
@@ -63,7 +63,7 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-- Execute Phase 6 portal navigation coverage and target wiring.
+- Complete Phase 6 auth-gated UAT after refreshing VerifyIQ storage state.
 - Refresh local or CI auth state before relying on authenticated/full regression
   coverage.
 
@@ -97,4 +97,5 @@ Last session: 2026-05-12T01:24:46.496Z
 
 ## Operator Next Steps
 
-- Start Phase 6 with `$gsd-discuss-phase 6`.
+- Refresh auth state with `npm run auth:record`, then run the commands in
+  `.planning/phases/06-portal-navigation-coverage-and-target-wiring/06-HUMAN-UAT.md`.
