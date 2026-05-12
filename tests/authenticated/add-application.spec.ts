@@ -15,6 +15,8 @@ import {
 } from "../support/application-workflow.js";
 import { collectPageErrors } from "../support/page-errors.js";
 
+const applicationsTargetTag = "@portal:applications";
+
 function documentTypeLabel(documentType: PrimaryDocumentType): string {
   return documentType.toUpperCase().replace(/ /g, "_");
 }
@@ -25,7 +27,7 @@ for (const documentType of primaryDocumentTypes) {
       ? "authenticated user can create an application with a primary document"
       : `authenticated user can create an application with primary document ${documentType}`;
 
-  test(testName, async ({ page }, testInfo) => {
+  test(`${testName} ${applicationsTargetTag}`, async ({ page }, testInfo) => {
     const pageErrors = collectPageErrors(page);
 
     try {
@@ -61,7 +63,7 @@ for (const documentType of primaryDocumentTypes) {
   });
 }
 
-test("authenticated user sees required applicant validation", async ({
+test(`authenticated user sees required applicant validation ${applicationsTargetTag}`, async ({
   page
 }, testInfo) => {
   const pageErrors = collectPageErrors(page);
