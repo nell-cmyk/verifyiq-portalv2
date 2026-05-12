@@ -2,6 +2,8 @@ import { spawn } from "node:child_process";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
+import { writeSummary } from "./summarize-playwright-results.mjs";
+
 export const VALID_TARGETS = [
   "all",
   "public",
@@ -19,6 +21,9 @@ export const ARTIFACT_PATHS = [
   "test-results/results.json",
   "test-results/artifacts/"
 ];
+
+export const TRIAGE_FAILURE_WARNING =
+  "Warning: Playwright triage summary failed; preserving Playwright result.";
 
 const AUTHENTICATED_PROJECT = "--project=authenticated-chromium";
 const PUBLIC_PROJECT = "--project=public-smoke";
@@ -99,6 +104,55 @@ export function resolvePlaywrightBin(cwd = process.cwd()) {
   return resolve(cwd, "node_modules", ".bin", binName);
 }
 
+export function resolveRunnerExitCode(playwrightCode, triageCode) {
+  if (playwrightCode !== 0) {
+    return playwrightCode;
+  }
+  if (triageCode !== 0) {
+    return 0;
+  }
+  return 0;
+}
+
+export function formatArtifactPathSummary(paths = ARTIFACT_PATHS) {
+  const list = Array.isArray(paths) ? paths : ARTIFACT_PATHS;
+  return ["Artifacts:", ...list].join("\n");
+}
+
+function runPlaywright(playwrightBin, playwrightArgs) {
+  return new Promise((resolveExit) => {
+    const child = spawn(playwrightBin, playwrightArgs, {
+      cwd: process.cwd(),
+      stdio: "inherit"
+    });
+
+    child.on("error", (error) => {
+      console.error(`Failed to start Playwright: ${error.message}`);
+      resolveExit(1);
+    });
+
+    child.on("close", (code, signal) => {
+      if (signal) {
+        console.error(`Playwright terminated by signal ${signal}.`);
+        resolveExit(1);
+        return;
+      }
+      resolveExit(code ?? 1);
+    });
+  });
+}
+
+async function runTriage() {
+  try {
+    await writeSummary();
+    return 0;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error(`Triage summary error: ${message}`);
+    return 1;
+  }
+}
+
 function isMainEntry() {
   if (!process.argv[1]) {
     return false;
@@ -130,29 +184,24 @@ async function runMain() {
   const { target, passthroughArgs } = parsed;
   const playwrightBin = resolvePlaywrightBin();
   const playwrightArgs = buildPlaywrightArgs(target, passthroughArgs);
-
-  console.log(`Portal target: ${target}`);
-  console.log(
-    `Playwright command: ${formatPlaywrightCommand(playwrightBin, playwrightArgs)}`
+  const playwrightCommand = formatPlaywrightCommand(
+    playwrightBin,
+    playwrightArgs
   );
 
-  const child = spawn(playwrightBin, playwrightArgs, {
-    cwd: process.cwd(),
-    stdio: "inherit"
-  });
+  console.log(`Portal target: ${target}`);
+  console.log(`Running Playwright command: ${playwrightCommand}`);
 
-  child.on("error", (error) => {
-    console.error(`Failed to start Playwright: ${error.message}`);
-    process.exit(1);
-  });
+  const playwrightCode = await runPlaywright(playwrightBin, playwrightArgs);
+  const triageCode = await runTriage();
 
-  child.on("close", (code, signal) => {
-    if (signal) {
-      console.error(`Playwright terminated by signal ${signal}.`);
-      process.exit(1);
-    }
-    process.exit(code ?? 1);
-  });
+  if (triageCode !== 0) {
+    console.warn(TRIAGE_FAILURE_WARNING);
+  }
+
+  console.log(formatArtifactPathSummary());
+
+  process.exit(resolveRunnerExitCode(playwrightCode, triageCode));
 }
 
 if (isMainEntry()) {
