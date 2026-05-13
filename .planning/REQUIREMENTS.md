@@ -124,16 +124,38 @@ Explicitly excluded. Documented to prevent scope creep.
 
 Which phases cover which requirements. Updated during roadmap creation.
 
-| Requirement | Phase | Status |
-| ----------- | ----- | ------ |
+| Requirement | Phase    | Status  |
+| ----------- | -------- | ------- |
+| INV-01      | Phase 10 | Pending |
+| INV-02      | Phase 10 | Pending |
+| INV-03      | Phase 10 | Pending |
+| UI-01       | Phase 11 | Pending |
+| UI-02       | Phase 11 | Pending |
+| UI-03       | Phase 11 | Pending |
+| UI-04       | Phase 11 | Pending |
+| UI-05       | Phase 11 | Pending |
+| UI-06       | Phase 11 | Pending |
+| UI-07       | Phase 11 | Pending |
+| API-01      | Phase 12 | Pending |
+| API-02      | Phase 12 | Pending |
+| API-03      | Phase 12 | Pending |
+| API-04      | Phase 12 | Pending |
+| API-05      | Phase 12 | Pending |
+| SAFE-01     | Phase 12 | Pending |
+| SAFE-02     | Phase 13 | Pending |
+| SAFE-03     | Phase 13 | Pending |
+| SAFE-04     | Phase 13 | Pending |
+| OPS-01      | Phase 13 | Pending |
+| OPS-02      | Phase 13 | Pending |
+| OPS-03      | Phase 13 | Pending |
 
 **Coverage:**
 
-- v2.0 requirements: 21 total
-- Mapped to phases: 0
-- Unmapped: 21 pending roadmap
+- v2.0 requirements: 22 total
+- Mapped to phases: 22
+- Unmapped: 0
 
 ---
 
-_Requirements defined: 2026-05-13_ _Last updated: 2026-05-13 after initial v2.0
-definition._
+_Requirements defined: 2026-05-13_ _Last updated: 2026-05-13 after v2.0 roadmap
+creation._

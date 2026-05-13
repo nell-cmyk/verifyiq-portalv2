@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Comprehensive Portal UI and API Coverage
-status: planning
-last_updated: "2026-05-13T09:52:58.958Z"
-last_activity: 2026-05-13
+status: Ready for Phase 10 planning
+last_updated: "2026-05-13T10:26:49.000Z"
+last_activity: 2026-05-13 — v2.0 roadmap approved
 progress:
-  total_phases: 0
+  total_phases: 4
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -23,14 +23,14 @@ See: [.planning/PROJECT.md](PROJECT.md) (updated 2026-05-13)
 browser automation without committing secrets, while using an explicit manual
 storage-state path when reCAPTCHA blocks credential-only login.
 
-**Current focus:** v2.0 Comprehensive Portal UI and API Coverage is defining
-requirements and roadmap. [.planning/ROADMAP.md](ROADMAP.md) **Milestone
-archive:** [.planning/milestones/](milestones/)
+**Current focus:** v2.0 Comprehensive Portal UI and API Coverage is ready for
+Phase 10 planning. [.planning/ROADMAP.md](ROADMAP.md) **Milestone archive:**
+[.planning/milestones/](milestones/)
 
 ## Current Position
 
-Phase: Not started (defining requirements) Plan: — Status: Defining requirements
-Last activity: 2026-05-13 — Milestone v2.0 started
+Phase: 10 Coverage Inventory and Test Architecture Plan: — Status: Ready for
+planning Last activity: 2026-05-13 — Milestone v2.0 roadmap approved
 
 ## Accumulated Context
 
@@ -70,8 +70,7 @@ Recent decisions affecting current work:
 - Ensure mutating workflow coverage updates or deletes only records created by
   the same automation run.
 
-- Define v2.0 requirements and roadmap for comprehensive portal UI and API
-  coverage.
+- Plan Phase 10: Coverage Inventory and Test Architecture.
 
 Phase 2 locked env-first auth-state precedence (`VERIFYIQ_STORAGE_STATE_JSON`,
 then `VERIFYIQ_STORAGE_STATE_PATH`, then local `playwright/.auth/user.json`,
@@ -112,4 +111,4 @@ Last session: 2026-05-13T07:47:00Z
 
 ## Operator Next Steps
 
-- Finish v2.0 requirements and roadmap, then start Phase 10 planning.
+- Start Phase 10 planning.
