@@ -158,7 +158,7 @@ Plans:
 
 **Wave 2 _(blocked on Wave 1 completion)_**
 
-- [ ] 08-01: Add Activity evidence and Audit Logs product-boundary coverage.
+- [x] 08-01: Add Activity evidence and Audit Logs product-boundary coverage.
 
 ### Phase 9: Runner Documentation and Regression Operations
 
