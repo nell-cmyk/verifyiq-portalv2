@@ -13,9 +13,28 @@ VerifyIQ sandbox workflows can be checked through reproducible browser
 automation without committing secrets, while using an explicit manual
 storage-state path when reCAPTCHA blocks credential-only login.
 
+## Current Milestone: v2.0 Comprehensive Portal UI and API Coverage
+
+**Goal:** Expand VerifyIQ automation to validate all reachable portal UI
+behavior plus API behavior that supports portal workflows.
+
+**Target features:**
+
+- Full portal UI interaction inventory and Playwright coverage.
+- Form validation, inline errors, disabled states, empty states, filters,
+  sorting, modals, menus, navigation, and workflow checks.
+- API test coverage for portal-backed workflows, validation responses, error
+  handling, auth/session behavior where safe, and data consistency with UI
+  flows.
+- Safe authenticated workflow coverage using same-run automation-owned records
+  only.
+- Explicit handling for product-surface blockers like role edit and Audit Logs
+  evidence.
+
 ## Current State
 
-**Shipped version:** v1.1 Unified Portal Automation Runner, shipped 2026-05-13.
+**Active milestone:** v2.0 Comprehensive Portal UI and API Coverage. **Shipped
+version:** v1.1 Unified Portal Automation Runner, shipped 2026-05-13.
 
 The suite now has one operator runner, `npm run test:portal`, for selected or
 full portal automation. The runner validates target names, delegates browser
@@ -80,8 +99,17 @@ those remain explicit blockers instead of false-green assertions.
 
 ### Active
 
-No active milestone requirements are open. `$gsd-new-milestone` will define the
-next requirement set and recreate `.planning/REQUIREMENTS.md`.
+v2.0 requirements will expand coverage beyond the current target-level workflows
+into comprehensive portal UI behavior and API contracts:
+
+- Full reachable portal UI interaction inventory and coverage.
+- Element validation coverage for forms, inline errors, disabled states, empty
+  states, filters, sorting, menus, modals, and navigation.
+- API coverage for portal-backed workflow contracts, validation responses, error
+  handling, auth/session behavior where safe, and UI/API consistency.
+- Safe same-run mutation coverage using automation-owned records only.
+- Product-surface blocker tracking where UI or API behavior is not currently
+  exposed.
 
 Phase 2 planning locks env-first auth-state precedence
 (`VERIFYIQ_STORAGE_STATE_JSON`, then `VERIFYIQ_STORAGE_STATE_PATH`, then local
@@ -99,9 +127,8 @@ storage state.
 
 - Current shipped version: v1.1 Unified Portal Automation Runner, shipped
   2026-05-13.
-- Current milestone: none open.
-- Current status: v1.1 is archived under `.planning/milestones/`; the next
-  milestone should start with fresh requirements.
+- Current milestone: v2.0 Comprehensive Portal UI and API Coverage.
+- Current status: v2.0 requirements and roadmap are being defined.
 - Target app: `https://sandbox.verifyiq-mercury-dev.boost-frontend.app/`.
 - App currently presents a VerifyIQ sign-in screen with Email, Password, and
   Sign in controls.
@@ -125,15 +152,16 @@ storage state.
 - v1.0 and v1.1 phase history, requirements, audits, and roadmaps are archived
   under `.planning/milestones/`.
 
-## Next Milestone Goals
+## Current Milestone Goals
 
-- Define fresh requirements with `$gsd-new-milestone`.
+- Define v2.0 requirements for comprehensive portal UI and API coverage.
 - Continue phase numbering from Phase 10.
 - Preserve the v1.1 operating constraints unless intentionally changed:
   Playwright tests remain executable truth, auth state stays out of git, and
   portal mutations must target same-run automation-owned records only.
 - Revisit product-surface blockers when the VerifyIQ UI exposes Audit Logs
-  same-run portal activity evidence or visible role edit controls.
+  same-run portal activity evidence, visible role edit controls, or API
+  contracts that safely support equivalent assertions.
 
 ## Constraints
 
@@ -169,6 +197,7 @@ storage state.
 | Phase 7 automation-owned mutation safety harness | Future mutating workflow tests must create, update, delete, and clean up only records registered in the same automation run; diagnostics must identify visible cleanup residue without echoing raw caller error text or secret-bearing data.                                     | Complete |
 | Phase 8 product-surface constraint handling      | Users and Activity can proceed with same-run evidence; Roles must not claim edit coverage until a visible edit action exists, and Audit Logs must not claim same-run portal activity evidence while exports exclude user activity logs.                                          | Complete |
 | Phase 9 runner documentation runbook             | README is the operator runner runbook for unified portal automation: targets, auth prerequisites, recovery commands, artifact paths, native-Playwright authority, Phase 8 product-surface blockers, and same-run cleanup rules with `AUTOMATION <area> <run-id> <record-label>`. | Complete |
+| v2.0 comprehensive UI and API coverage scope     | Portal quality now needs exhaustive UI interaction coverage plus executable API contract checks that support portal workflows, while preserving Playwright as the browser source of truth and keeping secrets/auth state out of git.                                             | Pending  |
 
 ## Evolution
 
@@ -191,4 +220,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-_Last updated: 2026-05-13 after v1.1 milestone completion._
+_Last updated: 2026-05-13 after v2.0 milestone start._

@@ -1,16 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.1
-milestone_name: Unified Portal Automation Runner
-status: Awaiting next milestone
-last_updated: "2026-05-13T09:16:07.976Z"
-last_activity: 2026-05-13 — Milestone v1.1 completed and archived
+milestone: v2.0
+milestone_name: Comprehensive Portal UI and API Coverage
+status: planning
+last_updated: "2026-05-13T09:52:58.958Z"
+last_activity: 2026-05-13
 progress:
-  total_phases: 5
-  completed_phases: 5
-  total_plans: 8
-  completed_plans: 8
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -23,14 +23,14 @@ See: [.planning/PROJECT.md](PROJECT.md) (updated 2026-05-13)
 browser automation without committing secrets, while using an explicit manual
 storage-state path when reCAPTCHA blocks credential-only login.
 
-**Current focus:** v1.1 is shipped and archived. Start the next milestone with
-`$gsd-new-milestone` when ready. [.planning/ROADMAP.md](ROADMAP.md) **Milestone
+**Current focus:** v2.0 Comprehensive Portal UI and API Coverage is defining
+requirements and roadmap. [.planning/ROADMAP.md](ROADMAP.md) **Milestone
 archive:** [.planning/milestones/](milestones/)
 
 ## Current Position
 
-Phase: Milestone v1.1 complete Plan: — Status: Awaiting next milestone Last
-activity: 2026-05-13 — Milestone v1.1 completed and archived
+Phase: Not started (defining requirements) Plan: — Status: Defining requirements
+Last activity: 2026-05-13 — Milestone v2.0 started
 
 ## Accumulated Context
 
@@ -70,8 +70,8 @@ Recent decisions affecting current work:
 - Ensure mutating workflow coverage updates or deletes only records created by
   the same automation run.
 
-- Define the next milestone with `$gsd-new-milestone`; this will recreate
-  `.planning/REQUIREMENTS.md` for the next requirement set.
+- Define v2.0 requirements and roadmap for comprehensive portal UI and API
+  coverage.
 
 Phase 2 locked env-first auth-state precedence (`VERIFYIQ_STORAGE_STATE_JSON`,
 then `VERIFYIQ_STORAGE_STATE_PATH`, then local `playwright/.auth/user.json`,
@@ -104,7 +104,7 @@ without weakening the `MUT-05` and `MUT-07` product-surface blockers.
 
 ## Deferred Items
 
-None currently tracked for v1.1.
+None currently tracked for v2.0.
 
 ## Session Continuity
 
@@ -112,4 +112,4 @@ Last session: 2026-05-13T07:47:00Z
 
 ## Operator Next Steps
 
-- Start the next milestone with `$gsd-new-milestone`.
+- Finish v2.0 requirements and roadmap, then start Phase 10 planning.
