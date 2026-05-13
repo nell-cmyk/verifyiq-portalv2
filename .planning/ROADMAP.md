@@ -153,7 +153,7 @@ Plans:
 
 **Wave 1**
 
-- [ ] 08-02: Add Users lifecycle and Roles create/delete coverage with role-edit
+- [x] 08-02: Add Users lifecycle and Roles create/delete coverage with role-edit
       blocker reporting.
 
 **Wave 2 _(blocked on Wave 1 completion)_**
