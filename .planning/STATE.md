@@ -2,8 +2,8 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Unified Portal Automation Runner
-status: executing
-last_updated: "2026-05-13T01:52:43.661Z"
+status: blocked
+last_updated: "2026-05-13T02:15:38.000Z"
 progress:
   total_phases: 5
   completed_phases: 3
@@ -22,17 +22,17 @@ See: [.planning/PROJECT.md](PROJECT.md) (updated 2026-05-11)
 browser automation without committing secrets, while using an explicit manual
 storage-state path when reCAPTCHA blocks credential-only login.
 
-**Current focus:** Phase 08 — deep-portal-workflow-coverage
+**Current focus:** Phase 08 blocked — live portal workflow constraints
 [.planning/ROADMAP.md](ROADMAP.md) **Milestone archive:**
 [.planning/milestones/](milestones/)
 
 ## Current Position
 
-Phase: 08 (deep-portal-workflow-coverage) — EXECUTING
+Phase: 08 (deep-portal-workflow-coverage) — BLOCKED
 
 Plan: 1 of 2
 
-Status: Executing Phase 08
+Status: Blocked during Wave 1 plan 08-02 live inspection
 
 ## Accumulated Context
 
@@ -89,14 +89,19 @@ then credential login) with fresh-context validation of every reused state.
   sandbox login is gated by reCAPTCHA. Use `npm run auth:record`,
   `VERIFYIQ_STORAGE_STATE_JSON`, or `VERIFYIQ_STORAGE_STATE_PATH`.
 
+- Phase 8 Wave 1 live inspection found two product-surface blockers recorded in
+  [.planning/phases/08-deep-portal-workflow-coverage/08-LIVE-INSPECTION.md](phases/08-deep-portal-workflow-coverage/08-LIVE-INSPECTION.md):
+  Roles create/delete are visible but no role edit action is exposed, and Audit
+  Logs exports ingestion/output events rather than same-run portal activity.
+
 ## Deferred Items
 
 None currently tracked for v1.1.
 
 ## Session Continuity
 
-Last session: 2026-05-13T01:42:54.307Z
+Last session: 2026-05-13T02:15:38.000Z
 
 ## Operator Next Steps
 
-- Execute Phase 8 with `$gsd-execute-phase 8 --cross-ai`.
+- Replan Phase 8 around the live UI blockers before rerunning execution.
