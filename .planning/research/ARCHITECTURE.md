@@ -1,222 +1,202 @@
 # Architecture Research
 
-**Domain:** VerifyIQ portal Playwright automation runner **Researched:**
-2026-05-11 **Confidence:** HIGH
+**Domain:** VerifyIQ portal UI and API automation coverage **Researched:**
+2026-05-13 **Confidence:** HIGH
 
 ## Standard Architecture
 
 ### System Overview
 
 ```text
-┌─────────────────────────────────────────────────────────────┐
-│                      Operator Commands                       │
-│  npm run portal | npm run test:e2e:* | npm run auth:record   │
-└──────────────────────────────┬──────────────────────────────┘
-                               │
-┌──────────────────────────────▼──────────────────────────────┐
-│                    Thin Node Runner Script                   │
-│  Parse target -> validate mode -> spawn playwright -> triage  │
-└──────────────────────────────┬──────────────────────────────┘
-                               │
-┌──────────────────────────────▼──────────────────────────────┐
-│                       Playwright Test                        │
-│  Projects, setup dependency, filters, reporters, artifacts    │
-└──────────────────────────────┬──────────────────────────────┘
-                               │
-┌──────────────────────────────▼──────────────────────────────┐
-│                        Test Modules                          │
-│  Public smoke | Auth smoke | Portal nav | Add Application     │
-└──────────────────────────────┬──────────────────────────────┘
-                               │
-┌──────────────────────────────▼──────────────────────────────┐
-│                    Support Helpers/Fixtures                  │
-│  Auth state | authenticated app | workflows | page errors     │
-└─────────────────────────────────────────────────────────────┘
+Operator commands
+  -> npm scripts / portal runner
+      -> Playwright projects
+          -> public smoke
+          -> auth setup
+          -> authenticated UI specs
+          -> API contract specs
+      -> Playwright reporters and artifacts
+      -> secret-safe triage summary
+
+Shared test support
+  -> auth-state helpers
+  -> portal inventory/navigation helpers
+  -> UI workflow drivers
+  -> API request helpers
+  -> same-run automation record safety
+  -> diagnostics attachments
 ```
 
 ### Component Responsibilities
 
-| Component         | Responsibility                                                                   | Typical Implementation                                                                                 |
-| ----------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| Runner script     | Provide one operator entrypoint and translate simple targets to Playwright args. | `scripts/run-portal-automation.mjs` spawning `npx playwright test`.                                    |
-| Playwright config | Define projects, reporters, timeouts, auth setup, and artifacts.                 | Extend current `playwright.config.ts` only when needed.                                                |
-| Portal specs      | Verify stable visible behavior and safe workflow behavior by feature area.       | Files under `tests/authenticated/` with role/label/heading locators and automation-owned data helpers. |
-| Support helpers   | Encapsulate repeated navigation, page assertions, and diagnostic attachments.    | Existing `tests/support/*.ts`, extended conservatively.                                                |
-| Triage formatter  | Summarize failures after Playwright JSON output.                                 | Reuse `scripts/summarize-playwright-results.mjs`.                                                      |
+| Component                 | Responsibility                                           | Typical Implementation                                                               |
+| ------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Portal runner             | Translate friendly targets to Playwright commands.       | Extend `scripts/run-portal-automation.mjs` without embedding browser/API assertions. |
+| Playwright projects       | Isolate public, setup, authenticated UI, and API suites. | Add an API project or clear API test match under `playwright.config.ts`.             |
+| UI specs                  | Validate reachable browser behavior.                     | Use role/label/test-id locators and web-first assertions.                            |
+| API specs                 | Validate portal API behavior.                            | Use `request` fixture or isolated `APIRequestContext` with redacted diagnostics.     |
+| Support helpers           | Encapsulate shared flows and safety checks.              | Keep typed helpers under `tests/support/`.                                           |
+| Automation record harness | Prevent unsafe mutation of shared sandbox data.          | Extend existing same-run registration and cleanup diagnostics to API flows.          |
+| Documentation             | Make commands, prerequisites, and blockers operational.  | Update README and planning docs after command behavior exists.                       |
 
 ## Recommended Project Structure
 
 ```text
-scripts/
-├── run-portal-automation.mjs       # New operator runner
-├── summarize-playwright-results.mjs
-└── *.test.mjs                      # Runner/triage unit tests
-
 tests/
-├── public/
-│   └── root.spec.ts
-├── authenticated/
-│   ├── workflow-smoke.spec.ts
-│   ├── portal-navigation.spec.ts   # Portal-area availability coverage
-│   ├── portal-workflows.spec.ts    # Safe mutating portal workflow coverage
-│   └── add-application.spec.ts
-└── support/
-    ├── authenticated-app.ts
-    ├── application-workflow.ts
-    ├── portal-navigation.ts        # Optional shared page assertions
-    └── page-errors.ts
+  authenticated/
+    *.spec.ts              # browser-backed portal coverage
+  api/
+    *.spec.ts              # portal API contract coverage
+  public/
+    *.spec.ts              # public smoke coverage
+  support/
+    api-client.ts          # typed API request helpers
+    portal-inventory.ts    # UI surface inventory helpers
+    automation-records.ts  # same-run mutation safety
+    ...existing helpers
+scripts/
+  run-portal-automation.mjs
+playwright.config.ts
+README.md
+.planning/
+  REQUIREMENTS.md
+  ROADMAP.md
 ```
 
 ### Structure Rationale
 
-- **`scripts/`:** Operator orchestration belongs next to existing AI/auth/triage
-  scripts.
-- **`tests/authenticated/`:** Portal feature coverage remains committed
-  Playwright tests.
-- **`tests/support/`:** Shared locators and assertions prevent duplicating
-  brittle page checks.
+- `tests/api/` keeps API contracts visible and independently runnable.
+- `tests/authenticated/` remains the source of truth for browser behavior.
+- `tests/support/` keeps selectors, API paths, and safety checks reusable.
+- The runner remains a command mapper, not a second test framework.
 
 ## Architectural Patterns
 
-### Pattern 1: Thin Runner Over Playwright
+### Pattern 1: Inventory First
 
-**What:** Runner parses friendly targets and delegates execution to Playwright.
-**When to use:** Operators need one command while Playwright remains the test
-source of truth. **Trade-offs:** Adds a small script to maintain; avoids a
-parallel runner.
+**What:** Discover and record the reachable UI controls and API routes before
+deep assertions.
 
-```javascript
-const targets = {
-  all: ["playwright", "test"],
-  applications: [
-    "playwright",
-    "test",
-    "tests/authenticated/add-application.spec.ts"
-  ],
-  portal: [
-    "playwright",
-    "test",
-    "tests/authenticated/portal-navigation.spec.ts"
-  ]
-};
-```
+**When to use:** At the start of v2.0, because "all UI interactions" otherwise
+has no measurable boundary.
 
-### Pattern 2: Feature-Area Specs With Shared Assertions
+**Trade-offs:** Adds planning work, but prevents missed controls and false
+claims of completeness.
 
-**What:** Each portal area gets stable page assertions; common navigation
-behavior is centralized. **When to use:** Many pages share nav/sidebar/auth
-expectations. **Trade-offs:** Helper names must stay specific enough that
-failures remain clear.
+### Pattern 2: Contract Tests Beside UI Tests
 
-### Pattern 3: Scoped Locators Before Broad Text
+**What:** Use Playwright API tests for backend contracts while UI tests validate
+browser behavior.
 
-**What:** Assert within a region or test id when visible text appears in
-multiple UI surfaces. **When to use:** Toasts and inline validation can
-duplicate message text. **Trade-offs:** Test ids are acceptable when accessible
-locators are ambiguous.
+**When to use:** For validation responses, auth/session behavior, status codes,
+JSON shape, and postconditions.
 
-```typescript
-await expect(page.getByTestId("validation-error")).toContainText(
-  "Please enter the applicant name."
-);
-```
+**Trade-offs:** Requires endpoint discovery and careful auth handling; avoids a
+separate reporting stack.
+
+### Pattern 3: Same-Run Record Pairing
+
+**What:** UI and API tests create/register an automation-owned record and only
+mutate that record during the same run.
+
+**When to use:** Any create, update, delete, deactivate, export, or cleanup
+flow.
+
+**Trade-offs:** More helper code, but protects shared sandbox data and keeps
+diagnostics actionable.
 
 ## Data Flow
 
-### Runner Flow
+### UI Validation Flow
 
 ```text
-Operator command
-    ↓
-Node runner parses target/options
-    ↓
-Playwright Test executes selected project/specs
-    ↓
-JSON/html/artifacts written to test-results and playwright-report
-    ↓
-Triage formatter produces test-results/triage-summary.md
-    ↓
-Runner exits with Playwright-compatible status code
+Navigate to portal area
+  -> assert page shell
+  -> inventory controls
+  -> interact through visible controls
+  -> assert element state and validation behavior
+  -> attach redacted diagnostics on failure
 ```
 
-### Test Flow
+### API Contract Flow
 
 ```text
-Authenticated test
-    ↓
-setup project validates storage state
-    ↓
-test navigates to portal area
-    ↓
-stable visible landmarks asserted
-    ↓
-page errors checked
-    ↓
-native artifacts retained on failure
+Create request context
+  -> authenticate through safe existing state or explicit headers
+  -> send request
+  -> assert status/body/headers
+  -> verify no secret-bearing output
+  -> clean up same-run records
 ```
 
-## Scaling Considerations
+### UI/API Consistency Flow
 
-| Scale                   | Architecture Adjustments                                                                         |
-| ----------------------- | ------------------------------------------------------------------------------------------------ |
-| Current v1.1            | Thin runner and focused authenticated specs are enough.                                          |
-| More portal workflows   | Add feature-area targets and page helpers; introduce tags if file-level filtering is too coarse. |
-| Large regression matrix | Consider sharding or more explicit projects if local/CI runs become too broad.                   |
-
-### Scaling Priorities
-
-1. **First bottleneck:** Auth-state expiration blocks authenticated coverage.
-   Keep setup failure messaging sharp.
-2. **Second bottleneck:** Broad runs take longer. Add runner targets and
-   Playwright filters before new infrastructure.
-
-## Anti-Patterns
-
-### Anti-Pattern 1: Runner as Browser Automation
-
-**What people do:** Put navigation and assertions directly in the runner script.
-**Why it's wrong:** Bypasses Playwright Test fixtures, reporters, retries, and
-artifacts. **Do this instead:** Keep browser work in specs and helpers.
-
-### Anti-Pattern 2: Broad Text Assertions
-
-**What people do:** Use `page.getByText()` for text that can appear in toasts,
-inline errors, and nav. **Why it's wrong:** Strict mode violations or false
-positives. **Do this instead:** Scope locators to form regions, roles, labels,
-or stable test ids.
-
-### Anti-Pattern 3: Mutating Existing Portal Data
-
-**What people do:** Update or delete records that existed before the test run.
-**Why it's wrong:** It can damage sandbox state and make failures hard to
-recover. **Do this instead:** Create identifiable automation-owned records, then
-update or delete only those records.
+```text
+Create or update same-run record through UI or API
+  -> verify UI-visible state
+  -> verify API-visible state
+  -> compare stable identifiers and allowed fields
+  -> clean up same-run record
+```
 
 ## Integration Points
 
-### External Services
+| Boundary                      | Communication                                     | Notes                                                                             |
+| ----------------------------- | ------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Browser UI to sandbox app     | Playwright `page` fixture                         | Keep accessible locators and web-first assertions.                                |
+| API tests to sandbox API      | Playwright `request` fixture or APIRequestContext | Do not print auth headers, cookies, tokens, or storage state.                     |
+| Auth setup to UI/API projects | Existing storage-state precedence                 | API tests may need a safe derived auth mechanism; discover before implementation. |
+| Runner to Playwright          | CLI args/project/grep mapping                     | Preserve exit codes and artifact paths.                                           |
 
-| Service          | Integration Pattern           | Notes                                                                |
-| ---------------- | ----------------------------- | -------------------------------------------------------------------- |
-| VerifyIQ sandbox | Browser UI through Playwright | No hidden APIs; generated data stays identifiable.                   |
-| GitHub Actions   | Existing npm scripts          | Full authenticated regression remains gated by storage-state secret. |
+## Anti-Patterns
 
-### Internal Boundaries
+### Anti-Pattern 1: API Helpers as Backdoor Cleanup
 
-| Boundary                       | Communication               | Notes                                                 |
-| ------------------------------ | --------------------------- | ----------------------------------------------------- |
-| Runner to Playwright           | child process args/status   | Preserve underlying Playwright output and exit codes. |
-| Playwright to triage formatter | `test-results/results.json` | Existing formatter is the summary source.             |
-| Tests to helpers               | Typed TypeScript imports    | Keep helpers small and page-specific where possible.  |
+**What people do:** Use undocumented broad delete endpoints to reset test data.
+
+**Why it is wrong:** It can damage shared sandbox data and bypasses the
+project's mutation safety rule.
+
+**Do this instead:** Only mutate same-run automation records and record cleanup
+failures as diagnostics.
+
+### Anti-Pattern 2: UI Assertions That Only Check Page Presence
+
+**What people do:** Stop at heading or URL assertions.
+
+**Why it is wrong:** It misses broken validations, disabled states, menus,
+filters, and stateful controls.
+
+**Do this instead:** Assert control state and behavior for every inventoried
+interaction.
+
+### Anti-Pattern 3: API Tests That Depend on Hidden Browser State
+
+**What people do:** Reuse cookies or storage state implicitly and fail with
+unclear auth errors.
+
+**Why it is wrong:** Failures are hard to recover and may leak secret context.
+
+**Do this instead:** Build explicit API auth setup with secret-safe failure
+messages and fresh-context validation.
+
+## Suggested Build Order
+
+1. Inventory and architecture foundation.
+2. Deep UI interaction and validation coverage.
+3. API contract coverage and safe API helper layer.
+4. UI/API consistency, runner targets, and documentation.
 
 ## Sources
 
-- `/microsoft/playwright.dev` via Context7 — projects, CLI filters, reporters,
-  artifacts, locators, assertions.
-- `playwright.config.ts` — current project/report/artifact/auth architecture.
-- Existing `tests/support/*` helpers — local page and auth helper patterns.
+- `/microsoft/playwright.dev` via Context7 - Playwright Test projects,
+  isolation, API testing, request contexts, and storage-state behavior.
+- `playwright.config.ts` - current public/setup/authenticated project model.
+- `scripts/run-portal-automation.mjs` - runner target mapping.
+- `tests/support/automation-records.ts` - same-run mutation safety pattern.
+- `docs/ai-development-workflow.md` - phase execution and verification rules.
 
 ---
 
-_Architecture research for: VerifyIQ portal Playwright automation runner_
-_Researched: 2026-05-11_
+_Architecture research for: VerifyIQ portal UI and API automation coverage_
+_Researched: 2026-05-13_

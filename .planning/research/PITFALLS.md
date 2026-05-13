@@ -1,185 +1,176 @@
 # Pitfalls Research
 
-**Domain:** VerifyIQ portal Playwright automation runner **Researched:**
-2026-05-11 **Confidence:** HIGH
+**Domain:** VerifyIQ portal UI and API automation coverage **Researched:**
+2026-05-13 **Confidence:** HIGH
 
 ## Critical Pitfalls
 
-### Pitfall 1: Broad Locators Match Duplicate UI Text
+### Pitfall 1: "All UI" Without an Inventory
 
-**What goes wrong:** Tests fail in strict mode or pass against the wrong surface
-when the same message appears inline and in a toast.
+**What goes wrong:** The milestone claims comprehensive coverage but only covers
+familiar flows.
 
-**Why it happens:** Portal UIs often render validation messages in more than one
-place. The known v1.1 seed failure matched both `data-testid="validation-error"`
-and the notification toast.
+**Why it happens:** Teams jump straight to test writing without a page/control
+matrix.
 
-**How to avoid:** Scope assertions to the form region, role, label, or a stable
-test id when text is duplicated.
+**How to avoid:** Create a portal interaction inventory first and map
+requirements to that inventory.
 
-**Warning signs:** Playwright errors say a locator resolved to multiple
-elements, especially with `getByText`.
+**Warning signs:** Requirements say "all interactions" without listing pages,
+controls, states, or known blockers.
 
-**Phase to address:** First implementation phase.
-
----
-
-### Pitfall 2: Runner Hides Auth-State Failures
-
-**What goes wrong:** The runner reports feature failures when the real problem
-is expired or missing storage state.
-
-**Why it happens:** Authenticated tests need setup validation. Wrappers can
-obscure setup project output if they swallow stdout/stderr or replace exit
-codes.
-
-**How to avoid:** Delegate to existing Playwright projects and preserve
-auth/setup failure summaries. Run triage after JSON is generated.
-
-**Warning signs:** Authenticated tests skip or fail after setup, but runner
-output only says "portal failed."
-
-**Phase to address:** Runner foundation phase.
+**Phase to address:** Phase 10.
 
 ---
 
-### Pitfall 3: Mutating Pre-Existing Portal Data
+### Pitfall 2: Broad Locators Match Duplicate UI Text
 
-**What goes wrong:** CRUD automation updates or deletes records that were not
-created by the same automation run.
+**What goes wrong:** Assertions fail strictness or pass against the wrong
+duplicate toast, heading, or inline error.
 
-**Why it happens:** Deep portal workflows need realistic data, and broad
-selectors can accidentally target the first existing row.
+**Why it happens:** Tests use broad `getByText` checks rather than scoped role,
+label, or test-id locators.
 
-**How to avoid:** Create identifiable `AUTOMATION` records first, store the
-generated name or id in test scope, and update/delete only matching
-automation-created records.
+**How to avoid:** Prefer accessible locators and scope validation assertions to
+the form, region, or field that owns the message.
 
-**Warning signs:** Tests click edit/delete from a generic first row or use an
-existing user, role, activity, or log record.
+**Warning signs:** Tests select the first matching element, use unscoped text,
+or rely on CSS structure for user-visible behavior.
 
-**Phase to address:** Mutating workflow phase.
-
----
-
-### Pitfall 4: Runner Becomes a Parallel Test Framework
-
-**What goes wrong:** The script contains its own selectors, browser lifecycle,
-retries, and reporting.
-
-**Why it happens:** "Single runner" can be misread as one imperative browser
-script.
-
-**How to avoid:** Make the runner a thin CLI wrapper over Playwright Test.
-Browser behavior stays in specs and support helpers.
-
-**Warning signs:** Runner imports Playwright browser APIs directly instead of
-spawning `playwright test`.
-
-**Phase to address:** Runner foundation phase.
+**Phase to address:** Phase 11.
 
 ---
 
-### Pitfall 5: Sandbox Data Pollution
+### Pitfall 3: API Tests Leak or Depend on Secret State
 
-**What goes wrong:** Broad automation creates records, users, or role changes
-that accumulate or disrupt future runs.
+**What goes wrong:** API failures print auth values, cookies, tokens, or
+serialized storage state, or they pass locally only because of hidden browser
+state.
 
-**Why it happens:** Adding workflows beyond Add Application can cross into
-mutation-heavy features without cleanup.
+**Why it happens:** API tests are added after UI auth and reuse state
+informally.
 
-**How to avoid:** Use identifiable test data and update/delete only records
-created by the same automation run.
+**How to avoid:** Define explicit API auth setup, preserve the storage-state
+precedence rules, and redact all request/response diagnostics.
 
-**Warning signs:** Tests create users/roles/applications without `AUTOMATION`
-naming or documented cleanup.
+**Warning signs:** Logs contain headers, cookie names/values, raw storage JSON,
+or vague 401 recovery messages.
 
-**Phase to address:** Portal coverage expansion phase.
+**Phase to address:** Phase 12.
+
+---
+
+### Pitfall 4: API Mutations Bypass Same-Run Safety
+
+**What goes wrong:** API tests update or delete shared sandbox data, or cleanup
+scripts remove records they did not create.
+
+**Why it happens:** Direct API calls make mutation easier than the UI, so safety
+rules get skipped.
+
+**How to avoid:** Extend the automation-owned record harness to API-created and
+API-mutated records.
+
+**Warning signs:** Cleanup code queries by broad names, dates, roles, or users
+instead of exact same-run identifiers.
+
+**Phase to address:** Phase 12 and Phase 13.
+
+---
+
+### Pitfall 5: UI/API Consistency Tests Assert Unstable Fields
+
+**What goes wrong:** Tests fail on timestamps, generated IDs, ordering, or
+backend fields the UI does not contractually expose.
+
+**Why it happens:** The consistency check compares whole objects instead of
+stable portal-relevant fields.
+
+**How to avoid:** Compare only stable identifiers, visible labels, status
+values, and expected validation fields.
+
+**Warning signs:** Assertions use full deep equality on raw API responses.
+
+**Phase to address:** Phase 13.
+
+---
+
+### Pitfall 6: Runtime Explosion
+
+**What goes wrong:** Comprehensive UI and API tests become too slow or flaky for
+routine use.
+
+**Why it happens:** Every control/state combination becomes a full browser
+workflow.
+
+**How to avoid:** Group by risk, use API tests for backend validation where
+appropriate, and keep runner targets focused.
+
+**Warning signs:** Full suite runtime grows without target-level escape hatches.
+
+**Phase to address:** Phase 13.
 
 ## Technical Debt Patterns
 
-| Shortcut                                     | Immediate Benefit  | Long-term Cost                            | When Acceptable                                          |
-| -------------------------------------------- | ------------------ | ----------------------------------------- | -------------------------------------------------------- |
-| One huge portal spec                         | Quick to write     | Hard to filter, debug, and parallelize    | Never for committed full-suite coverage.                 |
-| Hardcoded generated names without timestamps | Easy assertions    | Data collisions and cleanup confusion     | Never; keep identifiable timestamped names.              |
-| Skipping triage on runner failure            | Faster script      | Worse failure diagnosis                   | Only for an explicit `--no-triage` debug mode, if added. |
-| Using test ids everywhere                    | Fast stabilization | Tests stop reflecting operator-visible UI | Acceptable only when visible locators are ambiguous.     |
+| Shortcut                                       | Immediate Benefit         | Long-term Cost                        | When Acceptable                                         |
+| ---------------------------------------------- | ------------------------- | ------------------------------------- | ------------------------------------------------------- |
+| Hardcoding discovered API routes in many specs | Fast first test           | Expensive route changes               | Never; centralize in helpers.                           |
+| Exact CSS assertions for interaction state     | Easy assertion            | Fragile under UI redesign             | Only for stable semantic classes with no better signal. |
+| Skipping cleanup diagnostics                   | Less code                 | Polluted sandbox and unclear failures | Never for mutating tests.                               |
+| Treating API coverage as docs only             | Easy milestone completion | No executable backend confidence      | Never; API coverage must run.                           |
 
 ## Integration Gotchas
 
-| Integration              | Common Mistake                                          | Correct Approach                                                             |
-| ------------------------ | ------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| Playwright setup project | Running authenticated specs without setup dependency    | Keep existing project dependency or equivalent runner target.                |
-| JSON reporter            | Changing output path and breaking triage                | Preserve `test-results/results.json` unless triage is updated in same phase. |
-| CI full regression       | Making authenticated runs unconditional without secrets | Keep storage-state-gated CI behavior.                                        |
-
-## Performance Traps
-
-| Trap                                | Symptoms                              | Prevention                                                                           | When It Breaks                         |
-| ----------------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------ | -------------------------------------- |
-| Full suite for every local check    | Slow feedback and stale auth failures | Keep selected runner targets and cheap hooks.                                        | As portal coverage grows beyond smoke. |
-| Serializing all tests unnecessarily | Longer CI times                       | Preserve Playwright parallelism; only use one worker where CI stability requires it. | More feature-area specs.               |
-| Excessive trace/video always-on     | Large artifacts                       | Keep trace/video failure-focused settings.                                           | Frequent full authenticated runs.      |
+| Integration                       | Common Mistake                                                     | Correct Approach                                                    |
+| --------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------- |
+| Storage state and API auth        | Assuming browser storage automatically authenticates API requests. | Use explicit request context setup and validate auth failure modes. |
+| UI-created records and API lookup | Comparing raw full objects.                                        | Compare stable portal-visible fields.                               |
+| Runner and Playwright projects    | Hiding Playwright exit codes or artifacts.                         | Preserve native exit behavior and triage output.                    |
+| Network diagnostics               | Printing request headers or response bodies wholesale.             | Attach redacted summaries only.                                     |
 
 ## Security Mistakes
 
-| Mistake                               | Risk                                            | Prevention                                                                 |
-| ------------------------------------- | ----------------------------------------------- | -------------------------------------------------------------------------- |
-| Printing storage state in runner logs | Credential/token exposure                       | Never echo env values or storage JSON; reuse safe auth helpers.            |
-| Uploading secret-bearing screenshots  | Public artifact leakage                         | Keep tests away from secrets and review screenshots before new auth flows. |
-| Hidden cleanup API calls              | Overbroad deletion or private endpoint coupling | Use visible UI cleanup only.                                               |
-
-## UX Pitfalls
-
-| Pitfall                                       | User Impact                                  | Better Approach                                                            |
-| --------------------------------------------- | -------------------------------------------- | -------------------------------------------------------------------------- |
-| Runner target names differ from portal labels | Operators cannot map command to feature area | Use names like `applications`, `activity`, `audit-logs`, `users`, `roles`. |
-| Failure output lacks next action              | User reruns blindly                          | Print triage path and auth recovery command.                               |
-| Runner swallows Playwright command            | Hard to reproduce failure manually           | Show or document the underlying Playwright command.                        |
+| Mistake                               | Risk                                      | Prevention                                      |
+| ------------------------------------- | ----------------------------------------- | ----------------------------------------------- |
+| Printing cookies/tokens/storage state | Secret exposure in public repo artifacts. | Redact diagnostics and keep auth files ignored. |
+| Broad API cleanup                     | Shared sandbox data loss.                 | Same-run exact match only.                      |
+| Hardcoded credentials or API keys     | Credential leak.                          | Use env/secrets without echoing values.         |
 
 ## "Looks Done But Isn't" Checklist
 
-- [ ] **Unified runner:** Often missing selected target support — verify at
-      least full and feature-area targets.
-- [ ] **Portal coverage:** Often only checks `/applications` — verify Activity,
-      Audit Logs, Users, and Roles routes, landmarks, and approved safe
-      workflows.
-- [ ] **Failure hardening:** Often fixes one assertion only — verify no broad
-      duplicate-text locator remains for the known failure.
-- [ ] **Triage:** Often generates JSON but not summary — verify
-      `test-results/triage-summary.md` is produced or clearly documented.
-- [ ] **Docs:** Often adds scripts without usage guidance — verify README
-      command table and runbook are updated.
-
-## Recovery Strategies
-
-| Pitfall               | Recovery Cost | Recovery Steps                                                                                           |
-| --------------------- | ------------- | -------------------------------------------------------------------------------------------------------- |
-| Broad locator failure | LOW           | Scope assertion to form region/test id and rerun the failing spec.                                       |
-| Auth-state failure    | LOW/MEDIUM    | Run `npm run auth:record` or refresh CI storage-state secret, then rerun setup/auth tests.               |
-| Runner overreach      | MEDIUM        | Move browser assertions back into specs, leave runner as process orchestration.                          |
-| Data pollution        | MEDIUM/HIGH   | Document created data, update/delete only automation-owned records, and avoid touching existing records. |
+- [ ] **UI inventory:** Often missing modals, menus, disabled states, empty
+      states, and validation variants.
+- [ ] **Validation tests:** Often assert only one required field and miss
+      invalid formats or disabled/enabled behavior.
+- [ ] **API tests:** Often cover happy-path status only and miss validation,
+      auth, and error responses.
+- [ ] **Consistency checks:** Often verify either UI or API but not that they
+      agree on the same record.
+- [ ] **Blockers:** Often disappear from requirements instead of staying
+      explicit until the product exposes the behavior.
 
 ## Pitfall-to-Phase Mapping
 
-| Pitfall                                | Prevention Phase           | Verification                                                                                  |
-| -------------------------------------- | -------------------------- | --------------------------------------------------------------------------------------------- |
-| Broad locators match duplicate UI text | First implementation phase | Known validation test passes with scoped assertion.                                           |
-| Runner hides auth-state failures       | Runner foundation phase    | Expired auth still produces setup/triage guidance.                                            |
-| Mutating pre-existing portal data      | Mutating workflow phase    | Tests create automation-owned records before update/delete and never target existing records. |
-| Runner becomes a parallel framework    | Runner foundation phase    | Runner spawns Playwright and has unit tests for command mapping.                              |
-| Sandbox data pollution                 | Portal expansion phase     | New non-Application areas mutate only automation-owned records.                               |
+| Pitfall                         | Prevention Phase | Verification                                                                   |
+| ------------------------------- | ---------------- | ------------------------------------------------------------------------------ |
+| Missing inventory               | Phase 10         | Inventory artifact maps pages, controls, states, API candidates, and blockers. |
+| Broad locators                  | Phase 11         | UI specs use scoped locators and web-first assertions.                         |
+| Secret-bearing API tests        | Phase 12         | API diagnostics are redacted and auth recovery messages name sources only.     |
+| Unsafe API mutations            | Phase 12/13      | API helpers enforce same-run record registration.                              |
+| Unstable consistency assertions | Phase 13         | Consistency checks compare stable fields only.                                 |
+| Runtime explosion               | Phase 13         | Runner has focused UI/API/full targets and docs.                               |
 
 ## Sources
 
-- Local failure artifact `test-results/artifacts/.../error-context.md` — known
-  strict locator failure.
-- `/microsoft/playwright.dev` via Context7 — locator strictness, assertions,
-  projects, reporters, artifacts.
-- README and AGENTS.md — secret handling, auth state, Playwright
-  source-of-truth, cleanup boundaries.
+- `/microsoft/playwright.dev` via Context7 - locator assertions, API testing,
+  APIRequestContext isolation, and storage-state examples.
+- Existing Phase 8 blocker documentation - role edit and Audit Logs evidence
+  constraints.
+- `tests/support/automation-records.ts` - current same-run safety model.
+- README and AGENTS.md - secret handling, auth-state precedence, and Playwright
+  source-of-truth rules.
 
 ---
 
-_Pitfalls research for: VerifyIQ portal Playwright automation runner_
-_Researched: 2026-05-11_
+_Pitfalls research for: VerifyIQ portal UI and API automation coverage_
+_Researched: 2026-05-13_

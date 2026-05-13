@@ -1,118 +1,127 @@
 # Feature Research
 
-**Domain:** VerifyIQ portal Playwright automation runner **Researched:**
-2026-05-11 **Confidence:** MEDIUM
+**Domain:** VerifyIQ portal UI and API automation coverage **Researched:**
+2026-05-13 **Confidence:** HIGH
 
 ## Feature Landscape
 
-### Table Stakes (Users Expect These)
+### Table Stakes
 
-| Feature                                    | Why Expected                                                                                                  | Complexity | Notes                                                                             |
-| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------- |
-| Single operator command                    | User asked for one runner for all portal automation.                                                          | MEDIUM     | Should live in `package.json` and call a Node runner.                             |
-| Selected vs full execution                 | Operators need quick focused runs and full regression runs.                                                   | MEDIUM     | Map runner flags to Playwright project/file/tag filters.                          |
-| Existing Add Application coverage included | Current valuable coverage must not be bypassed.                                                               | LOW        | Preserve document matrix and validation test.                                     |
-| Portal feature coverage                    | "All portal features" covers Applications, Activity, Audit Logs, Users, and Roles through visible UI actions. | HIGH       | Include safe CRUD where available; update/delete only automation-created records. |
-| Auth-state preflight                       | Full portal runner depends on authenticated access.                                                           | LOW        | Reuse setup project and current storage-state precedence.                         |
-| Failure triage summary                     | A single failed scenario should identify cause and recovery path.                                             | MEDIUM     | Reuse `scripts/summarize-playwright-results.mjs`; add runner context if needed.   |
-| Secret-safe artifacts                      | Public repo must never expose credentials, cookies, tokens, or storage state.                                 | MEDIUM     | Preserve existing secret-handling rules.                                          |
+| Feature                            | Why Expected                                                                                              | Complexity | Notes                                                                                                          |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------- | ---------- | -------------------------------------------------------------------------------------------------------------- |
+| Portal UI inventory                | Comprehensive coverage needs a known list of pages, forms, controls, and states.                          | MEDIUM     | Inventory should be generated or attached as evidence, not kept only in memory.                                |
+| Navigation and page shell coverage | Operators need proof every reachable portal area loads and exposes stable landmarks.                      | LOW        | Existing Phase 6 coverage is the baseline.                                                                     |
+| Form validation coverage           | User explicitly requested element validations.                                                            | HIGH       | Include required fields, invalid formats, disabled submit states, inline errors, toasts, and URL preservation. |
+| Interactive control coverage       | Buttons, menus, filters, sorting, tabs, modals, file inputs, and pagination are common regression points. | HIGH       | Scope by reachable portal surface and avoid fake assertions where controls are absent.                         |
+| Empty/loading/error states         | Regression coverage should catch broken page state rendering, not just happy paths.                       | MEDIUM     | Use stable UI states and safe network/API setups where possible.                                               |
+| Same-run mutation workflows        | Current project requires safe mutation only against automation-owned records.                             | HIGH       | Reuse and extend the existing automation record safety harness.                                                |
+| API endpoint discovery             | API coverage requires knowing which portal requests support each workflow.                                | MEDIUM     | Discover through Playwright network capture or browser devtools exploration; do not commit secrets.            |
+| API contract tests                 | User requested API test coverage as part of v2.0.                                                         | HIGH       | Cover status codes, validation responses, auth/session behavior, and JSON shape.                               |
+| UI/API consistency checks          | Portal behavior should match backend state for critical workflows.                                        | HIGH       | Pair UI actions with API postconditions on same-run data.                                                      |
+| Runner target expansion            | Operators need a way to run UI-only, API-only, or full v2.0 coverage.                                     | MEDIUM     | Keep runner thin and Playwright-backed.                                                                        |
 
-### Differentiators (Competitive Advantage)
+### Differentiators
 
-| Feature                          | Value Proposition                                                     | Complexity | Notes                                                                                             |
-| -------------------------------- | --------------------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------- |
-| Feature-area runner aliases      | Faster operator workflow than memorizing Playwright filters.          | MEDIUM     | Examples: `applications`, `activity`, `audit-logs`, `users`, `roles`, `all`.                      |
-| Failure classification           | Turns strict locator/auth/setup failures into actionable summaries.   | MEDIUM     | Current strict-mode validation failure is a concrete first case.                                  |
-| Portal inventory attachment      | Helps broaden coverage safely without guessing selectors.             | MEDIUM     | Existing form inventory attachment pattern can generalize to page inventory.                      |
-| Documentation with command tiers | Reduces misuse of full authenticated runs when auth state is missing. | LOW        | Extend README command table/runbook.                                                              |
-| Automation-owned CRUD safety     | Enables deeper workflows without touching existing sandbox records.   | HIGH       | Created records must use identifiable `AUTOMATION` names and be the only records updated/deleted. |
+| Feature                                       | Value Proposition                                                | Complexity | Notes                                                        |
+| --------------------------------------------- | ---------------------------------------------------------------- | ---------- | ------------------------------------------------------------ |
+| Coverage matrix with requirement traceability | Makes "all UI interactions" measurable.                          | MEDIUM     | Map controls and API contracts to REQ IDs and phases.        |
+| Contract-aware UI diagnostics                 | Faster failure triage when a UI failure is caused by API drift.  | MEDIUM     | Attach redacted request/response summaries only.             |
+| Product-surface blocker ledger                | Prevents false-green claims for unexposed UI or API behavior.    | LOW        | Continue v1.1 pattern for role edit and Audit Logs evidence. |
+| Targeted API smoke commands                   | Lets operators validate backend contracts without a browser run. | MEDIUM     | Add through Playwright projects or runner targets.           |
 
-### Anti-Features (Commonly Requested, Often Problematic)
+### Anti-Features
 
-| Feature                                             | Why Requested                              | Why Problematic                                                               | Alternative                                                                          |
-| --------------------------------------------------- | ------------------------------------------ | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| Fully autonomous credential login through reCAPTCHA | Appears to make the runner self-contained. | reCAPTCHA is explicitly manual/gated; bypass attempts are brittle and unsafe. | Storage-state recorder and setup validation.                                         |
-| "All features" as destructive CRUD everywhere       | Sounds comprehensive.                      | Can pollute or damage sandbox data and creates cleanup requirements.          | Use automation-owned records and update/delete only records created by the same run. |
-| Runner replacing Playwright commands                | Simplifies the mental model.               | Hides the source of truth and makes debugging harder.                         | Runner wraps Playwright and prints underlying commands/artifacts.                    |
+| Feature                               | Why Requested                  | Why Problematic                                              | Alternative                                                          |
+| ------------------------------------- | ------------------------------ | ------------------------------------------------------------ | -------------------------------------------------------------------- |
+| Exhaustive pixel/visual testing       | Looks like full UI validation. | Fragile and slow; does not prove validation behavior.        | Functional locator assertions plus selective screenshots on failure. |
+| Private destructive API cleanup       | Makes tests easier to reset.   | Can delete shared sandbox data and violates same-run safety. | Create and clean up automation-owned records only.                   |
+| Mocked API tests for portal contracts | Fast and deterministic.        | Does not validate the sandbox portal API.                    | Use live API contract tests with safe auth and redacted diagnostics. |
+| Unbounded generated test matrix       | Appears comprehensive.         | Runtime and flake explode quickly.                           | Coverage inventory plus risk-based grouping.                         |
 
 ## Feature Dependencies
 
 ```text
-Unified runner
-    requires -> Stable Playwright projects/reporters
-    requires -> Auth-state preflight
-    enhances -> Existing triage summary
+Portal UI inventory
+    -> UI interaction and validation coverage
+        -> UI/API consistency checks
 
-Portal feature coverage
-    requires -> Auth-state preflight
-    requires -> Stable visible landmarks per portal area
-    requires -> Automation-owned record safety for mutating actions
-    includes -> Add Application matrix and validation coverage
+API endpoint discovery
+    -> API contract tests
+        -> UI/API consistency checks
 
-Failure hardening
-    requires -> Precise locators
-    enhances -> Runner triage output
+Same-run automation record safety
+    -> UI mutation coverage
+    -> API mutation coverage
+    -> cleanup diagnostics
+
+Runner target expansion
+    -> operator runbook updates
 ```
 
 ### Dependency Notes
 
-- **Unified runner requires stable Playwright projects:** The runner should
-  delegate execution, not duplicate browser orchestration.
-- **Portal coverage requires auth-state preflight:** Activity, Audit Logs,
-  Users, and Roles are authenticated navigation areas.
-- **Failure hardening requires precise locators:** The known failure came from
-  matching both inline validation and toast text.
+- UI coverage depends on an inventory so "all reachable interactions" is
+  concrete and auditable.
+- API coverage depends on endpoint discovery and auth/session handling, because
+  the repo must not hardcode secrets or leak storage state.
+- UI/API consistency depends on both sides targeting the same same-run records.
+- Runner and README updates should follow implementation so documented commands
+  match real behavior.
 
-## MVP Definition
+## Milestone Definition
 
-### Launch With (v1.1)
+### Launch With (v2.0)
 
-- [ ] Single runner command for all portal automation.
-- [ ] Runner selection for public smoke, authenticated smoke, Add Application,
-      portal navigation areas, and all coverage.
-- [ ] Add Application validation failure fixed with a scoped locator.
-- [ ] Authenticated smoke for visible portal navigation: Applications, Activity,
-      Audit Logs, Users, Roles.
-- [ ] Deep safe workflows for Activity, Audit Logs, Users, and Roles using
-      automation-owned records for update/delete actions.
-- [ ] Runner invokes or documents triage generation after Playwright JSON
-      output.
-- [ ] README and planning docs describe runner usage, prerequisites, and
-      artifacts.
+- [ ] Portal UI inventory for all currently reachable authenticated areas.
+- [ ] UI interaction coverage for navigation, forms, controls, modals/menus,
+      table interactions, empty states, and error states where exposed.
+- [ ] Element validation coverage for required fields, invalid input,
+      disabled/enabled submit behavior, inline errors, and no-navigation
+      failures.
+- [ ] API contract coverage for portal-backed workflows, validation failures,
+      auth/session behavior where safe, and JSON response shape.
+- [ ] UI/API consistency checks for critical same-run workflows.
+- [ ] Runner/docs updates for UI, API, and full coverage execution.
 
-### Add After Validation (v1.x)
+### Add After Validation
 
-- [ ] Optional tag taxonomy if file/project filters become too coarse.
-- [ ] Better cleanup support if visible cleanup controls exist.
+- [ ] Schema-derived API assertions if the portal publishes an OpenAPI or other
+      contract source.
+- [ ] Broader browser/device matrix if desktop Chromium stops representing the
+      operational risk.
+- [ ] Visual comparison checks for stable, high-value screens only.
+
+### Future Consideration
+
+- [ ] Performance and Core Web Vitals coverage.
+- [ ] Accessibility audit coverage beyond selectors and roles.
+- [ ] Cross-environment coverage beyond the current sandbox.
 
 ## Feature Prioritization Matrix
 
-| Feature                                  | User Value | Implementation Cost | Priority |
-| ---------------------------------------- | ---------- | ------------------- | -------- |
-| Unified runner command                   | HIGH       | MEDIUM              | P1       |
-| Add Application failure hardening        | HIGH       | LOW                 | P1       |
-| Visible portal navigation coverage       | HIGH       | MEDIUM              | P1       |
-| Runner triage integration                | HIGH       | MEDIUM              | P1       |
-| Deep CRUD workflows outside Applications | HIGH       | HIGH                | P1       |
-
-## Competitor Feature Analysis
-
-Not applicable as a product competitor exercise. The relevant comparison is
-against common test-runner practice: keep Playwright Test as the executor, use
-projects/reporters/artifacts for truth, and add thin orchestration only for
-operator ergonomics.
+| Feature                       | User Value | Implementation Cost | Priority |
+| ----------------------------- | ---------- | ------------------- | -------- |
+| UI inventory                  | HIGH       | MEDIUM              | P1       |
+| Form validation coverage      | HIGH       | HIGH                | P1       |
+| Interactive controls coverage | HIGH       | HIGH                | P1       |
+| API endpoint discovery        | HIGH       | MEDIUM              | P1       |
+| API contract tests            | HIGH       | HIGH                | P1       |
+| UI/API consistency checks     | HIGH       | HIGH                | P1       |
+| Runner target expansion       | MEDIUM     | MEDIUM              | P2       |
+| Contract-aware diagnostics    | MEDIUM     | MEDIUM              | P2       |
+| Visual comparisons            | LOW        | MEDIUM              | P3       |
 
 ## Sources
 
-- User milestone input — requested one runner for all portal features and
-  confirmed known failed scenario.
-- Existing Playwright tests and failure artifacts — Add Application matrix,
-  authenticated smoke, and strict locator failure.
-- `/microsoft/playwright.dev` via Context7 — Playwright Test projects, filters,
-  reporters, locators, assertions, and artifacts.
-- README — current command tiers, auth-state guidance, and artifact policy.
+- `/microsoft/playwright.dev` via Context7 - locator assertions, page
+  assertions, API testing, isolated request contexts, and storage state.
+- Current `tests/authenticated/*` specs - existing portal workflow coverage.
+- `tests/support/*` helpers - auth, navigation, application, users, roles, and
+  automation record safety patterns.
+- `README.md` - operator commands, auth recovery, artifacts, and v1.1 product
+  blockers.
 
 ---
 
-_Feature research for: VerifyIQ portal Playwright automation runner_
-_Researched: 2026-05-11_
+_Feature research for: VerifyIQ portal UI and API automation coverage_
+_Researched: 2026-05-13_

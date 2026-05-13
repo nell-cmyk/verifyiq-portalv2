@@ -1,189 +1,201 @@
 # Project Research Summary
 
-**Project:** VerifyIQ Portal Automation **Domain:** VerifyIQ portal Playwright
-automation runner **Researched:** 2026-05-11 **Confidence:** HIGH
+**Project:** VerifyIQ Portal Automation **Domain:** VerifyIQ portal UI and API
+automation coverage **Researched:** 2026-05-13 **Confidence:** HIGH
 
 ## Executive Summary
 
-The v1.1 milestone should add a thin operator runner around the existing
-Playwright Test suite, not a separate browser automation system. Playwright
-already provides the required execution primitives: projects, setup
-dependencies, CLI filtering, reporters, JSON output, screenshots, video, and
-traces. The runner should translate friendly targets such as `all`,
-`applications`, `activity`, `audit-logs`, `users`, and `roles` into Playwright
-commands, preserve native output and exit codes, then reuse the existing triage
-formatter.
+v2.0 should keep the current TypeScript and Playwright Test stack, then expand
+coverage in two directions: exhaustive browser-visible portal behavior and
+executable API contracts for the same workflows. Playwright already provides the
+needed primitives: accessible locators, web-first assertions, isolated browser
+contexts, request fixtures, APIRequestContext, storage-state reuse, projects,
+and the existing reporter/artifact pipeline.
 
-"All portal features" should be scoped with data safety rather than deferred.
-For v1.1, coverage includes existing Add Application workflow automation,
-authenticated portal-area coverage, and deep mutating workflows for Activity,
-Audit Logs, Users, and Roles where tests create automation-owned records first
-and update/delete only those records.
+The key research recommendation is to inventory before implementing. "All UI
+interactions" must become a concrete page/control/state/API matrix, then tests
+can cover validation behavior, interactive controls, safe mutations, API status
+and body contracts, and UI/API consistency. API tests should live in Playwright,
+not in a separate test framework, so reporting and runner behavior remain
+consistent.
 
-The known failed scenario is a locator design issue, not an app regression: the
-validation message appears both inline and in a toast, so a broad `getByText`
-assertion violates Playwright strictness. The first implementation work should
-harden this with a scoped locator and use the same principle for new portal
-coverage.
+The main risks are unsafe sandbox mutations, secret-bearing API diagnostics, and
+false-green claims for product behavior that is not exposed. The v1.1 same-run
+automation record harness remains the right safety boundary and should be
+extended to API tests before any mutating API coverage is added.
 
 ## Key Findings
 
 ### Recommended Stack
 
-Keep the current stack: Node.js, TypeScript, Playwright Test, npm scripts, and
-the existing triage formatter.
+Keep Node.js, TypeScript, Playwright Test, npm scripts, and the existing triage
+formatter. Add API tests through Playwright's built-in request fixture and
+APIRequestContext rather than a new framework.
 
 **Core technologies:**
 
-- Node.js: runner process orchestration — already required by the repo.
-- Playwright Test: browser automation source of truth — supports projects,
-  reporters, artifacts, filtering, and setup dependencies.
-- TypeScript: typed tests and support helpers — already used for committed
-  Playwright coverage.
-- Existing triage formatter: failure summary — keeps one summary path from
-  Playwright JSON.
+- Node.js: local runner and tooling runtime.
+- TypeScript: typed UI and API helpers.
+- Playwright Test: browser tests, API tests, projects, assertions, reporters,
+  artifacts, and storage-state integration.
+- Existing `npm run test:portal`: operator entrypoint to extend for UI/API/full
+  targets without becoming a second framework.
 
 ### Expected Features
 
-**Must have (table stakes):**
+**Must have:**
 
-- Single runner command — user-requested entrypoint for portal automation.
-- Selected and full targets — operators need focused and full runs.
-- Existing Add Application included — current automation remains valuable.
-- Portal navigation coverage — Applications, Activity, Audit Logs, Users, Roles.
-- Safe mutating workflows — Activity, Audit Logs, Users, and Roles update/delete
-  only automation-created records.
-- Auth-state preflight — authenticated coverage must fail fast with recovery
-  guidance.
-- Secret-safe triage — preserve current artifact policy.
+- Portal UI inventory with page, control, state, validation, and blocker
+  mapping.
+- Deep UI interaction coverage for forms, navigation, buttons, filters, sorting,
+  modals, menus, tables, empty states, and error states where exposed.
+- Element validation coverage for required fields, invalid values, disabled
+  states, inline errors, and no-navigation failures.
+- API endpoint discovery and contract tests for portal-backed workflows.
+- API validation, auth/session, error response, and JSON shape coverage.
+- UI/API consistency checks for critical same-run records.
+- Runner and documentation updates for UI-only, API-only, and full coverage.
 
-**Should have (competitive):**
+**Should have:**
 
-- Feature-area aliases — reduce need to memorize Playwright filters.
-- Failure classification — known strict locator failure should be easy to
-  diagnose.
-- Page inventory attachments — helpful when broadening coverage.
+- Redacted contract-aware diagnostics that connect UI failures to API drift.
+- Coverage matrix traceability from requirements to tests.
+- Explicit blocker ledger for unexposed UI or API behavior.
+
+**Defer:**
+
+- Schema-derived assertions until a stable API contract source is available.
+- Broad visual comparison, performance, accessibility, and cross-browser/device
+  expansion unless later milestones prioritize them.
 
 ### Architecture Approach
 
-Use a thin Node runner over Playwright. The runner parses targets/options,
-spawns Playwright, preserves output and exit status, and runs triage from
-`test-results/results.json`. Browser navigation and assertions remain in
-Playwright specs and support helpers.
+Use Playwright projects as the boundary: public smoke, auth setup, authenticated
+UI specs, and API contract specs. Keep shared behavior in `tests/support/`, add
+API helpers there, keep API specs under `tests/api/`, and preserve runner
+responsibility as CLI target mapping only.
 
 **Major components:**
 
-1. Runner script — maps user-friendly targets to Playwright commands.
-2. Playwright projects — public, setup, and authenticated execution boundaries.
-3. Portal specs — committed coverage for Add Application, portal pages, and safe
-   mutating workflows.
-4. Support helpers — shared auth, navigation, page assertions, and diagnostics.
-5. Triage formatter — post-run summary.
+1. Portal inventory helpers - identify reachable UI controls and API candidates.
+2. UI specs - assert browser-visible interactions and element states.
+3. API specs - assert status, JSON shape, validation, auth, and error behavior.
+4. Same-run safety helpers - govern both UI and API mutation targets.
+5. Runner/docs - expose focused commands and recovery guidance.
 
 ### Critical Pitfalls
 
-1. **Broad locators match duplicate UI text** — scope assertions to form
-   regions, roles, labels, or stable test ids.
-2. **Runner hides auth-state failures** — preserve setup project behavior and
-   triage output.
-3. **Mutating pre-existing portal data** — create automation-owned records and
-   update/delete only those records.
-4. **Runner becomes a parallel test framework** — keep browser behavior in
-   Playwright specs.
-5. **Sandbox data pollution** — keep generated records identifiable and avoid
-   touching pre-existing records.
+1. **No inventory before "all UI" claims** - build the matrix first.
+2. **Broad locators and duplicate text** - use scoped accessible locators and
+   web-first assertions.
+3. **Secret-bearing API diagnostics** - redact auth, cookies, tokens, and
+   storage state.
+4. **Unsafe API mutations** - extend same-run record safety to API helpers.
+5. **Unstable UI/API consistency checks** - compare stable portal-relevant
+   fields only.
+6. **Runtime explosion** - group by risk and keep runner targets focused.
 
 ## Implications for Roadmap
 
-Based on research, suggested phase structure:
+### Phase 10: Coverage Inventory and Test Architecture
 
-### Phase 5: Runner Foundation and Known Failure Hardening
+**Rationale:** Comprehensive UI/API coverage needs a concrete inventory and API
+discovery before implementation. **Delivers:** Portal interaction matrix, API
+candidate map, test architecture decision, runner target design, and blocker
+ledger. **Addresses:** UI inventory, API endpoint discovery, coverage
+traceability. **Avoids:** False "all UI" claims and unbounded test matrix
+growth.
 
-**Rationale:** The runner and current failure are direct blockers for reliable
-operator use. **Delivers:** Thin Node runner, npm command, target mapping tests,
-scoped validation locator fix, triage integration. **Addresses:** Unified
-runner, Add Application failure, auth/setup preservation. **Avoids:** Runner as
-parallel framework; broad locator strictness failure.
+### Phase 11: Deep Portal UI Interaction Coverage
 
-### Phase 6: Portal Feature Coverage
+**Rationale:** User's first ask was all UI element interactions and validations.
+**Delivers:** Playwright UI specs for controls, forms, validations, disabled
+states, empty/error states, menus/modals, filters/sorting, and navigation.
+**Uses:** Existing authenticated project, navigation helpers, page-error
+collection, and same-run safety. **Avoids:** Broad locator strictness failures
+and page-shell-only coverage.
 
-**Rationale:** Once runner exists, broaden the suite to authenticated portal
-areas and prove safe workflow behavior. **Delivers:** Portal navigation/landmark
-Playwright coverage and safe mutating workflows for Applications, Activity,
-Audit Logs, Users, and Roles; support helpers as needed. **Uses:** Existing
-authenticated project, page-error checks, and automation-owned record safety.
-**Implements:** Portal feature specs and runner feature-area targets.
+### Phase 12: Portal API Contract Coverage
 
-### Phase 7: Runner Documentation and Regression Operations
+**Rationale:** User added API coverage, which needs explicit auth, endpoint, and
+safety handling. **Delivers:** Playwright API project/specs, API helper layer,
+status/body/error assertions, validation response tests, auth/session behavior
+where safe, and redacted diagnostics. **Uses:** Playwright request
+fixture/APIRequestContext and storage-state rules. **Avoids:** Secret leakage
+and unsafe API mutation.
 
-**Rationale:** A runner is only useful if operators know prerequisites, targets,
-artifacts, and failure recovery. **Delivers:** README updates, command tier
-documentation, triage/runbook alignment, CI/local guidance. **Uses:** Existing
-docs and triage artifacts.
+### Phase 13: UI/API Consistency and Operations
+
+**Rationale:** The strongest assurance comes from proving browser-visible state
+and API-visible state agree for the same same-run records. **Delivers:** UI/API
+paired checks, runner target expansion, README runbook updates, docs alignment,
+and full verification. **Uses:** Same-run automation record harness and existing
+triage artifacts. **Avoids:** Divergent UI/API coverage and unclear operator
+commands.
 
 ### Phase Ordering Rationale
 
-- Fix the known failure before broadening so the baseline suite is trustworthy.
-- Build runner target mapping before adding more feature areas so new coverage
-  has a stable entrypoint.
-- Keep docs last enough to reflect actual implemented command behavior, but in
-  the same milestone.
+- Inventory and architecture come first because exhaustive coverage needs a
+  measurable boundary.
+- UI depth comes before API consistency because visible workflow behavior is
+  already known and directly requested.
+- API contracts come before UI/API paired checks because consistency needs a
+  trusted API helper layer.
+- Runner/docs come last enough to reflect real command behavior.
 
 ### Research Flags
 
-Phases likely needing deeper research during planning:
-
-- **Phase 6:** Needs live sandbox exploration to identify stable landmarks and
-  safe create/update/delete paths for Activity, Audit Logs, Users, and Roles.
-
-Phases with standard patterns:
-
-- **Phase 5:** Playwright runner wrapping, locator scoping, and Node child
-  process orchestration are established patterns.
-- **Phase 7:** Documentation and command runbook updates follow existing repo
-  patterns.
+- **Phase 10:** Needs live authenticated exploration to inventory current UI
+  controls and observe portal API calls.
+- **Phase 12:** Needs API auth/session discovery without exposing credentials or
+  storage state.
+- **Phase 13:** Needs careful field selection for stable UI/API comparisons.
 
 ## Confidence Assessment
 
-| Area         | Confidence | Notes                                                                                      |
-| ------------ | ---------- | ------------------------------------------------------------------------------------------ |
-| Stack        | HIGH       | Verified against existing repo and current Playwright docs.                                |
-| Features     | MEDIUM     | User intent is clear, but "all portal features" needs safe scoping during requirements.    |
-| Architecture | HIGH       | Thin runner over Playwright aligns with repo decisions and Playwright capabilities.        |
-| Pitfalls     | HIGH       | Known local failure and existing auth/storage-state constraints provide concrete evidence. |
+| Area         | Confidence | Notes                                                                         |
+| ------------ | ---------- | ----------------------------------------------------------------------------- |
+| Stack        | HIGH       | Existing repo and current Playwright docs align with UI and API coverage.     |
+| Features     | HIGH       | User explicitly requested full UI interactions, validations, and API tests.   |
+| Architecture | HIGH       | Playwright projects and request fixtures fit the current suite.               |
+| Pitfalls     | HIGH       | v1.1 already exposed locator, auth, blocker, and mutation-safety constraints. |
 
 **Overall confidence:** HIGH
 
 ### Gaps to Address
 
-- Stable landmarks and safe mutating paths for Activity, Audit Logs, Users, and
-  Roles need confirmation during implementation with valid auth state.
-- Mutating workflows must only update/delete records created by the same
-  automation run.
-- Runner target names and flags need final requirement approval before
-  implementation.
+- Live authenticated inventory is still needed for exact control lists and API
+  routes.
+- API authentication mechanics must be discovered without printing or committing
+  secrets.
+- Role edit and Audit Logs same-run activity evidence remain blockers unless
+  v2.0 discovers visible UI controls or safe API contracts that expose them.
 
 ## Sources
 
-### Primary (HIGH confidence)
+### Primary
 
-- `/microsoft/playwright.dev` via Context7 — Playwright Test projects, CLI
-  filtering, reporters, artifacts, locators, and assertions.
-- `playwright.config.ts` — local Playwright architecture.
-- `test-results/artifacts/.../error-context.md` — known strict locator failure
-  evidence.
-- `README.md` and `AGENTS.md` — local auth, secrets, triage, and Playwright
-  source-of-truth rules.
+- `/microsoft/playwright.dev` via Context7 - locators, web-first assertions,
+  page assertions, API testing, APIRequestContext, storage state, and isolation.
+- `https://playwright.dev/docs/test-api-testing` - Playwright API testing
+  guidance.
+- `https://playwright.dev/docs/auth` - storage-state authentication guidance.
+- `playwright.config.ts` - current Playwright projects and reporters.
+- `scripts/run-portal-automation.mjs` - current runner design.
+- `tests/` and `tests/support/` - existing UI coverage and same-run mutation
+  safety helpers.
 
-### Secondary (MEDIUM confidence)
+### Secondary
 
-- Existing test and support files — local coverage patterns and helper
-  boundaries.
+- `README.md`, `AGENTS.md`, and `docs/ai-development-workflow.md` - local
+  operator, secret, and execution rules.
+- Archived v1.1 Phase 8 and Phase 9 planning docs - known product-surface
+  blockers and runner constraints.
 
-### Tertiary (LOW confidence)
+### Tertiary
 
 - None.
 
 ---
 
-_Research completed: 2026-05-11_ _Ready for roadmap: yes_
+_Research completed: 2026-05-13_ _Ready for roadmap: yes_
