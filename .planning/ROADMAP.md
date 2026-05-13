@@ -6,7 +6,7 @@
       [v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md).
 - [ ] **v1.1 Unified Portal Automation Runner** - Phases 5-9 define one
       Playwright-backed runner, safe portal workflow coverage, and operator
-      documentation.
+      documentation. All phases are complete; ready for milestone completion.
 
 ## Current Milestone: v1.1 Unified Portal Automation Runner
 
@@ -32,9 +32,9 @@ delete only records created by the same automation run.
 - [x] **Phase 8: Deep Portal Workflow Coverage** - Add deep workflow coverage
       for Activity, Audit Logs, Users, and Roles using only visible UI actions
       and automation-owned records. Completed 2026-05-13.
-- [ ] **Phase 9: Runner Documentation and Regression Operations** - Document
+- [x] **Phase 9: Runner Documentation and Regression Operations** - Document
       runner targets, auth prerequisites, artifacts, recovery paths, and
-      planning alignment.
+      planning alignment. Completed 2026-05-13.
 
 ## Phase Details
 
@@ -185,7 +185,7 @@ without guessing target names, auth prerequisites, artifacts, or cleanup rules.
 
 Plans:
 
-- [ ] 09-01: Document runner operations and align planning docs.
+- [x] 09-01: Document runner operations and align planning docs.
 
 ## Progress
 
@@ -195,7 +195,7 @@ Plans:
 | 6. Portal Navigation Coverage and Target Wiring | 2/2            | Complete | 2026-05-12 |
 | 7. Automation-Owned Mutation Safety Harness     | 1/1            | Complete | 2026-05-12 |
 | 8. Deep Portal Workflow Coverage                | 2/2            | Complete | 2026-05-13 |
-| 9. Runner Documentation and Regression Ops      | 0/1            | Pending  | —          |
+| 9. Runner Documentation and Regression Ops      | 1/1            | Complete | 2026-05-13 |
 
 ## Traceability Summary
 

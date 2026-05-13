@@ -89,17 +89,120 @@ may persist between runs. Synthetic upload fixtures under `tests/fixtures/`
 contain no real personal, financial, credential, cookie, token, or storage-state
 data.
 
+## Portal Runner Operations
+
+`npm run test:portal` is the unified VerifyIQ portal automation runner. It
+delegates browser execution to committed Playwright tests, generates the triage
+summary, and prints native artifact paths after each run. Use it for selected or
+full portal coverage, then read the artifacts described below for triage.
+
+### Quick Start
+
+```bash
+npm run test:portal
+npm run test:portal -- applications
+npm run test:portal -- activity -- --headed
+npm run test:portal -- users -- --trace on
+```
+
+The first `--` separates npm arguments from the runner. Native Playwright flags
+go after the second `--`, so
+`npm run test:portal -- <target> -- <playwright-flags>` forwards trailing flags
+such as `--headed`, `--trace on`, `--debug`, or `--grep` directly to Playwright.
+
+### Targets
+
+| Target         | Command                               | Auth requirement                                                                    | Coverage scope                                                                                                                                                                                                                  |
+| -------------- | ------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `all`          | `npm run test:portal`                 | Public smoke runs without auth; authenticated projects require valid storage state. | Full Playwright run across the `public-smoke` and `authenticated-chromium` projects.                                                                                                                                            |
+| `public`       | `npm run test:portal -- public`       | None.                                                                               | Public smoke project only. The only target that does not require valid storage state.                                                                                                                                           |
+| `auth`         | `npm run test:portal -- auth`         | Requires valid auth state.                                                          | All authenticated project tests.                                                                                                                                                                                                |
+| `applications` | `npm run test:portal -- applications` | Requires valid auth state.                                                          | Applications landing landmarks plus the Add Application matrix and required-applicant validation tagged `@portal:applications`.                                                                                                 |
+| `activity`     | `npm run test:portal -- activity`     | Requires valid auth state.                                                          | Activity Log page landmarks and same-run automation-owned activity evidence tagged `@portal:activity`.                                                                                                                          |
+| `audit-logs`   | `npm run test:portal -- audit-logs`   | Requires valid auth state.                                                          | Audit Logs export controls are covered (`@portal:audit-logs`). Same-run portal activity evidence remains a `MUT-05` product blocker because the page exports ingestion/output events only, not portal user activity.            |
+| `users`        | `npm run test:portal -- users`        | Requires valid auth state.                                                          | Users lifecycle coverage (create, edit, remove access) for same-run automation-owned records tagged `@portal:users`.                                                                                                            |
+| `roles`        | `npm run test:portal -- roles`        | Requires valid auth state.                                                          | Roles create and delete coverage for same-run automation-owned records tagged `@portal:roles`. Role edit plus reversible permission-toggle coverage remains a `MUT-07` product blocker until a visible role edit action exists. |
+
+Only the `public` target runs without authenticated storage state. Every other
+target includes the Playwright `authenticated-chromium` project and requires a
+valid storage state resolved through the documented auth precedence.
+
+### Artifacts
+
+Each runner execution writes:
+
+- `test-results/triage-summary.md`
+- `playwright-report/`
+- `test-results/results.json`
+- `test-results/artifacts/`
+
+### Runner Auth Recovery
+
+Authenticated runner targets resolve storage state in this exact order:
+`VERIFYIQ_STORAGE_STATE_JSON`, `VERIFYIQ_STORAGE_STATE_PATH`,
+`playwright/.auth/user.json`, credential login. The Playwright setup project
+validates the staged storage state in a fresh browser context before
+authenticated tests run.
+
+`VERIFYIQ_FORCE_LOGIN=1` bypasses only the local `playwright/.auth/user.json`
+file. It does not bypass `VERIFYIQ_STORAGE_STATE_JSON` or
+`VERIFYIQ_STORAGE_STATE_PATH`, so explicit env-provided storage state always
+wins.
+
+Recovery guidance:
+
+- **No local auth state.** Run `npm run auth:record` to capture a fresh, ignored
+  `playwright/.auth/user.json`.
+- **Expired local auth state.** Run `npm run auth:record` to refresh the ignored
+  file.
+- **Malformed `VERIFYIQ_STORAGE_STATE_JSON`.** Refresh the secret with a valid
+  Playwright storage-state JSON object. Do not print the value into terminals,
+  logs, screenshots, or commits.
+- **CI auth setup failure.** Refresh `VERIFYIQ_STORAGE_STATE_JSON` or
+  `VERIFYIQ_STORAGE_STATE_PATH`. Diagnostics name the variable and recovery
+  command without printing credential values, cookies, tokens, or serialized
+  storage state.
+- **Force-login debugging.** Use `VERIFYIQ_FORCE_LOGIN=1` only to bypass the
+  ignored local file. It does not override `VERIFYIQ_STORAGE_STATE_JSON` or
+  `VERIFYIQ_STORAGE_STATE_PATH`.
+
+### Failure Debug Order
+
+Read failure artifacts in this order:
+
+1. `test-results/triage-summary.md`
+2. `playwright-report/`
+3. `test-results/results.json`
+4. `test-results/artifacts/`
+
+The triage summary is a lean operator guide. Native Playwright artifacts remain
+authoritative for debugging.
+
+### Same-Run Cleanup Rules
+
+Mutating workflow tests may update, delete, deactivate, or otherwise clean up
+only records created and registered in the same automation run. Generated
+visible names follow this exact identifier shape:
+
+`AUTOMATION <area> <run-id> <record-label>`
+
+- Only same-run registered records may be mutated. Update, delete, and cleanup
+  helpers refuse any visible name that does not match this shape and the current
+  run id.
+- Cleanup uses visible UI controls only. Hidden cleanup APIs are out of scope.
+- Cleanup residue is handled through secret-safe diagnostics and the visible
+  automation identifier. Diagnostics never include credential values, cookies,
+  tokens, serialized storage state, or `.env` values.
+
 ## Commands
 
 - `npm run check` — lint, typecheck, triage formatter tests, and documentation
   alignment check.
 - `npm run ai:implement` — Claude Opus 4.7 first-pass implementation wrapper
   with Codex fallback for GSD cross-AI execution.
-- `npm run test:portal` — unified portal automation runner. Defaults to the
-  `all` target. Use `npm run test:portal -- <target>` to choose one of the valid
-  targets: `all`, `public`, `auth`, `applications`, `activity`, `audit-logs`,
-  `users`, `roles`. Native Playwright flags go after a second separator, for
-  example `npm run test:portal -- activity -- --headed`.
+- `npm run test:portal` — unified portal automation runner. See
+  [Portal Runner Operations](#portal-runner-operations) for targets, examples,
+  auth requirements, artifacts, and recovery rules.
 - `npm run test:e2e` — public smoke tests.
 - `npm run test:ai-workflow` — unit tests for AI implementation wrapper fallback
   behavior.

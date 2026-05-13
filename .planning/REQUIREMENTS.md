@@ -86,10 +86,18 @@ blocked until a visible edit action exists.
 
 ### Documentation
 
-- [ ] **DOCS-04**: README documents unified runner setup, targets, auth
+- [x] **DOCS-04**: README documents unified runner setup, targets, auth
       prerequisites, examples, artifacts, and recovery commands.
-- [ ] **DOCS-05**: Planning docs stay aligned with v1.1 runner scope, Playwright
+- [x] **DOCS-05**: Planning docs stay aligned with v1.1 runner scope, Playwright
       source-of-truth rules, and safe workflow boundaries.
+
+Phase 9 completed DOCS-04 by adding `## Portal Runner Operations` to README with
+a quick start, target table, artifact list, auth recovery precedence, failure
+debug order, and same-run cleanup rules including the exact
+`AUTOMATION <area> <run-id> <record-label>` shape. DOCS-05 is satisfied by
+aligning `.planning/PROJECT.md`, `.planning/ROADMAP.md`, `.planning/STATE.md`,
+and this file with the final v1.1 runner scope and preserving the `MUT-05` and
+`MUT-07` product blockers.
 
 ## Out of Scope
 
@@ -130,8 +138,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TRIAGE-01   | 5     | Complete |
 | TRIAGE-02   | 5     | Complete |
 | TRIAGE-03   | 5     | Complete |
-| DOCS-04     | 9     | Pending  |
-| DOCS-05     | 9     | Pending  |
+| DOCS-04     | 9     | Complete |
+| DOCS-05     | 9     | Complete |
 
 **Coverage:**
 
@@ -141,5 +149,5 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 
-_Requirements defined: 2026-05-11_ _Last updated: 2026-05-13 after Phase 8
+_Requirements defined: 2026-05-11_ _Last updated: 2026-05-13 after Phase 9
 completion._

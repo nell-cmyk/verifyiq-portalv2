@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Unified Portal Automation Runner
-status: executing
-last_updated: "2026-05-13T06:59:07Z"
+status: ready_to_complete
+last_updated: "2026-05-13T07:47:00.000Z"
 progress:
   total_phases: 5
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 8
-  completed_plans: 7
-  percent: 80
+  completed_plans: 8
+  percent: 100
 ---
 
 # Project State
@@ -22,18 +22,18 @@ See: [.planning/PROJECT.md](PROJECT.md) (updated 2026-05-13)
 browser automation without committing secrets, while using an explicit manual
 storage-state path when reCAPTCHA blocks credential-only login.
 
-**Current focus:** Phase 09 execution —
-runner-documentation-and-regression-operations
+**Current focus:** Phase 09 — runner-documentation-and-regression-operations
+complete. v1.1 milestone is ready for `$gsd-complete-milestone`.
 [.planning/ROADMAP.md](ROADMAP.md) **Milestone archive:**
 [.planning/milestones/](milestones/)
 
 ## Current Position
 
-Phase: 9
+Phase: 09 (runner-documentation-and-regression-operations) — COMPLETE
 
-Plan: 1 plan ready
+Plan: 1 of 1 — COMPLETE
 
-Status: Ready to execute
+Status: v1.1 milestone ready for completion
 
 ## Accumulated Context
 
@@ -70,14 +70,12 @@ Recent decisions affecting current work:
 - Keep Phase 3 coverage anchored to committed Playwright tests; use browser
   helpers only for exploration and debugging.
 
-- Document the operator runner for selected or full portal automation, backed by
-  committed Playwright tests.
-
 - Ensure mutating workflow coverage updates or deletes only records created by
   the same automation run.
 
-- Document the Phase 8 product constraints and same-run cleanup rules in the
-  Phase 9 operator docs.
+- Run `$gsd-complete-milestone` to archive the v1.1 milestone now that Phase 9
+  runner documentation, auth recovery, failure debug order, same-run cleanup
+  rules, and Phase 8 product blockers are documented and verified.
 
 Phase 2 locked env-first auth-state precedence (`VERIFYIQ_STORAGE_STATE_JSON`,
 then `VERIFYIQ_STORAGE_STATE_PATH`, then local `playwright/.auth/user.json`,
@@ -87,6 +85,13 @@ then credential login) with fresh-context validation of every reused state.
 Phase 8 added target-owned authenticated workflow coverage for Users, Roles,
 Activity, and Audit Logs. Audit Logs same-run portal activity evidence and role
 edit coverage remain product-surface blockers, not test implementation gaps.
+
+Phase 9 documented the unified runner runbook in `README.md` under
+`## Portal Runner Operations`, including the target table, artifact list,
+storage-state-first auth recovery with the locked precedence, failure debug
+order with native Playwright authority, and same-run cleanup rules using the
+`AUTOMATION <area> <run-id> <record-label>` shape. Planning docs were aligned
+without weakening the `MUT-05` and `MUT-07` product-surface blockers.
 
 ### Blockers/Concerns
 
@@ -107,8 +112,8 @@ None currently tracked for v1.1.
 
 ## Session Continuity
 
-Last session: 2026-05-13T06:59:07Z
+Last session: 2026-05-13T07:47:00Z
 
 ## Operator Next Steps
 
-- Execute Phase 9 with `$gsd-execute-phase 9 --cross-ai`.
+- Complete the v1.1 milestone with `$gsd-complete-milestone`.

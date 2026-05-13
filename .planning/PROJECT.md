@@ -74,6 +74,12 @@ while making failures actionable.
   by same-run automation-owned records. Audit Logs same-run portal activity
   evidence and role edit coverage remain explicit product-surface blockers
   rather than false-green assertions.
+- Phase 9 runner documentation and regression operations - v1.1: README
+  documents runner targets, auth prerequisites, recovery commands, artifacts,
+  Phase 8 product constraints (`MUT-05` Audit Logs same-run portal activity
+  evidence and `MUT-07` role edit), and same-run cleanup rules. Planning docs
+  reflect the same v1.1 runner scope. Playwright tests remain the source of
+  truth, and the Phase 8 product-surface blockers are preserved verbatim.
 
 ### Active
 
@@ -81,7 +87,7 @@ while making failures actionable.
 - [x] Build a unified runner that can execute selected or full portal coverage.
 - [x] Expand authenticated Playwright coverage across portal areas, including
       safe mutating workflows.
-- [ ] Keep documentation aligned after code and instruction changes.
+- [x] Keep documentation aligned after code and instruction changes.
 
 Phase 2 planning locks env-first auth-state precedence
 (`VERIFYIQ_STORAGE_STATE_JSON`, then `VERIFYIQ_STORAGE_STATE_PATH`, then local
@@ -99,8 +105,10 @@ storage state.
 
 - Current shipped version: v1.0 MVP, shipped 2026-05-11.
 - Current milestone: v1.1 Unified Portal Automation Runner.
-- Current status: Phase 8 is complete; Phase 9 is next and must document runner
-  operation, auth recovery, artifacts, and the Phase 8 product constraints.
+- Current status: Phase 9 is complete. README documents runner targets, auth
+  prerequisites, recovery commands, artifacts, Phase 8 product constraints
+  (`MUT-05` Audit Logs same-run portal activity evidence and `MUT-07` role
+  edit), and same-run cleanup rules.
 - Target app: `https://sandbox.verifyiq-mercury-dev.boost-frontend.app/`.
 - App currently presents a VerifyIQ sign-in screen with Email, Password, and
   Sign in controls.
@@ -152,25 +160,26 @@ storage state.
 
 ## Key Decisions
 
-| Decision                                         | Rationale                                                                                                                                                                                                                                                                     | Outcome  |
-| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
-| TypeScript + Playwright Test                     | Best fit for deterministic browser E2E, tracing, reports, and CI                                                                                                                                                                                                              | Complete |
-| Local/CI-first Playwright                        | Keep the automation suite on the existing deterministic Playwright execution path                                                                                                                                                                                             | Complete |
-| Storage-state auth fallback                      | reCAPTCHA blocks fully automated credential login                                                                                                                                                                                                                             | Complete |
-| Custom Playwright auth recorder                  | Keeps auth state compatible with tests while allowing manual CAPTCHA                                                                                                                                                                                                          | Complete |
-| `agent-browser` as optional helper               | Useful for inspection without becoming test/runtime dependency                                                                                                                                                                                                                | Complete |
-| GSD lifecycle with Playwright executable truth   | Separates planning state from runnable verification                                                                                                                                                                                                                           | Complete |
-| Claude Opus 4.7 implementer with Codex fallback  | Uses Opus 4.7 for planned implementation while preserving Codex verification and continuity under Claude limits                                                                                                                                                               | Complete |
-| Documentation alignment gate                     | Prevents instructions and repo behavior drifting apart                                                                                                                                                                                                                        | Complete |
-| Phase 3 Add Application workflow matrix          | Proves stable visible primary document submissions and validation behavior through committed Playwright tests                                                                                                                                                                 | Complete |
-| `claude-mem` as sole persistent memory handler   | Provides cross-agent, searchable local memory while avoiding overlapping Codex Memories capture                                                                                                                                                                               | Complete |
-| Phase 4 regression operations and triage summary | Lean operator triage summary, storage-state-first auth diagnostics, CI full-regression gating, and README maintenance runbook keep Playwright the source of truth while reducing time-to-failure                                                                              | Complete |
-| Milestone archival for completed phases          | Moves completed phase execution history out of active roadmap context while preserving all artifacts under `.planning/milestones/`                                                                                                                                            | Complete |
-| v1.1 unified runner scope                        | The next milestone should provide both a CLI runner and structured Playwright entrypoint for portal features, starting from existing Add Application automation, the known validation failure, and safe mutating workflows that only update/delete automation-created records | Pending  |
-| Phase 5 runner foundation                        | The runner should stay a thin Playwright CLI wrapper that validates target names, prints the command and artifact paths, runs triage, and preserves Playwright exit behavior.                                                                                                 | Complete |
-| Phase 6 portal target wiring                     | Portal targets should use Playwright `--grep @portal:*` tags, with live-route discovery and stable page shell assertions in committed authenticated Playwright tests.                                                                                                         | Complete |
-| Phase 7 automation-owned mutation safety harness | Future mutating workflow tests must create, update, delete, and clean up only records registered in the same automation run; diagnostics must identify visible cleanup residue without echoing raw caller error text or secret-bearing data.                                  | Complete |
-| Phase 8 product-surface constraint handling      | Users and Activity can proceed with same-run evidence; Roles must not claim edit coverage until a visible edit action exists, and Audit Logs must not claim same-run portal activity evidence while exports exclude user activity logs.                                       | Complete |
+| Decision                                         | Rationale                                                                                                                                                                                                                                                                        | Outcome  |
+| ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| TypeScript + Playwright Test                     | Best fit for deterministic browser E2E, tracing, reports, and CI                                                                                                                                                                                                                 | Complete |
+| Local/CI-first Playwright                        | Keep the automation suite on the existing deterministic Playwright execution path                                                                                                                                                                                                | Complete |
+| Storage-state auth fallback                      | reCAPTCHA blocks fully automated credential login                                                                                                                                                                                                                                | Complete |
+| Custom Playwright auth recorder                  | Keeps auth state compatible with tests while allowing manual CAPTCHA                                                                                                                                                                                                             | Complete |
+| `agent-browser` as optional helper               | Useful for inspection without becoming test/runtime dependency                                                                                                                                                                                                                   | Complete |
+| GSD lifecycle with Playwright executable truth   | Separates planning state from runnable verification                                                                                                                                                                                                                              | Complete |
+| Claude Opus 4.7 implementer with Codex fallback  | Uses Opus 4.7 for planned implementation while preserving Codex verification and continuity under Claude limits                                                                                                                                                                  | Complete |
+| Documentation alignment gate                     | Prevents instructions and repo behavior drifting apart                                                                                                                                                                                                                           | Complete |
+| Phase 3 Add Application workflow matrix          | Proves stable visible primary document submissions and validation behavior through committed Playwright tests                                                                                                                                                                    | Complete |
+| `claude-mem` as sole persistent memory handler   | Provides cross-agent, searchable local memory while avoiding overlapping Codex Memories capture                                                                                                                                                                                  | Complete |
+| Phase 4 regression operations and triage summary | Lean operator triage summary, storage-state-first auth diagnostics, CI full-regression gating, and README maintenance runbook keep Playwright the source of truth while reducing time-to-failure                                                                                 | Complete |
+| Milestone archival for completed phases          | Moves completed phase execution history out of active roadmap context while preserving all artifacts under `.planning/milestones/`                                                                                                                                               | Complete |
+| v1.1 unified runner scope                        | v1.1 provides both a CLI runner and structured Playwright entrypoint for portal features, starting from existing Add Application automation, the known validation failure, and safe mutating workflows that only update/delete automation-created records                        | Complete |
+| Phase 5 runner foundation                        | The runner should stay a thin Playwright CLI wrapper that validates target names, prints the command and artifact paths, runs triage, and preserves Playwright exit behavior.                                                                                                    | Complete |
+| Phase 6 portal target wiring                     | Portal targets should use Playwright `--grep @portal:*` tags, with live-route discovery and stable page shell assertions in committed authenticated Playwright tests.                                                                                                            | Complete |
+| Phase 7 automation-owned mutation safety harness | Future mutating workflow tests must create, update, delete, and clean up only records registered in the same automation run; diagnostics must identify visible cleanup residue without echoing raw caller error text or secret-bearing data.                                     | Complete |
+| Phase 8 product-surface constraint handling      | Users and Activity can proceed with same-run evidence; Roles must not claim edit coverage until a visible edit action exists, and Audit Logs must not claim same-run portal activity evidence while exports exclude user activity logs.                                          | Complete |
+| Phase 9 runner documentation runbook             | README is the operator runner runbook for unified portal automation: targets, auth prerequisites, recovery commands, artifact paths, native-Playwright authority, Phase 8 product-surface blockers, and same-run cleanup rules with `AUTOMATION <area> <run-id> <record-label>`. | Complete |
 
 ## Evolution
 
@@ -193,4 +202,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-_Last updated: 2026-05-13 after Phase 8 completion._
+_Last updated: 2026-05-13 after Phase 9 completion._
