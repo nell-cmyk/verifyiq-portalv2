@@ -13,23 +13,20 @@ VerifyIQ sandbox workflows can be checked through reproducible browser
 automation without committing secrets, while using an explicit manual
 storage-state path when reCAPTCHA blocks credential-only login.
 
-## Current Milestone: v1.1 Unified Portal Automation Runner
+## Current State
 
-**Goal:** Provide one operator runner and structured Playwright entrypoint that
-exercise VerifyIQ portal features deeply enough to cover safe CRUD workflows
-while making failures actionable.
+**Shipped version:** v1.1 Unified Portal Automation Runner, shipped 2026-05-13.
 
-**Target features:**
+The suite now has one operator runner, `npm run test:portal`, for selected or
+full portal automation. The runner validates target names, delegates browser
+execution to committed Playwright tests, preserves native artifacts and exit
+codes, and runs the existing secret-safe triage summary.
 
-- One CLI runner for selected or full portal automation.
-- Structured Playwright coverage for authenticated portal areas: Applications,
-  Activity, Audit Logs, Users, and Roles.
-- Existing Add Application automation included in the unified runner.
-- Safe mutating workflow automation for Activity, Audit Logs, Users, and Roles
-  using only automation-created records for update and delete actions.
-- The current Add Application required-applicant validation failure hardened
-  with precise locator coverage.
-- Secret-safe summaries, artifacts, and documentation for runner operation.
+Authenticated portal coverage includes Applications, Activity, Audit Logs,
+Users, and Roles. Mutating workflow coverage uses automation-owned same-run
+records before update or cleanup actions. The current product surface still
+blocks Audit Logs same-run portal activity evidence and role edit coverage, so
+those remain explicit blockers instead of false-green assertions.
 
 ## Requirements
 
@@ -83,11 +80,8 @@ while making failures actionable.
 
 ### Active
 
-- [x] Define scoped v1.1 runner and portal-feature automation requirements.
-- [x] Build a unified runner that can execute selected or full portal coverage.
-- [x] Expand authenticated Playwright coverage across portal areas, including
-      safe mutating workflows.
-- [x] Keep documentation aligned after code and instruction changes.
+No active milestone requirements are open. `$gsd-new-milestone` will define the
+next requirement set and recreate `.planning/REQUIREMENTS.md`.
 
 Phase 2 planning locks env-first auth-state precedence
 (`VERIFYIQ_STORAGE_STATE_JSON`, then `VERIFYIQ_STORAGE_STATE_PATH`, then local
@@ -103,12 +97,11 @@ storage state.
 
 ## Context
 
-- Current shipped version: v1.0 MVP, shipped 2026-05-11.
-- Current milestone: v1.1 Unified Portal Automation Runner.
-- Current status: Phase 9 is complete. README documents runner targets, auth
-  prerequisites, recovery commands, artifacts, Phase 8 product constraints
-  (`MUT-05` Audit Logs same-run portal activity evidence and `MUT-07` role
-  edit), and same-run cleanup rules.
+- Current shipped version: v1.1 Unified Portal Automation Runner, shipped
+  2026-05-13.
+- Current milestone: none open.
+- Current status: v1.1 is archived under `.planning/milestones/`; the next
+  milestone should start with fresh requirements.
 - Target app: `https://sandbox.verifyiq-mercury-dev.boost-frontend.app/`.
 - App currently presents a VerifyIQ sign-in screen with Email, Password, and
   Sign in controls.
@@ -129,22 +122,18 @@ storage state.
   Codex Memories is disabled for this repository.
 - GSD artifacts live in `.planning/`; local Codex/GSD runtime files under
   `.codex/` are ignored.
-- v1.0 phase history, requirements, audit, and roadmap are archived under
-  `.planning/milestones/`.
-- Local failure artifacts show the Add Application required-applicant validation
-  test failed because the locator matched both inline validation and toast
-  notification copies of `Please enter the applicant name.`.
+- v1.0 and v1.1 phase history, requirements, audits, and roadmaps are archived
+  under `.planning/milestones/`.
 
 ## Next Milestone Goals
 
-- Deliver one runner command for selected or full portal automation.
-- Keep Add Application coverage in the unified runner while broadening to
-  authenticated portal areas.
-- Add safe mutating workflows for Activity, Audit Logs, Users, and Roles that
-  update and delete only automation-created records.
-- Fix and prevent the current strict-locator failure in the required-applicant
-  validation scenario.
-- Preserve secret-safe artifacts and triage behavior.
+- Define fresh requirements with `$gsd-new-milestone`.
+- Continue phase numbering from Phase 10.
+- Preserve the v1.1 operating constraints unless intentionally changed:
+  Playwright tests remain executable truth, auth state stays out of git, and
+  portal mutations must target same-run automation-owned records only.
+- Revisit product-surface blockers when the VerifyIQ UI exposes Audit Logs
+  same-run portal activity evidence or visible role edit controls.
 
 ## Constraints
 
@@ -202,4 +191,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-_Last updated: 2026-05-13 after Phase 9 completion._
+_Last updated: 2026-05-13 after v1.1 milestone completion._

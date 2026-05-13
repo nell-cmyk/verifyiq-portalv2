@@ -68,6 +68,78 @@ GSD sessions
 
 ---
 
+## Milestone: v1.1 - Unified Portal Automation Runner
+
+**Shipped:** 2026-05-13 **Phases:** 5 | **Plans:** 8 | **Sessions:** Multiple
+GSD sessions
+
+### What Was Built
+
+- Unified `npm run test:portal` runner with target validation, Playwright
+  delegation, triage execution, native artifact reporting, and exit-code
+  preservation.
+- Exact portal target mapping for public, auth, applications, activity,
+  audit-logs, users, roles, and all coverage through committed Playwright tags.
+- Add Application validation hardening that targets the inline
+  `validation-error` surface instead of duplicate page-level text.
+- Automation-owned same-run mutation helpers plus deep Users, Roles, Activity,
+  and Audit Logs workflow coverage.
+- README operator runbook covering runner targets, auth recovery, artifacts,
+  failure debug order, product-surface blockers, and cleanup rules.
+
+### What Worked
+
+- Keeping the runner thin preserved Playwright as the executable source of truth
+  and made runner behavior easy to unit test with `node:test`.
+- Same-run record guards forced mutating tests to prove ownership before update
+  or cleanup, which kept live portal verification safe.
+- Treating product-surface limitations as explicit blockers avoided false-green
+  coverage for Audit Logs activity evidence and role edit behavior.
+
+### What Was Inefficient
+
+- Claude Opus command access and usage limits repeatedly forced Codex fallback,
+  so cross-AI implementation needed extra verification and commit handling.
+- Some validation files retained stale draft metadata even after phase
+  verification passed, creating audit debt at close.
+- Live portal dialog and table-shape differences required iterative locator
+  hardening during Phase 8.
+
+### Patterns Established
+
+- Runner targets should map to exact `@portal:*` Playwright tags and remain
+  test-owned.
+- Portal workflow helpers should create automation-owned records, register the
+  same-run candidate, then guard every update/delete operation with exact
+  visible proof.
+- Product blockers should be represented in executable coverage with
+  `test.fixme` or explicit annotations rather than softened assertions.
+- README is the operational runbook for runner commands, artifact paths, auth
+  recovery, and cleanup boundaries.
+
+### Key Lessons
+
+1. Thin wrappers are easier to verify and safer to operate than browser logic in
+   runner scripts.
+2. Same-run mutation safety needs both naming conventions and row/control-level
+   proof before cleanup.
+3. Product-surface blockers should stay visible in docs and tests so future UI
+   changes can unlock coverage intentionally.
+4. Validation metadata should be refreshed at phase close, not reconstructed at
+   milestone close.
+
+### Cost Observations
+
+- Model mix: Claude Opus 4.7 attempted first-pass implementation where workflow
+  required it; Codex handled review, verification, fallback implementation, UAT,
+  and milestone close.
+- Sessions: Multiple sessions across phases 5-9; exact session count remains
+  advisory rather than normalized.
+- Notable: Phase 8 benefited from Codex fallback because live authenticated
+  inspection and rapid locator hardening were needed.
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -75,12 +147,14 @@ GSD sessions
 | Milestone | Sessions | Phases | Key Change                                                           |
 | --------- | -------- | ------ | -------------------------------------------------------------------- |
 | v1.0      | Multiple | 4      | Established Playwright-first automation with GSD lifecycle evidence. |
+| v1.1      | Multiple | 5      | Added unified portal runner and same-run mutation-safe workflows.    |
 
 ### Cumulative Quality
 
-| Milestone | Requirements | E2E Flows Audited | Zero-Dependency Additions                             |
-| --------- | ------------ | ----------------- | ----------------------------------------------------- |
-| v1.0      | 13/13        | 7/7               | Triage formatter uses Node built-ins and `node:test`. |
+| Milestone | Requirements | E2E Flows Audited | Zero-Dependency Additions                                    |
+| --------- | ------------ | ----------------- | ------------------------------------------------------------ |
+| v1.0      | 13/13        | 7/7               | Triage formatter uses Node built-ins and `node:test`.        |
+| v1.1      | 24/24        | 8/8               | Portal runner unit tests use Node built-ins and `node:test`. |
 
 ### Top Lessons (Verified Across Milestones)
 
@@ -88,3 +162,5 @@ GSD sessions
    authenticated tests run.
 2. Committed Playwright tests are the source of truth; browser helpers are only
    exploration and debugging aids.
+3. Mutating portal coverage must prove same-run automation ownership before any
+   update or delete action.

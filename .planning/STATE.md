@@ -2,8 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Unified Portal Automation Runner
-status: ready_to_complete
-last_updated: "2026-05-13T07:47:00.000Z"
+status: Awaiting next milestone
+last_updated: "2026-05-13T09:16:07.976Z"
+last_activity: 2026-05-13 — Milestone v1.1 completed and archived
 progress:
   total_phases: 5
   completed_phases: 5
@@ -22,18 +23,14 @@ See: [.planning/PROJECT.md](PROJECT.md) (updated 2026-05-13)
 browser automation without committing secrets, while using an explicit manual
 storage-state path when reCAPTCHA blocks credential-only login.
 
-**Current focus:** Phase 09 — runner-documentation-and-regression-operations
-complete. v1.1 milestone is ready for `$gsd-complete-milestone`.
-[.planning/ROADMAP.md](ROADMAP.md) **Milestone archive:**
-[.planning/milestones/](milestones/)
+**Current focus:** v1.1 is shipped and archived. Start the next milestone with
+`$gsd-new-milestone` when ready. [.planning/ROADMAP.md](ROADMAP.md) **Milestone
+archive:** [.planning/milestones/](milestones/)
 
 ## Current Position
 
-Phase: 09 (runner-documentation-and-regression-operations) — COMPLETE
-
-Plan: 1 of 1 — COMPLETE
-
-Status: v1.1 milestone ready for completion
+Phase: Milestone v1.1 complete Plan: — Status: Awaiting next milestone Last
+activity: 2026-05-13 — Milestone v1.1 completed and archived
 
 ## Accumulated Context
 
@@ -73,9 +70,8 @@ Recent decisions affecting current work:
 - Ensure mutating workflow coverage updates or deletes only records created by
   the same automation run.
 
-- Run `$gsd-complete-milestone` to archive the v1.1 milestone now that Phase 9
-  runner documentation, auth recovery, failure debug order, same-run cleanup
-  rules, and Phase 8 product blockers are documented and verified.
+- Define the next milestone with `$gsd-new-milestone`; this will recreate
+  `.planning/REQUIREMENTS.md` for the next requirement set.
 
 Phase 2 locked env-first auth-state precedence (`VERIFYIQ_STORAGE_STATE_JSON`,
 then `VERIFYIQ_STORAGE_STATE_PATH`, then local `playwright/.auth/user.json`,
@@ -100,7 +96,7 @@ without weakening the `MUT-05` and `MUT-07` product-surface blockers.
   `VERIFYIQ_STORAGE_STATE_JSON`, or `VERIFYIQ_STORAGE_STATE_PATH`.
 
 - Phase 8 live inspection found two product-surface constraints recorded in
-  [.planning/phases/08-deep-portal-workflow-coverage/08-LIVE-INSPECTION.md](phases/08-deep-portal-workflow-coverage/08-LIVE-INSPECTION.md):
+  [.planning/milestones/v1.1-phases/08-deep-portal-workflow-coverage/08-LIVE-INSPECTION.md](milestones/v1.1-phases/08-deep-portal-workflow-coverage/08-LIVE-INSPECTION.md):
   Roles create/delete are visible but no role edit action is exposed, and Audit
   Logs exports ingestion/output events rather than same-run portal activity. The
   revised Phase 8 plans preserve those as explicit blockers instead of
@@ -116,4 +112,4 @@ Last session: 2026-05-13T07:47:00Z
 
 ## Operator Next Steps
 
-- Complete the v1.1 milestone with `$gsd-complete-milestone`.
+- Start the next milestone with `$gsd-new-milestone`.
