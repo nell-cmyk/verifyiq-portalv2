@@ -141,15 +141,22 @@ export async function createAutomationRoleForEvidence(
     visibleName
   );
 
-  const viewUsers = await firstVisible([
-    surface.getByRole("checkbox", { name: /^View Users$/i }),
-    surface.getByLabel(/^View Users$/i)
-  ]);
-  if (viewUsers) {
-    await viewUsers.check().catch(async () => viewUsers.click());
-  } else {
-    await clickFirstVisible([surface.getByText(/^View Users$/i)]);
-  }
+  await surface
+    .getByRole("checkbox", { name: /^View Users$/i })
+    .first()
+    .check({ timeout: 15_000 })
+    .catch(async () => {
+      await surface
+        .getByLabel(/^View Users$/i)
+        .first()
+        .check({ timeout: 15_000 })
+        .catch(async () => {
+          await surface
+            .getByText("View Users", { exact: true })
+            .first()
+            .click({ timeout: 15_000 });
+        });
+    });
 
   const reviewButton = surface.getByRole("button", { name: /^Review$/i });
   if (await reviewButton.isVisible().catch(() => false)) {
