@@ -149,8 +149,13 @@ safety rule.
 
 Plans:
 
-- [ ] 08-01: Add Activity and Audit Logs deep workflow coverage.
+**Wave 1**
+
 - [ ] 08-02: Add Users and Roles deep workflow coverage.
+
+**Wave 2 _(blocked on Wave 1 completion)_**
+
+- [ ] 08-01: Add Activity and Audit Logs deep workflow coverage.
 
 ### Phase 9: Runner Documentation and Regression Operations
 
