@@ -136,12 +136,14 @@ safety rule.
 
 1. Activity workflow coverage exercises the deepest safe visible workflow
    available without touching pre-existing records.
-2. Audit Logs workflow coverage verifies automation-created activity/log
-   evidence and does not mutate pre-existing log data.
+2. Audit Logs workflow coverage verifies the visible export surface and
+   preserves the current product-surface blocker for same-run portal activity
+   evidence until the product exposes it.
 3. Users workflow coverage creates automation-owned user data before any update
    or cleanup action.
-4. Roles workflow coverage creates automation-owned role data before any update
-   or cleanup action.
+4. Roles workflow coverage creates automation-owned role data before cleanup and
+   preserves the current product-surface blocker for role edit until the product
+   exposes a visible edit action.
 5. All deep workflows are reachable through the unified runner targets and fail
    with secret-safe artifacts.
 
@@ -151,11 +153,12 @@ Plans:
 
 **Wave 1**
 
-- [ ] 08-02: Add Users and Roles deep workflow coverage.
+- [ ] 08-02: Add Users lifecycle and Roles create/delete coverage with role-edit
+      blocker reporting.
 
 **Wave 2 _(blocked on Wave 1 completion)_**
 
-- [ ] 08-01: Add Activity and Audit Logs deep workflow coverage.
+- [ ] 08-01: Add Activity evidence and Audit Logs product-boundary coverage.
 
 ### Phase 9: Runner Documentation and Regression Operations
 

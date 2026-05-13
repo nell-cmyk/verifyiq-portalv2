@@ -94,8 +94,9 @@ storage state.
 
 - Current shipped version: v1.0 MVP, shipped 2026-05-11.
 - Current milestone: v1.1 Unified Portal Automation Runner.
-- Current status: Phase 7 complete; Phase 8 is ready for discussion and
-  planning.
+- Current status: Phase 8 has been replanned after live inspection found product
+  surface constraints for role edit and Audit Logs same-run portal activity
+  evidence.
 - Target app: `https://sandbox.verifyiq-mercury-dev.boost-frontend.app/`.
 - App currently presents a VerifyIQ sign-in screen with Email, Password, and
   Sign in controls.
@@ -165,6 +166,7 @@ storage state.
 | Phase 5 runner foundation                        | The runner should stay a thin Playwright CLI wrapper that validates target names, prints the command and artifact paths, runs triage, and preserves Playwright exit behavior.                                                                                                 | Complete |
 | Phase 6 portal target wiring                     | Portal targets should use Playwright `--grep @portal:*` tags, with live-route discovery and stable page shell assertions in committed authenticated Playwright tests.                                                                                                         | Complete |
 | Phase 7 automation-owned mutation safety harness | Future mutating workflow tests must create, update, delete, and clean up only records registered in the same automation run; diagnostics must identify visible cleanup residue without echoing raw caller error text or secret-bearing data.                                  | Complete |
+| Phase 8 product-surface constraint handling      | Users and Activity can proceed with same-run evidence; Roles must not claim edit coverage until a visible edit action exists, and Audit Logs must not claim same-run portal activity evidence while exports exclude user activity logs.                                       | Pending  |
 
 ## Evolution
 
@@ -187,4 +189,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-_Last updated: 2026-05-12 after Phase 7 completion._
+_Last updated: 2026-05-13 after Phase 8 replanning._
