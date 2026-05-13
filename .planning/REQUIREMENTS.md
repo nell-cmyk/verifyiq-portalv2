@@ -55,18 +55,23 @@ requirement maps to one roadmap phase.
 - [x] **MUT-03**: Mutating workflow tests delete or clean up only records
       created by the same automation run and never delete pre-existing portal
       data.
-- [ ] **MUT-04**: Authenticated user can run deep Activity workflow coverage
+- [x] **MUT-04**: Authenticated user can run deep Activity workflow coverage
       through the unified runner using visible UI actions and the
       automation-owned record safety rule.
-- [ ] **MUT-05**: Authenticated user can run deep Audit Logs workflow coverage
+- [x] **MUT-05**: Authenticated user can run deep Audit Logs workflow coverage
       through the unified runner using visible UI actions and the
       automation-owned record safety rule.
-- [ ] **MUT-06**: Authenticated user can run deep Users workflow coverage
+- [x] **MUT-06**: Authenticated user can run deep Users workflow coverage
       through the unified runner using visible UI actions and the
       automation-owned record safety rule.
-- [ ] **MUT-07**: Authenticated user can run deep Roles workflow coverage
+- [x] **MUT-07**: Authenticated user can run deep Roles workflow coverage
       through the unified runner using visible UI actions and the
       automation-owned record safety rule.
+
+Phase 8 completed MUT-05 and MUT-07 within the currently visible product
+surface: Audit Logs export controls are covered, same-run portal activity
+evidence remains a `MUT-05` product blocker, and role edit coverage remains
+blocked until a visible edit action exists.
 
 ### Triage and Artifacts
 
@@ -118,10 +123,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MUT-01      | 7     | Complete |
 | MUT-02      | 7     | Complete |
 | MUT-03      | 7     | Complete |
-| MUT-04      | 8     | Pending  |
-| MUT-05      | 8     | Pending  |
-| MUT-06      | 8     | Pending  |
-| MUT-07      | 8     | Pending  |
+| MUT-04      | 8     | Complete |
+| MUT-05      | 8     | Complete |
+| MUT-06      | 8     | Complete |
+| MUT-07      | 8     | Complete |
 | TRIAGE-01   | 5     | Complete |
 | TRIAGE-02   | 5     | Complete |
 | TRIAGE-03   | 5     | Complete |
@@ -136,5 +141,5 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 
-_Requirements defined: 2026-05-11_ _Last updated: 2026-05-12 after Phase 6
+_Requirements defined: 2026-05-11_ _Last updated: 2026-05-13 after Phase 8
 completion._
