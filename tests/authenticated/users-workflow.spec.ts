@@ -79,6 +79,13 @@ test("authenticated user can create update and remove a same-run user @portal:us
         await deleteAutomationRole(page, rolesContext, roleRecord);
         roleDeleted = true;
       } finally {
+        if (roleRecord && !roleDeleted) {
+          await expectPortalAreaReachable(page, rolesArea).catch(() => {});
+          await deleteAutomationRole(page, rolesContext, roleRecord).catch(
+            () => {}
+          );
+        }
+
         await testInfo.attach("users-automation-diagnostics", {
           body: JSON.stringify(
             {
@@ -90,13 +97,6 @@ test("authenticated user can create update and remove a same-run user @portal:us
           ),
           contentType: "application/json"
         });
-
-        if (roleRecord && !roleDeleted) {
-          await expectPortalAreaReachable(page, rolesArea).catch(() => {});
-          await deleteAutomationRole(page, rolesContext, roleRecord).catch(
-            () => {}
-          );
-        }
       }
     }
   );
