@@ -3,6 +3,14 @@
 TypeScript + Playwright Test automation for the VerifyIQ sandbox application:
 `https://sandbox.verifyiq-mercury-dev.boost-frontend.app/`.
 
+## Presentation Assets
+
+- [VerifyIQ portal automation snapshot map](docs/verifyiq-portal-automation-snapshot-map.svg)
+  explains what the automation does, how it works, current shipped state, and
+  the v2.0 expansion path.
+- [Graphic design note](docs/superpowers/specs/2026-05-14-verifyiq-automation-graphic-design.md)
+  records the approved presentation direction and content boundaries.
+
 ## Setup
 
 Install dependencies:
