@@ -10,9 +10,9 @@ test("root loads the VerifyIQ sign-in screen", async ({ page }, testInfo) => {
   await expect(
     page.getByRole("heading", { name: /sign in to verifyiq/i })
   ).toBeVisible();
-  await expect(page.getByRole("textbox", { name: /email/i })).toBeVisible();
-  await expect(page.getByRole("textbox", { name: /password/i })).toBeVisible();
-  await expect(page.getByRole("button", { name: /^sign in$/i })).toBeDisabled();
+  await expect(
+    page.getByRole("button", { name: /sign in with google/i })
+  ).toBeVisible();
 
   await pageErrors.expectNoErrors(testInfo);
 });
